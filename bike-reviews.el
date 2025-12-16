@@ -86,14 +86,14 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 			specs)))
 
 
-(setq bike-review-table-final (make-hash-table :test 'equal))
+(setq bike-review-hashmap (make-hash-table :test 'equal))
 
 (maphash
  (lambda (k v)
 	 (puthash k
 						;; TODO only works with table nodes (because manual tree traversal)
 						(pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table)))))
-						bike-review-table-final)
+						bike-review-hashmap)
 	 )
  bike-review-table)
 
@@ -125,7 +125,7 @@ If DESCENDING is non-nil, sort in descending order."
 											('<>  (and (< num value) (> num 1)))
 											(_ (error "Unsupported operator: %S" op))))
 					 (push (list k num url) results))))
-		 bike-review-table-final)
+		 bike-review-hashmap)
 		;; sort results by the numeric property
 		(sort results
 					(if descending
