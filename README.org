@@ -1,5 +1,5 @@
 * Motivations & Background Info
-This is a workflow automation tool I made while working as a writer at [[https://www.motorcyclenews.com/bike-reviews/][Motorcycle News]]. During a meeting, one of my colleagues mentioned in passing:
+This is a workflow automation tool I have made while working as a writer at [[https://www.motorcyclenews.com/bike-reviews/][Motorcycle News]]. During a meeting, one of my colleagues mentioned in passing:
 
 #+begin_quote
 "Wouldn't it be great to be able to search and filter bike reviews? That would make content ideation so much quicker!"
