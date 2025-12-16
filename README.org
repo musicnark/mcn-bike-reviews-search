@@ -2,7 +2,7 @@
 This is a workflow automation tool I have made while working as a digital content writer at [[https://www.motorcyclenews.com/bike-reviews/][Motorcycle News]]. During a meeting, one of my colleagues mentioned in passing:
 
 #+begin_quote
-"Wouldn't it be great to be able to search and filter bike reviews? That would make content ideation so much quicker!"
+"Wouldn't it be great to be able to search and filter bike reviews by their specs? That would make content ideation so much quicker!"
 #+end_quote
 
 At the time, it was left as "one to sleep on". Nobody on the team had enough programming ability to make it a reality, and the business was notoriously slow with implementing suggested features. As with most other workflow automation ideas, it was left to gather dust in the wish-list.
