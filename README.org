@@ -23,17 +23,17 @@ It currently works by:
 
 The hashmap returned looks like this:
 
-```elisp
+#+begin_src elisp
 (gethash "honda msx125-grom 2014" bike-review-hashmap)
 ;; => (:engine-size "125cc" :engine-type "Air-cooled..." :seat-height "765mm" ...)
-```
+#+end_src
 
 So when you perform a query, it looks like this:
 
-```elisp
+#+begin_src elisp
 (query-bikes-by-tag :used-price < 2000)
 ;; => ("suzuki gsf650-bandit 2007" 1900 "https://www.motorcyclenews.com/bike-reviews/...")
       ...
-```
+#+end_src
 
 For the whole bike reviews section, and on my machine, the initial scraping process takes about three minutes. Once stored in memory new entries can be added quickly. It takes advantage of a hashmap's fast lookup times, at the cost of about 1.3gb of memory usage.
