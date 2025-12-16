@@ -1,7 +1,7 @@
 * The Business Pitch
 Editorial teams spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search by spec can speed up the content creation process for a number of different types of content across MCN.
 
-This tool enables that — fast, data-driven filtering of MCN's Bike Reviews section by any spec in the review (fuel economy, horsepower, yearly service cost, etc). It lets writers and editors instantly generate targeted content ideas by programmatically finding all bikes that meet a certain condition.
+This tool enables that — fast, data-driven filtering of MCN's [[https://www.motorcyclenews.com/bike-reviews/][Bike Reviews section]] by any spec in the review (fuel economy, horsepower, yearly service cost, etc). It lets writers and editors instantly generate targeted content ideas by programmatically finding all bikes that meet a certain condition.
 
 Some example uses include finding:
 - Bikes exceeding 100mpg → “Best fuel-sippers” page
