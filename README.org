@@ -21,7 +21,7 @@ Some example uses include finding:
 
 With small additions, the tool could search for any data in the bike review page — collating owners reviews, processing review copy for relevant phrases ("great commuter", "solid engine", "full of character", etc), and support compound filters to further refine search results.
 
-We also see strong potential for an integration with a LLM. By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination.
+We also see strong potential for an integration with a LLM (ChatGPT, Gemini, etc). By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination.
 
 The current implementation is written in elisp, but the underlying logic is portable to any general-purpose programming language.
 
