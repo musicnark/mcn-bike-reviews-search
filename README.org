@@ -31,7 +31,7 @@ The hashmap returned looks like this:
 So when you perform a query, it looks like this:
 
 #+begin_src elisp
-(query-bikes-by-tag :used-price < 2000)
+(query-bikes-by-tag :used-price '< 2000)
 ;; => ("suzuki gsf650-bandit 2007" 1900 "https://www.motorcyclenews.com/bike-reviews/...")
 ;;    ...
 #+end_src
