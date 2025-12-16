@@ -1,0 +1,39 @@
+* The Business Pitch
+Editorial teams spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search by spec can speed up the content creation process for a number of different types of content across MCN.
+
+This tool enables that — fast, data-driven filtering of MCN's Bike Reviews section by any spec in the review (fuel economy, horsepower, yearly service cost, etc). It lets writers and editors instantly generate targeted content ideas by programmatically finding all bikes that meet a certain condition.
+
+Some example uses include finding:
+- Bikes exceeding 100mpg → “Best fuel-sippers” page
+- Bikes with seat height under 800mm → “Best bikes for shorter riders” page
+- Bikes between 15–47bhp → “Best A2 bikes” page
+
+With small additions, the tool could search for any data in the bike review page — collating owners reviews, processing review copy for relevant phrases ("great commuter", "solid engine", "full of character", etc), and support compound filters to further refine search results.
+
+We also see strong potential for an integration with BauerGPT. By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination.
+
+The current implementation is written in elisp, but the underlying logic is portable to any general-purpose programming language.
+
+It currently works by:
+
+1) Importing a CSV of all bike reviews (manually downloaded from Monday.com)
+2) Individually scraping each bike review page from the live site
+3) Extracting the spec tables
+4) Storing each bike’s specs in a hashmap keyed by bike name, with a structured property list of all attributes.
+
+The hashmap returned looks like this:
+
+```elisp
+(gethash "honda msx125-grom 2014" bike-review-hashmap)
+;; => (:engine-size "125cc" :engine-type "Air-cooled..." :seat-height "765mm" ...)
+```
+
+So when you perform a query, it looks like this:
+
+```elisp
+(query-bikes-by-tag :used-price < 2000)
+;; => ("suzuki gsf650-bandit 2007" 1900 "https://www.motorcyclenews.com/bike-reviews/...")
+      ...
+```
+
+For the whole bike reviews section, and on my machine, the initial scraping process takes about three minutes. Once stored in memory new entries can be added quickly. It takes advantage of a hashmap's fast lookup times, at the cost of about 1.3gb of memory usage.
