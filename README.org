@@ -1,3 +1,14 @@
+* Motivations & Background Info
+This is a tool I made while working as a writer at [[https://www.motorcyclenews.com/bike-reviews/][Motorcycle News]]. During a meeting, one of my colleagues mentioned in passing:
+
+#+begin_quote
+"Wouldn't it be great to be able to search and filter bike reviews? That would make content ideation so much quicker!"
+#+end_quote
+
+At the time, it was left as "one to sleep on". Nobody on the team had enough programming ability to make it a reality, and the business was notoriously slow with implementing features. As with most other workflow automation ideas, it was left to gather dust in the wish-list.
+
+But, instead of sleeping on it, I built it. This is MVP, implemented in Elisp, that I used to pitch a full version to the business.
+
 * The Business Pitch
 Editorial teams spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search by spec can speed up the content creation process for a number of different types of content across MCN.
 
@@ -10,13 +21,13 @@ Some example uses include finding:
 
 With small additions, the tool could search for any data in the bike review page — collating owners reviews, processing review copy for relevant phrases ("great commuter", "solid engine", "full of character", etc), and support compound filters to further refine search results.
 
-We also see strong potential for an integration with BauerGPT. By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination.
+We also see strong potential for an integration with a LLM. By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination.
 
 The current implementation is written in elisp, but the underlying logic is portable to any general-purpose programming language.
 
 It currently works by:
 
-1) Importing a CSV of all bike reviews (manually downloaded from Monday.com)
+1) Importing a CSV of all bike reviews
 2) Individually scraping each bike review page from the live site
 3) Extracting the spec tables
 4) Storing each bike’s specs in a hashmap keyed by bike name, with a structured property list of all attributes.
