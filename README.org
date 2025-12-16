@@ -7,7 +7,7 @@ This is a tool I made while working as a writer at [[https://www.motorcyclenews.
 
 At the time, it was left as "one to sleep on". Nobody on the team had enough programming ability to make it a reality, and the business was notoriously slow with implementing features. As with most other workflow automation ideas, it was left to gather dust in the wish-list.
 
-But, instead of sleeping on it, I built it. This is MVP, implemented in Elisp, that I used to pitch a full version to the business.
+But, instead of sleeping on it, I built it. This is a MVP, implemented in Elisp, that I used to pitch a full version to the business.
 
 * The Business Pitch
 Editorial teams spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search by spec can speed up the content creation process for a number of different types of content across MCN.
