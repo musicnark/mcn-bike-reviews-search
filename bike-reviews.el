@@ -8,7 +8,7 @@
 						(split-string (buffer-string) "\n" t))))
 
 ;; convert CSV to hash table
-(setq br (pc-csv-parse-file "~/Desktop/Bike_Reviews_Digital_master_board_Deborah_MCN_Bike_reviews_1764752686.csv"))
+(setq br (pc-csv-parse-file "~/Desktop/Bike_Reviews.csv")) ;; TODO currently has to be downloaded separately, but shouldn't have to be?
 
 (defun pc-insert-hash-table (csv-line)
 	(let ((name (nth 0 csv-line))
