@@ -99,6 +99,7 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 						;; add more searchable fields here
 						bike-review-hashmap))
  bike-review-table)
+(require 'cl-lib)
 
 (defun query-bikes-by-tag (tag op value &optional descending)
 	"Return a list of lists (bike-name value url) where the PLIST property TAG satisfies OP VALUE, sorted by the property.
@@ -132,6 +133,54 @@ If DESCENDING is non-nil, sort in descending order."
 							(lambda (a b) (> (nth 1 a) (nth 1 b)))
 						(lambda (a b) (< (nth 1 a) (nth 1 b)))))))
 
+(defun pc-eval-query (query specs)
+  "Evaluate QUERY against SPECS plist."
+  (pcase query
+    ;; Boolean operators
+    (`(and . ,clauses)
+     (cl-every (lambda (q) (pc-eval-query q specs)) clauses))
+    (`(or . ,clauses)
+     (cl-some (lambda (q) (pc-eval-query q specs)) clauses))
+    (`(not ,clause)
+     (not (pc-eval-query clause specs)))
+    ;; Comparison: (:tag op value)
+    (`(,tag ,op ,value)
+     (let* ((raw (plist-get specs tag))
+            (num (when raw
+                   (string-to-number
+                    (replace-regexp-in-string "[^0-9.-]" "" raw)))))
+       (and num
+            (funcall op num value))))
+    (_ (error "Invalid query: %S" query))))
+
+
+(defun query-bikes (query &optional sort-tag descending)
+  "Return a list of (bike-name value url) matching QUERY.
+QUERY is a compound filter expression.
+SORT-TAG is a plist keyword to sort by.
+If DESCENDING is non-nil, sort high → low."
+  (let (results)
+    (maphash
+     (lambda (name specs)
+       (when (pc-eval-query query specs)
+         (let* ((url (gethash name bike-review-urls))
+                (sort-val
+                 (when sort-tag
+                   (string-to-number
+                    (replace-regexp-in-string
+                     "[^0-9.-]" ""
+                     (or (plist-get specs sort-tag) ""))))))
+           (push (list name sort-val url) results))))
+     bike-review-hashmap)
+    ;; optional sorting
+    (if sort-tag
+        (sort results
+              (lambda (a b)
+                ((if descending #'> #'<)
+                 (nth 1 a) (nth 1 b))))
+      (nreverse results))))
+
+;; Old syntax
 ;; Best Superbikes
 (query-bikes-by-tag :max-power '> 200) 
 
@@ -164,6 +213,12 @@ If DESCENDING is non-nil, sort in descending order."
 
 ;; ??
 (query-bikes-by-tag :annual-service-cost '<> 50)
+
+;; New syntax
+(query-bikes
+ '(and
+	 (:average-fuel-consumption > 150)
+	 (:top-speed >= 60)))
 
 ;; TODO:
 ;; - DONE combine all three html tables into one plist (but parse them individually?)
