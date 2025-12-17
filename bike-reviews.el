@@ -23,9 +23,9 @@
 
 (defun fetch-html (url)
 	(with-current-buffer (url-retrieve-synchronously url)
-						 (goto-char (point-min))
-						 (re-search-forward "review__facts-and-figures__table") ;; skip HTML body
-						 (buffer-substring-no-properties (point) (point-max))))
+		(goto-char (point-min))
+		(re-search-forward "review__facts-and-figures__table") ;; skip HTML body
+		(buffer-substring-no-properties (point) (point-max))))
 
 (defun parse-html (html)
 	(with-temp-buffer
@@ -63,11 +63,11 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 										(when (and (listp tr-node) (eq (car tr-node) 'tr))
 											(let* ((children (cddr tr-node))
 														 (th-node (cl-find-if (lambda (n)
-																										 (and (listp n) (eq (car n) 'th)))
-																									 children))
+																										(and (listp n) (eq (car n) 'th)))
+																									children))
 														 (td-node (cl-find-if (lambda (n)
-																										 (and (listp n) (eq (car n) 'td)))
-																									 children))
+																										(and (listp n) (eq (car n) 'td)))
+																									children))
 														 (label (when th-node (car (last th-node))))
 														 (value (when td-node
 																			;; flatten strings in <td>, ignore nested tags
@@ -91,10 +91,12 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 (maphash
  (lambda (k v)
 	 (puthash k
-						;; TODO only works with individual table nodes (because manual tree traversal~)
-						(append (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table))))))
-						bike-review-hashmap)
-	 )
+						(append
+						 (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) ;; spec table 1
+						 (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) ;; spec table 2
+						 (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table)))))) ;; spec table 3
+						;; add more searchable fields here
+						bike-review-hashmap))
  bike-review-table)
 
 (defun query-bikes-by-tag (tag op value &optional descending)
