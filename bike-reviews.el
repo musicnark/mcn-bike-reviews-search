@@ -43,6 +43,7 @@
 
 (require 'cl-lib)
 
+;; TODO
 (defun pc-extract-specs-from-table (table-node)
 	"Extract bike specs from a <table> DOM node and return a plist.
 
@@ -167,6 +168,7 @@ If DESCENDING is non-nil, sort in descending order."
 ;; TODO:
 ;; - DONE combine all three html tables into one plist (but parse them individually?)
 ;; - make search function more advanced/modular (ability to combine predicates)
+;; - extract specs from table generically/modularly, search for any table element and process them
 ;; - add date as a field in plist
 ;; - add bike make/model as a field in plist
 ;; - add MCN star rating and owners reviews score
