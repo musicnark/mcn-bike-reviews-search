@@ -86,7 +86,6 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 																		 (cdr kv)))))))
 			specs)))
 
-
 (setq bike-review-hashmap (make-hash-table :test 'equal))
 
 (maphash
@@ -152,7 +151,6 @@ If DESCENDING is non-nil, sort in descending order."
        (and num
             (funcall op num value))))
     (_ (error "Invalid query: %S" query))))
-
 
 (defun query-bikes (query &optional sort-tag descending)
   "Return a list of (bike-name value url) matching QUERY.
