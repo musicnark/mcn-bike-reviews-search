@@ -91,14 +91,11 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 (maphash
  (lambda (k v)
 	 (puthash k
-						;; TODO only works with table nodes (because manual tree traversal)
-						(pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table)))))
+						;; TODO only works with individual table nodes (because manual tree traversal~)
+						(append (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table))))))
 						bike-review-hashmap)
 	 )
  bike-review-table)
-
-;; (nth 3 (nth 2 (gethash k bike-review-table))) || (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) || (nth 3 (nth 8 (nth 2 (gethash k bike-review-table))))
-
 
 (defun query-bikes-by-tag (tag op value &optional descending)
 	"Return a list of lists (bike-name value url) where the PLIST property TAG satisfies OP VALUE, sorted by the property.
@@ -132,14 +129,26 @@ If DESCENDING is non-nil, sort in descending order."
 							(lambda (a b) (> (nth 1 a) (nth 1 b)))
 						(lambda (a b) (< (nth 1 a) (nth 1 b)))))))
 
-;; (query-bikes-by-tag :max-power '> 200) - best superbikes
-;; (query-bikes-by-tag :max-power '< 47) - MCN's favourite A2 bikes
-;; (query-bikes-by-tag :tank-range '> 240) - best mile-munching tourers
-;; (query-bikes-by-tag :top-speed '> 160) - best bikes for speed-demons
+;; Best Superbikes
+(query-bikes-by-tag :max-power '> 200) 
 
-;; (query-bikes-by-tag :engine-size '= 750) - MCN's favourite 750cc bikes
-;; (query-bikes-by-tag :seat-height '< 800) - best bikes for shorter riders
-;; (query-bikes-by-tag :bike-weight '< 150) - best lightweight bikes
+;; MCN's Favourite A2 Bikes
+(query-bikes-by-tag :max-power '< 47) 
+
+;; Best Mile-Munching Tourers
+(query-bikes-by-tag :tank-range '> 240) 
+
+;; Best Bikes for Speed-Demons
+(query-bikes-by-tag :top-speed '> 160) 
+
+;; MCN's Favourite 750cc Bikes
+(query-bikes-by-tag :engine-size '= 750) 
+
+;; Best Bikes for Shorter Riders
+(query-bikes-by-tag :seat-height '< 800) 
+
+;; Best Lightweight Bikes
+(query-bikes-by-tag :bike-weight '< 150) 
 
 ;; most fuel efficient bikes
 (query-bikes-by-tag :average-fuel-consumption '> 100)
@@ -154,13 +163,14 @@ If DESCENDING is non-nil, sort in descending order."
 (query-bikes-by-tag :annual-service-cost '<> 50)
 
 ;; TODO:
-;; - combine all three html tables into one plist (but parse them individually?)
+;; - DONE combine all three html tables into one plist (but parse them individually?)
 ;; - make search function more advanced/modular (ability to combine predicates)
 ;; - add date as a field in plist
 ;; - add bike make/model as a field in plist
+;; - add MCN star rating and owners reviews score
 ;; - add ability for partial matches on a search (name.contains("kawasaki"))
 ;; - save hash-table locally
 ;; - learn tree traversal
-;; - integrate with LLM (via n8n) to generate pages/newsletters/the lot
 ;; - automate stealing data from Monday.com (for updates)
+;; - integrate with LLM (via n8n) to generate pages/newsletters/the lot
 ;; - add page copy to plist? Worth doing a "body copy contains 'great' 'commuter'" filter?
