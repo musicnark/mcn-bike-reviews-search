@@ -24,7 +24,7 @@
 (defun fetch-html (url)
 	(with-current-buffer (url-retrieve-synchronously url)
 		(goto-char (point-min))
-		(re-search-forward "review__facts-and-figures__table") ;; skip HTML body
+		(re-search-forward "\n\n") ;; skip HTML headers
 		(buffer-substring-no-properties (point) (point-max))))
 
 (defun parse-html (html)
@@ -32,7 +32,6 @@
 		(insert html)
 		(libxml-parse-html-region (point-min) (point-max))))
 
-;; iterate over keys in the hash table:
 ;; just wait until memory usage gets to 1.2 ish gb, then you're fully loaded~
 (setq output
 			(maphash
@@ -43,11 +42,9 @@
 
 (require 'cl-lib)
 
-;; TODO
+;; TODO - understand it or die trying~
 (defun pc-extract-specs-from-table (table-node)
-	"Extract bike specs from a <table> DOM node and return a plist.
-
-Currently, it is unable to collate all relevant specs into one list, this needs fixing."
+	"Extract bike specs from a <table> DOM node and return a plist."
 	(unless (and (listp table-node) (eq (car table-node) 'table))
 		(error "Expected a <table> DOM node"))
 
@@ -55,6 +52,7 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 	(let ((tbody (cl-find-if (lambda (n)
 														 (and (listp n) (eq (car n) 'tbody)))
 													 (cddr table-node))))
+
 		(unless tbody
 			(error "No <tbody> found in table"))
 
@@ -75,7 +73,6 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 																			(mapconcat (lambda (x) (if (stringp x) x "")) (cdr td-node) ""))))
 												(when (and label value)
 													(cons label (string-trim value)))))))
-
 				;; iterate over all <tr> nodes in <tbody>
 				(dolist (child (cddr tbody))
 					(let ((kv (extract-tr child)))
