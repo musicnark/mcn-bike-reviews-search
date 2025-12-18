@@ -43,6 +43,7 @@
 (require 'cl-lib)
 
 ;; TODO - understand it or die trying~
+;; we need to implement DFS to search the whole dom node (excluding HTTP headers) to be able to find the MCN/owners review scores. It should be modular, so other elements to search for can be added easily later, probably implementing a recursive pcase to check for form, and pushing that node's k/v to the plist. But first, understand /everything/ this is doing, so we know how to reverse engineer it.
 (defun pc-extract-specs-from-table (table-node)
 	"Extract bike specs from a <table> DOM node and return a plist."
 	(unless (and (listp table-node) (eq (car table-node) 'table))
