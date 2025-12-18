@@ -152,6 +152,7 @@ If DESCENDING is non-nil, sort in descending order."
             (funcall op num value))))
     (_ (error "Invalid query: %S" query))))
 
+;; TODO Learn this
 (defun query-bikes (query &optional sort-tag descending)
   "Return a list of (bike-name value url) matching QUERY.
 QUERY is a compound filter expression.
@@ -168,7 +169,7 @@ If DESCENDING is non-nil, sort high → low."
                     (replace-regexp-in-string
                      "[^0-9.-]" ""
                      (or (plist-get specs sort-tag) ""))))))
-           (push (list name sort-val url) results))))
+           (push (list name sort-val url) results)))) ;; sort-val needs changing?
      bike-review-hashmap)
     ;; optional sorting
     (if sort-tag

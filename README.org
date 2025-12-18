@@ -10,16 +10,16 @@ At the time, it was left as "one to sleep on". Nobody on the team had enough pro
 But, instead of sleeping on it, I took it upon myself to build it. This is a MVP, implemented in Elisp, that I used to pitch a full version to the business. Stay tuned to see what the business' response is...
 
 * The Business Pitch
-Editorial teams spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search by spec can speed up the content creation process for a number of different types of content across MCN.
+The Bike Reviews section is one of MCN’s highest-value digital assets, driving significant evergreen traffic and long-tail search demand, yet editorial teams still spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search and filter by spec would speed up the content creation process for a number of different types of content across the Bike Reviews section.
 
 This tool enables that — fast, data-driven filtering of [[https://www.motorcyclenews.com/bike-reviews/][MCN's Bike Reviews section]] by any spec in the review (fuel economy, horsepower, yearly service cost, etc). It lets writers and editors instantly generate targeted content ideas by programmatically finding all bikes that meet a certain condition.
 
 Some example uses include finding:
 - Bikes exceeding 100mpg → “Best fuel-sippers” page
 - Bikes with seat height under 800mm → “Best bikes for shorter riders” page
-- Bikes between 15–47bhp → “Best A2 bikes” page
+- Bikes between 15–47bhp and with an MCN score of 4/5 or higher  → “Best A2 bikes” page
 
-With small additions, the tool could search for any data in the bike review page — collating owners reviews, processing review copy for relevant phrases ("great commuter", "solid engine", "full of character", etc), and support compound filters to further refine search results.
+With small additions, the tool could also search for any data in the bike review page — collating owners reviews, processing review copy for relevant phrases ("great commuter", "solid engine", "full of character", etc). It could also form the basis of a more general-use application that publications across the business would benefit from.
 
 We also see strong potential for an integration with a LLM (ChatGPT, Gemini, etc). By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination or short-cutting.
 
@@ -39,12 +39,18 @@ The hashmap returned looks like this:
 ;; => (:engine-size "125cc" :engine-type "Air-cooled..." :seat-height "765mm" ...)
 #+end_src
 
-So when you perform a query, it looks like this:
+So for an example query, it looks like this:
 
 #+begin_src elisp
-(query-bikes-by-tag :used-price '< 2000)
-;; => ("suzuki gsf650-bandit 2007" 1900 "https://www.motorcyclenews.com/bike-reviews/...")
-;;    ...
+	(query-bikes
+	 '(and
+		 (:used-price < 2500)
+		 (:mcn-rating >= 4)
+		 (:seat-height < 800)
+		 (:max-power > 15)
+		 (:max-power < 47)))
+	;; => ("2024-on CF-moto 450NK" ... "https://www.motorcyclenews.com/bike-reviews/...")
+	;;    ...
 #+end_src
 
 For the whole bike reviews section (on my M1 Macbook Air work laptop), the initial scraping process takes about three minutes. Once stored in memory, new entries can be added quickly. It takes advantage of a hashmap's fast lookup times, at the cost of about 1.3gb of memory usage.
