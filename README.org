@@ -45,7 +45,6 @@ So for an example query, it looks like this:
 	(query-bikes
 	 '(and
 		 (:used-price < 2500)
-		 (:mcn-rating >= 4)
 		 (:seat-height < 800)
 		 (:max-power > 15)
 		 (:max-power < 47)))
