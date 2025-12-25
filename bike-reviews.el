@@ -221,13 +221,13 @@ If DESCENDING is non-nil, sort high → low."
 
 ;; TODO:
 ;; - DONE combine all three html tables into one plist (but parse them individually?)
-;; - make search function more advanced/modular (ability to combine predicates)
+;; - DONE save hash-table locally
+;; - DONE make search function more advanced/modular (ability to combine predicates)
 ;; - extract specs from table generically/modularly, search for any table element and process them
 ;; - add date as a field in plist
 ;; - add bike make/model as a field in plist
 ;; - add MCN star rating and owners reviews score
 ;; - add ability for partial matches on a search (name.contains("kawasaki"))
-;; - save hash-table locally
 ;; - learn tree traversal
 ;; - automate stealing data from Monday.com (for updates)
 ;; - integrate with LLM (via n8n) to generate pages/newsletters/the lot
