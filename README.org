@@ -103,12 +103,12 @@ git clone https://github.com/musicnark/mcn-bike-reviews-search
 
 - Move the elisp files to your local emacs elisp executable directory:
 #+begin_src sh
-mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && mv *.el ~/.emacs.d/elisp/mcn-bike-reviews-search/
+mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/elisp/mcn-bike-reviews-search/
 #+end_src
 
-- Byte compile the elisp files:
+- Optionally, you can byte compile the elisp files:
 #+begin_src sh
-mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && mv *.el ~/.emacs.d/elisp/mcn-bike-reviews-search/
+(Idk)
 #+end_src
 
 - In your init.el, add the lisp directory to your Emacs path:
@@ -127,3 +127,10 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && mv *.el ~/.emacs.d/elisp/mc
 #+end_src
 
 Then, you can refer to [[*Usage][usage]] to get started.
+
+* TODO
+- [ ] fix jump-to links (convert from org to md?)
+- [ ] fix documentation
+  - [ ] explain loading the file contents (just C-c C-e? Or fix the code to make require work?)
+  - [ ] byte compile or no?
+- [ ] finish install script
