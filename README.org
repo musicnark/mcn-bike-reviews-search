@@ -1,7 +1,7 @@
 * TL;DR
-*Purpose:* Enable faster search of MCN's bike reviews, filtering by bike specs, for faster content ideation.
-*Tech:* Elisp, CSV import, DOM node tree traversal, hashmap storage, query language/DSL.
-*Impact:* Reduced manual review, improved content discovery, scalable for editorial teams.
+- *Purpose:* Enable faster search of MCN's bike reviews, filtering by bike specs, for faster content ideation.
+- *Tech:* Elisp, CSV import, DOM node tree traversal, hashmap storage, query language/DSL.
+- *Impact:* Reduced manual review, improved content discovery, scalable for editorial teams.
 
 * Motivations & Background Info
 This is a workflow automation tool I have made while working as a digital content writer at [[https://www.motorcyclenews.com/bike-reviews/][Motorcycle News]]. During a meeting, one of my colleagues mentioned in passing:
