@@ -1,5 +1,5 @@
 * TL;DR
-- *Purpose:* Enable faster search of MCN's bike reviews, filtering by bike specs, for faster content ideation.
+- *Purpose:* Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
 - *Tech:* Elisp, CSV import, DOM node tree traversal, hashmap storage, query language/DSL.
 - *Impact:* Reduced manual review, improved content discovery, scalable for editorial teams.
 
