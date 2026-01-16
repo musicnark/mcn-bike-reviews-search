@@ -44,7 +44,13 @@ The hashmap returned looks like this:
 ;; => (:engine-size "125cc" :engine-type "Air-cooled..." :seat-height "765mm" ...)
 #+end_src
 
-So for an example query, it looks like this:
+So an example query to find:
+
+#+begin_quote
+"best budget A2 bikes for shorter riders"
+#+end_quote
+
+looks like this:
 
 #+begin_src elisp
 	(query-bikes
