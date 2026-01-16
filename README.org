@@ -131,6 +131,6 @@ Then, you can refer to [[*Usage][usage]] to get started.
 * TODO
 - [ ] fix jump-to links (convert from org to md?)
 - [ ] fix documentation
-  - [ ] explain loading the file contents (just C-c C-e? Or fix the code to make require work?)
+  - [ ] explain loading the file contents (just C-c C-e? Or wrap the code in an init function to make require work?)
   - [ ] byte compile or no?
 - [ ] finish install script
