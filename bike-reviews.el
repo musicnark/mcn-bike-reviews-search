@@ -8,7 +8,7 @@
 						(split-string (buffer-string) "\n" t))))
 
 ;; convert CSV to hash table
-(setq br (pc-csv-parse-file "./Bike_Reviews.csv")) ;; TODO currently has to be downloaded and cleaned separately, but shouldn't have to be?
+(setq br (pc-csv-parse-file "./Bike_Reviews.csv"))
 
 (defun pc-insert-hash-table (csv-line)
 	(let ((name (nth 0 csv-line))
@@ -33,7 +33,7 @@
 		(libxml-parse-html-region (point-min) (point-max))))
 
 ;; iterate over keys in the hash table:
-;; just wait until memory usage gets to 1.2 ish gb, then you're fully loaded~
+;; Note: Initial load of all bike reviews uses ~1.3GB memory.
 (setq output
 			(maphash
 			 (lambda (name url)
@@ -43,11 +43,19 @@
 
 (require 'cl-lib)
 
-;; TODO
 (defun pc-extract-specs-from-table (table-node)
-	"Extract bike specs from a <table> DOM node and return a plist.
+  "Extract bike specifications from a HTML <table> DOM node.
 
-Currently, it is unable to collate all relevant specs into one list, this needs fixing."
+TABLE-NODE should be a parsed <table> node as returned by `libxml-parse-html-region'.
+Returns a property list (plist) where each key is a keyword version of the spec label
+and each value is the corresponding table cell content as a string.
+
+Example:
+  (:engine-size \"125cc\" :seat-height \"765mm\" ...)
+
+Raises an error if TABLE-NODE is not a <table> node or if no <tbody> is found.
+
+See also `query-bikes' and `pc-eval-query'."
 	(unless (and (listp table-node) (eq (car table-node) 'table))
 		(error "Expected a <table> DOM node"))
 
@@ -88,6 +96,7 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 
 (setq bike-review-hashmap (make-hash-table :test 'equal))
 
+;; concatenate the three specs tables from the web page
 (maphash
  (lambda (k v)
 	 (puthash k
@@ -95,13 +104,14 @@ Currently, it is unable to collate all relevant specs into one list, this needs 
 						 (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) ;; spec table 1
 						 (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) ;; spec table 2
 						 (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table)))))) ;; spec table 3
-						;; add more searchable fields here
+						;; // add more searchable fields here //
 						bike-review-hashmap))
  bike-review-table)
 (require 'cl-lib)
 
 (defun query-bikes-by-tag (tag op value &optional descending)
-	"Return a list of lists (bike-name value url) where the PLIST property TAG satisfies OP VALUE, sorted by the property.
+  "NOTICE: This function is now depricated, only kept for posterity's sake.
+Return a list of lists (bike-name value url) where the PLIST property TAG satisfies OP VALUE, sorted by the property.
 TAG should be a keyword like :seat-height.
 OP should be a symbol: '<, '> , '<= , '>= , '=.
 VALUE should be a number for numeric comparisons.
@@ -133,7 +143,21 @@ If DESCENDING is non-nil, sort in descending order."
 						(lambda (a b) (< (nth 1 a) (nth 1 b)))))))
 
 (defun pc-eval-query (query specs)
-  "Evaluate QUERY against SPECS plist."
+  "Recursively evaluate QUERY against a SPECS property list.
+
+QUERY is a compound expression containing the following forms:
+  - (:tag OP VALUE) for comparison, e.g., (:seat-height > 800)
+  - (and clause1 clause2 ...) for logical AND
+  - (or clause1 clause2 ...) for logical OR
+  - (not clause) for logical NOT
+
+SPECS is a plist of bike specifications as returned by `pc-extract-specs-from-table'.
+
+Returns t if the bike matches QUERY, nil otherwise.
+
+Raises an error for invalid query expressions.
+
+Designed to be called by `query-bikes' for end-users."
   (pcase query
     ;; Boolean operators
     (`(and . ,clauses)
@@ -152,12 +176,21 @@ If DESCENDING is non-nil, sort in descending order."
             (funcall op num value))))
     (_ (error "Invalid query: %S" query))))
 
-;; TODO Learn this
 (defun query-bikes (query &optional sort-tag descending)
-  "Return a list of (bike-name value url) matching QUERY.
-QUERY is a compound filter expression.
-SORT-TAG is a plist keyword to sort by.
-If DESCENDING is non-nil, sort high → low."
+  "Return a list of (bike-name sort-value url) matching QUERY.
+
+This function is not (yet) interactive, and is best called from `eshell' or `ielm'.
+
+QUERY is a compound filter expression supporting <, >, =, etc.
+
+SORT-TAG is a plist keyword (bike spec) to sort by (e.g., :max-power, :top-speed).
+SORT-VALUE is nil if SORT-TAG is not specified.
+
+Optionally, setting DESCENDING to non-nil sorts output high → low.
+
+See this project's README for example usage.
+
+See also `pc-eval-query' and `pc-extract-specs-from-table'."
   (let (results)
     (maphash
      (lambda (name specs)
@@ -179,7 +212,7 @@ If DESCENDING is non-nil, sort high → low."
                  (nth 1 a) (nth 1 b))))
       (nreverse results))))
 
-;; Old syntax
+;; Old syntax (kept for posterity)
 ;; Best Superbikes
 (query-bikes-by-tag :max-power '> 200) 
 
@@ -214,21 +247,25 @@ If DESCENDING is non-nil, sort high → low."
 (query-bikes-by-tag :annual-service-cost '<> 50)
 
 ;; New syntax
+;; Best fuel-efficient motorway-capable A1 bikes
 (query-bikes
  '(and
 	 (:average-fuel-consumption > 150)
 	 (:top-speed >= 60)))
 
-;; TODO:
+;; MVP TODO:
 ;; - DONE combine all three html tables into one plist (but parse them individually?)
 ;; - DONE save hash-table locally
 ;; - DONE make search function more advanced/modular (ability to combine predicates)
+
+;; Full version TODO:
+;; - make it *interactive*
 ;; - extract specs from table generically/modularly, search for any table element and process them
 ;; - add date as a field in plist
 ;; - add bike make/model as a field in plist
 ;; - add MCN star rating and owners reviews score
 ;; - add ability for partial matches on a search (name.contains("kawasaki"))
-;; - learn tree traversal
-;; - automate stealing data from Monday.com (for updates)
-;; - integrate with LLM (via n8n) to generate pages/newsletters/the lot
+;; - learn more tree traversal
+;; - automate importing data from Monday.com (for updates)
+;; - integrate with LLM (via n8n?) to generate pages/newsletters/the lot
 ;; - add page copy to plist? Worth doing a "body copy contains 'great' 'commuter'" filter?
