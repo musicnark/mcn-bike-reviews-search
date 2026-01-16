@@ -32,14 +32,22 @@
 		(insert html)
 		(libxml-parse-html-region (point-min) (point-max))))
 
+(defvar mcn/download-from-live-site nil
+  "If non-nil, fetch bike reviews from the live site.
+Otherwise, load the local cached hashmap.")
+
 ;; iterate over keys in the hash table:
 ;; Note: Initial load of all bike reviews uses ~1.3GB memory.
-(setq output
+(if mcn/download-from-live-site
+	(progn
+	  (setq output
 			(maphash
 			 (lambda (name url)
-				 (let ((page (parse-html (fetch-html url))))
-					 (puthash name page bike-review-table)))
-			 bike-review-urls))
+			   (let ((page (parse-html (fetch-html url))))
+				 (puthash name page bike-review-table)))
+			 bike-review-urls)))
+  (progn
+	(setq output (read "./bike-reviews-hashtable.el"))))
 
 (require 'cl-lib)
 
