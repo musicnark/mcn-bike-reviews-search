@@ -141,6 +141,7 @@ on MacOS and Debian/Ubuntu:
 ``` bash
 git clone https://github.com/musicnark/mcn-bike-reviews-search
 cd mcn-bike-reviews-search
+chmod +x ./install.sh
 ./install.sh
 ```
 
@@ -161,7 +162,10 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/el
 -   Optionally, you can byte compile the elisp files:
 
 ``` bash
-(Idk)
+	emacs --batch \
+		  -Q \
+		  -L ~/.emacs.d/elisp/mcn-bike-reviews-search \
+		  -f batch-byte-compile *.el
 ```
 
 -   In your init.el, add the lisp directory to your Emacs path:
@@ -184,13 +188,4 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/el
 (setq mcn/download-from-live-site t)
 ```
 
-Then, you can refer to [6](#*Usage) to get started.
-
-# <span class="todo TODO">TODO</span>  [section-1]
-
--   [x] fix jump-to links (convert from org to md?)
--   [-] fix documentation
-    -   [x] explain loading the file contents (just C-c C-e? Or wrap the code in an init function to make require work?)
-    -   [x] byte compile or no?
--   [x] finish install script
--   [ ] check web access method still works
+Then, you can refer to [Usage](#Usage) to get started.
