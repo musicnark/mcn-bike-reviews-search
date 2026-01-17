@@ -188,9 +188,8 @@ Then, you can refer to [6](#*Usage) to get started.
 
 # <span class="todo TODO">TODO</span>  [section-1]
 
--   ☐ fix jump-to links (convert from org to md?)
--   ☐ fix documentation
-    -   ☐ explain loading the file contents (just C-c C-e? Or wrap the
-        code in an init function to make require work?)
-    -   ☐ byte compile or no?
--   ☐ finish install script
+-   [x] fix jump-to links (convert from org to md?)
+-   [-] fix documentation
+    -   [ ] explain loading the file contents (just C-c C-e? Or wrap the code in an init function to make require work?)
+    -   [x] byte compile or no?
+-   [x] finish install script
