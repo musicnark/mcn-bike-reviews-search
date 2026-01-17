@@ -17,16 +17,28 @@ Otherwise, load the local cached hashmap.")
 	  (mapcar #'pc-csv-parse-line
 			  (split-string (buffer-string) "\n" t))))
 
-  (defun fetch-html (url)
-	(with-current-buffer (url-retrieve-synchronously url)
-	  (goto-char (point-min))
-	  (re-search-forward "review__facts-and-figures__table") ;; skip HTML body
-	  (buffer-substring-no-properties (point) (point-max))))
+(defun fetch-html (url)
+  "Fetch HTML from URL, or return nil on any failure."
+  (condition-case err
+      (let ((buf (url-retrieve-synchronously url)))
+        (when (bufferp buf)
+          (with-current-buffer buf
+            (goto-char (point-min))
+            (when (re-search-forward "review__facts-and-figures__table" nil t)
+              (buffer-substring-no-properties (point) (point-max))))))
+    (error
+     (message "Skipping URL %s: %s" url err)
+     nil)))
   
   (defun parse-html (html)
-	(with-temp-buffer
-	  (insert html)
-	  (libxml-parse-html-region (point-min) (point-max))))
+	(when html
+    (condition-case err
+        (with-temp-buffer
+          (insert html)
+          (libxml-parse-html-region (point-min) (point-max)))
+      (error
+       (message "Failed to parse HTML: %s" err)
+       nil))))
 
   (defun pc-insert-hash-table (csv-line)
 	(let ((name (nth 0 csv-line))
@@ -198,23 +210,23 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
   ;; Note: Initial load of all bike reviews uses ~1.3GB memory.
   (if mcn/download-from-live-site
 	  (progn
-		(setq output
-			  (maphash
-			 (lambda (name url)
-			   (let ((page (parse-html (fetch-html url))))
-				 (puthash name page bike-review-table)))
-			 bike-review-urls)
-  ;; concatenate the three specs tables from the web page
-  (maphash
-   (lambda (k v)
-	 (puthash k
-			  (append
-			   (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) ;; spec table 1
-			   (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) ;; spec table 2
-			   (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table)))))) ;; spec table 3
-			  ;; // add more searchable fields here //
-			  bike-review-hashmap))
-   bike-review-table)))
+		(maphash
+		 (lambda (name url)
+		   (let ((page (parse-html (fetch-html url))))
+			 (when page
+			   (puthash name page bike-review-table))))
+		 bike-review-urls)
+		;; concatenate the three specs tables from the web page
+		(maphash
+		 (lambda (k v)
+		   (puthash k
+					(append
+					 (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) ;; spec table 1
+					 (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) ;; spec table 2
+					 (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table)))))) ;; spec table 3
+					;; // add more searchable fields here //
+					bike-review-hashmap))
+		 bike-review-table))
 	(progn
 	  (setq bike-review-hashmap
 			(with-temp-buffer
