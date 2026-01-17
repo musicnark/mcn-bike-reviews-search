@@ -21,7 +21,7 @@ cd mcn-bike-reviews-search" &&
 		  -f batch-byte-compile *.el >/dev/null 2>&1 ||
 		echo "Warning: byte-compilation failed, continuing."
 	echo ";; Automatic configuration from mcn-bike-reviews-search install
-(add-to-list 'load-path (expand-file-name \"lisp\" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name \"lisp/mcn-bike-reviews-search\" user-emacs-directory))
 (require 'bike-reviews)" >> ~/.emacs.d/init.el
 	# provide instruction how to run it
 	echo -e "\n

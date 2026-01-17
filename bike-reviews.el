@@ -1,58 +1,40 @@
-(defun pc-csv-parse-line (line)
-	(split-string line "," t))
+  (require 'cl-lib)
 
-(defun pc-csv-parse-file (file)
-	(with-temp-buffer
-		(insert-file-contents file)
-		(mapcar #'pc-csv-parse-line
-						(split-string (buffer-string) "\n" t))))
-
-;; convert CSV to hash table
-(setq br (pc-csv-parse-file "./Bike_Reviews.csv"))
-
-(defun pc-insert-hash-table (csv-line)
-	(let ((name (nth 0 csv-line))
-				(url (nth 1 csv-line)))
-		(puthash name url bike-review-urls)))
-
-(setq bike-review-urls (make-hash-table :test 'equal))
-
-(mapcar #'pc-insert-hash-table br)
-
-(setq bike-review-table (make-hash-table :test 'equal))
-
-(defun fetch-html (url)
-	(with-current-buffer (url-retrieve-synchronously url)
-		(goto-char (point-min))
-		(re-search-forward "review__facts-and-figures__table") ;; skip HTML body
-		(buffer-substring-no-properties (point) (point-max))))
-
-(defun parse-html (html)
-	(with-temp-buffer
-		(insert html)
-		(libxml-parse-html-region (point-min) (point-max))))
-
-(defvar mcn/download-from-live-site nil
-  "If non-nil, fetch bike reviews from the live site.
+  (defvar mcn/download-from-live-site nil
+	"If non-nil, fetch bike reviews from the live site.
 Otherwise, load the local cached hashmap.")
 
-;; iterate over keys in the hash table:
-;; Note: Initial load of all bike reviews uses ~1.3GB memory.
-(if mcn/download-from-live-site
-	(progn
-	  (setq output
-			(maphash
-			 (lambda (name url)
-			   (let ((page (parse-html (fetch-html url))))
-				 (puthash name page bike-review-table)))
-			 bike-review-urls)))
-  (progn
-	(setq output (read "./bike-reviews-hashtable.el"))))
+  (setq bike-review-urls (make-hash-table :test 'equal))
+  (setq bike-review-table (make-hash-table :test 'equal))
+  (setq bike-review-hashmap (make-hash-table :test 'equal))
 
-(require 'cl-lib)
+  (defun pc-csv-parse-line (line)
+	(split-string line "," t))
+  
+  (defun pc-csv-parse-file (file)
+	(with-temp-buffer
+	  (insert-file-contents file)
+	  (mapcar #'pc-csv-parse-line
+			  (split-string (buffer-string) "\n" t))))
 
-(defun pc-extract-specs-from-table (table-node)
-  "Extract bike specifications from a HTML <table> DOM node.
+  (defun fetch-html (url)
+	(with-current-buffer (url-retrieve-synchronously url)
+	  (goto-char (point-min))
+	  (re-search-forward "review__facts-and-figures__table") ;; skip HTML body
+	  (buffer-substring-no-properties (point) (point-max))))
+  
+  (defun parse-html (html)
+	(with-temp-buffer
+	  (insert html)
+	  (libxml-parse-html-region (point-min) (point-max))))
+
+  (defun pc-insert-hash-table (csv-line)
+	(let ((name (nth 0 csv-line))
+		  (url (nth 1 csv-line)))
+	  (puthash name url bike-review-urls)))
+
+  (defun pc-extract-specs-from-table (table-node)
+	"Extract bike specifications from a HTML <table> DOM node.
 
 TABLE-NODE should be a parsed <table> node as returned by `libxml-parse-html-region'.
 Returns a property list (plist) where each key is a keyword version of the spec label
@@ -65,57 +47,42 @@ Raises an error if TABLE-NODE is not a <table> node or if no <tbody> is found.
 
 See also `query-bikes' and `pc-eval-query'."
 	(unless (and (listp table-node) (eq (car table-node) 'table))
-		(error "Expected a <table> DOM node"))
-
+	  (error "Expected a <table> DOM node"))
+	
 	;; find the <tbody> node inside the table
 	(let ((tbody (cl-find-if (lambda (n)
-														 (and (listp n) (eq (car n) 'tbody)))
-													 (cddr table-node))))
-		(unless tbody
-			(error "No <tbody> found in table"))
-
-		(let ((specs '()))
-			;; helper to extract (label . value) from <tr>
-			(cl-labels ((extract-tr (tr-node)
-										(when (and (listp tr-node) (eq (car tr-node) 'tr))
-											(let* ((children (cddr tr-node))
-														 (th-node (cl-find-if (lambda (n)
-																										(and (listp n) (eq (car n) 'th)))
-																									children))
-														 (td-node (cl-find-if (lambda (n)
-																										(and (listp n) (eq (car n) 'td)))
-																									children))
-														 (label (when th-node (car (last th-node))))
-														 (value (when td-node
-																			;; flatten strings in <td>, ignore nested tags
-																			(mapconcat (lambda (x) (if (stringp x) x "")) (cdr td-node) ""))))
-												(when (and label value)
-													(cons label (string-trim value)))))))
-
-				;; iterate over all <tr> nodes in <tbody>
-				(dolist (child (cddr tbody))
-					(let ((kv (extract-tr child)))
-						(when kv
-							;; convert label to keyword symbol
-							(setq specs (plist-put specs
-																		 (intern (concat ":" (replace-regexp-in-string " " "-" (downcase (car kv)))))
-																		 (cdr kv)))))))
-			specs)))
-
-(setq bike-review-hashmap (make-hash-table :test 'equal))
-
-;; concatenate the three specs tables from the web page
-(maphash
- (lambda (k v)
-	 (puthash k
-						(append
-						 (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) ;; spec table 1
-						 (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) ;; spec table 2
-						 (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table)))))) ;; spec table 3
-						;; // add more searchable fields here //
-						bike-review-hashmap))
- bike-review-table)
-(require 'cl-lib)
+							   (and (listp n) (eq (car n) 'tbody)))
+							 (cddr table-node))))
+	  (unless tbody
+		(error "No <tbody> found in table"))
+	  
+	  (let ((specs '()))
+		;; helper to extract (label . value) from <tr>
+		(cl-labels ((extract-tr (tr-node)
+					  (when (and (listp tr-node) (eq (car tr-node) 'tr))
+						(let* ((children (cddr tr-node))
+							   (th-node (cl-find-if (lambda (n)
+													  (and (listp n) (eq (car n) 'th)))
+													children))
+							   (td-node (cl-find-if (lambda (n)
+													  (and (listp n) (eq (car n) 'td)))
+													children))
+							   (label (when th-node (car (last th-node))))
+							   (value (when td-node
+										;; flatten strings in <td>, ignore nested tags
+										(mapconcat (lambda (x) (if (stringp x) x "")) (cdr td-node) ""))))
+						  (when (and label value)
+							(cons label (string-trim value)))))))
+		  
+		  ;; iterate over all <tr> nodes in <tbody>
+		  (dolist (child (cddr tbody))
+			(let ((kv (extract-tr child)))
+			  (when kv
+				;; convert label to keyword symbol
+				(setq specs (plist-put specs
+									   (intern (concat ":" (replace-regexp-in-string " " "-" (downcase (car kv)))))
+									   (cdr kv)))))))
+		specs)))
 
 (defun query-bikes-by-tag (tag op value &optional descending)
   "NOTICE: This function is now depricated, only kept for posterity's sake.
@@ -220,46 +187,39 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
                  (nth 1 a) (nth 1 b))))
       (nreverse results))))
 
-;; Old syntax (kept for posterity)
-;; Best Superbikes
-(query-bikes-by-tag :max-power '> 200) 
-
-;; MCN's Favourite A2 Bikes
-(query-bikes-by-tag :max-power '< 47) 
-
-;; Best Mile-Munching Tourers
-(query-bikes-by-tag :tank-range '> 240) 
-
-;; Best Bikes for Speed-Demons
-(query-bikes-by-tag :top-speed '> 160) 
-
-;; MCN's Favourite 750cc Bikes
-(query-bikes-by-tag :engine-size '= 750) 
-
-;; Best Bikes for Shorter Riders
-(query-bikes-by-tag :seat-height '< 800) 
-
-;; Best Lightweight Bikes
-(query-bikes-by-tag :bike-weight '< 150) 
-
-;; most fuel efficient bikes
-(query-bikes-by-tag :average-fuel-consumption '> 100)
-
-;; best new bikes under £5000
-(query-bikes-by-tag :new-price '<> 5000)
-
-;; best used bikes under £2000
-(query-bikes-by-tag :used-price '<> 2000)
-
-;; ??
-(query-bikes-by-tag :annual-service-cost '<> 50)
-
-;; New syntax
-;; Best fuel-efficient motorway-capable A1 bikes
-(query-bikes
- '(and
-	 (:average-fuel-consumption > 150)
-	 (:top-speed >= 60)))
+  (defun bike-search-initialise ()
+  (interactive)
+  ;; convert CSV to hash table
+  (setq br (pc-csv-parse-file "~/.emacs.d/lisp/mcn-bike-reviews-search/Bike_Reviews.csv"))
+  
+  (mapcar #'pc-insert-hash-table br)
+  
+  ;; iterate over keys in the hash table:
+  ;; Note: Initial load of all bike reviews uses ~1.3GB memory.
+  (if mcn/download-from-live-site
+	  (progn
+		(setq output
+			  (maphash
+			 (lambda (name url)
+			   (let ((page (parse-html (fetch-html url))))
+				 (puthash name page bike-review-table)))
+			 bike-review-urls)
+  ;; concatenate the three specs tables from the web page
+  (maphash
+   (lambda (k v)
+	 (puthash k
+			  (append
+			   (pc-extract-specs-from-table (nth 3 (nth 2 (gethash k bike-review-table)))) ;; spec table 1
+			   (pc-extract-specs-from-table (nth 3 (nth 4 (nth 2 (gethash k bike-review-table))))) ;; spec table 2
+			   (pc-extract-specs-from-table (nth 3 (nth 8 (nth 2 (gethash k bike-review-table)))))) ;; spec table 3
+			  ;; // add more searchable fields here //
+			  bike-review-hashmap))
+   bike-review-table)))
+	(progn
+	  (setq bike-review-hashmap
+			(with-temp-buffer
+			  (insert-file-contents-literally "~/.emacs.d/lisp/mcn-bike-reviews-search/bike-reviews-hashtable.el")
+			  (read (current-buffer)))))))
 
 ;; MVP TODO:
 ;; - DONE combine all three html tables into one plist (but parse them individually?)
@@ -277,3 +237,4 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
 ;; - automate importing data from Monday.com (for updates)
 ;; - integrate with LLM (via n8n?) to generate pages/newsletters/the lot
 ;; - add page copy to plist? Worth doing a "body copy contains 'great' 'commuter'" filter?
+(provide 'bike-reviews)

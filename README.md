@@ -167,7 +167,7 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/el
 -   In your init.el, add the lisp directory to your Emacs path:
 
 ``` elisp
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp/mcn-bike-reviews-search" user-emacs-directory))
 ```
 
 -   When you want to use the package, load it in (it takes about 3
@@ -190,6 +190,7 @@ Then, you can refer to [6](#*Usage) to get started.
 
 -   [x] fix jump-to links (convert from org to md?)
 -   [-] fix documentation
-    -   [ ] explain loading the file contents (just C-c C-e? Or wrap the code in an init function to make require work?)
+    -   [x] explain loading the file contents (just C-c C-e? Or wrap the code in an init function to make require work?)
     -   [x] byte compile or no?
 -   [x] finish install script
+-   [ ] check web access method still works
