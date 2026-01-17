@@ -2,10 +2,38 @@
 # User-space installation for MCN Bike Reviews Search Tool.
 
 install_mcn_bike_reviews_search() {
-	# check if we're in the right directory
-	# extract files to/check that .emacs.d/elisp/ exists
+	# check if running in the project directory
+	pwd | grep "mcn-bike-reviews-search" || {
+		echo "Please run this script from the project root, run:
+cd mcn-bike-reviews-search" &&
+			return 1
+		}
+
+	# extract program files to .emacs.d/lisp/
+	mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
+		cp *.el *.csv ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
+		cd ~/.emacs.d/lisp/mcn-bike-reviews-search/
+
+	# (optional) byte compile program files for faster loading time
+	emacs --batch \
+		  -Q \
+		  -L ~/.emacs.d/elisp/mcn-bike-reviews-search \
+		  -f batch-byte-compile *.el >/dev/null 2>&1 ||
+		echo "Warning: byte-compilation failed, continuing."
+	echo ";; Automatic configuration from mcn-bike-reviews-search install
+(add-to-list 'load-path (expand-file-name \"lisp\" user-emacs-directory))
+(require 'bike-reviews)" >> ~/.emacs.d/init.el
 	# provide instruction how to run it
-	echo "Test~"
+	echo -e "\n
+Install successful.
+You can now launch emacs, and load this tool via:
+
+M-x bike-search-initialise
+
+See the README for usage.
+
+(HINT: M-x means 'Alt + x', or 'Cmd + x'. If you're new to Emacs, you can click the tutorial on the home page to learn the basics.)
+"
 }
 
 install_emacs_macos() {

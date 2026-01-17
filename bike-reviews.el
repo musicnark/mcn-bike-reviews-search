@@ -59,7 +59,7 @@ Returns a property list (plist) where each key is a keyword version of the spec 
 and each value is the corresponding table cell content as a string.
 
 Example:
-  (:engine-size \"125cc\" :seat-height \"765mm\" ...)
+  (:engine-size \"125\" :seat-height \"765\" ...)
 
 Raises an error if TABLE-NODE is not a <table> node or if no <tbody> is found.
 
