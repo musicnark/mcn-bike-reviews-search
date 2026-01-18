@@ -28,3 +28,12 @@ You can also use this tool to help with for inspiration for content ideas, as pl
 	 (:average-fuel-consumption > 150)
 	 (:top-speed >= 60)))
 ```
+
+There are many specs that go under-represented across our content that can be used to search too:
+
+```elisp
+(query-bikes
+ '(and
+	 (:average-fuel-consumption > 150)
+	 (:top-speed >= 60)))
+```

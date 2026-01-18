@@ -246,5 +246,6 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
 ;; - learn more tree traversal
 ;; - automate importing data from Monday.com (for updates)
 ;; - integrate with LLM (via n8n?) to generate pages/newsletters/the lot
-;; - add page copy to plist? Worth doing a "body copy contains 'great' 'commuter'" filter?
+;; - add page copy to plist?
+;; - add a "string-contains-p" filter, to filter custom string fields "'great' 'commuter' 'trellis' 'Brembo'"
 (provide 'bike-reviews)
