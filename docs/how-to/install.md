@@ -1,5 +1,4 @@
-# Install
-
+# Recommended Install
 The recommended install method is via the supplied \`[install script](../../install.sh)`\, which automates install for this tool and Emacs on MacOS, Debian, and Ubuntu:
 
 ``` bash
@@ -14,8 +13,7 @@ Then, you can get started with some [basic usage](./basic-usage.md).
 
 If you're unfamiliar with Emacs, now's a good time to [familiarise yourself with the basics](https://www.gnu.org/software/emacs/tour/) before continuing.
 
----
-
+# Manual Install
 If installing manually, open a terminal and follow the below instructions:
 
 -   Clone the repo:
