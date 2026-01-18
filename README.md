@@ -23,7 +23,7 @@ example usage.
 
 For reference-style documentation, see:
 
--   \`query-bikes\` – Filter and sort bike reviews programmatically. Its
+-   \`[query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its
     docstring contains all parameters and return format.
 -   \`pc-extract-specs-from-table\` – Extracts bike specs from HTML
     tables into a structured property list (plist).
