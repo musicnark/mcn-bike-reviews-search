@@ -31,9 +31,19 @@ Spec    Unit of Measurement (if filterable)
 
 `TBC` denotes a spec that can't yet be filtered by.
 
-# Combinations
+# Operators & Combinators
+Numerical comparison operators are supported:
+
+`<` - less than
+`>` - greater than
+`=` - equal to
+
+`<=` - less than or equal to
+`>=` - greater than or equal to
+
+Queries can be combined with three combinators:
+
+`and` - all filters must return true
+`or` - at least one filter must return true
+`not` - returns the inverse
 Each spec can be filtered by 
-
-
-# Explanation
-dssad

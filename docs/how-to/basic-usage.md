@@ -2,6 +2,10 @@
 This program is not (yet) interactive, and is designed to be called from within Emacs' terminal environments, namely `M-x eshell` or `M-x ielm`.
 
 # Queries
+See [Query Language](../reference/query-language.md) to reference:
+- a list of [bike specs](../reference/query-language.md#bike-specs) each bike can be filtered by
+- the supported [operators and combinators](../reference/query-language.md#operators--combinators)
+
 The basic syntax of a query looks like this:
 
 ```elisp
