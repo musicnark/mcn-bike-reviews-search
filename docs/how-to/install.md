@@ -8,7 +8,7 @@ cd mcn-bike-reviews-search
 chmod +x install.sh
 ./install.sh
 ```
-Once installed, launch or restart Emacs and run `M-x mcn/bike-search-initialise`
+Once installed, launch or restart Emacs and run `M-x mcn/bike-search-initialise` to load the data in.
 
 Then, you can get started with some [basic usage](./basic-usage.md).
 
