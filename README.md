@@ -9,88 +9,48 @@
 
 # TL;DR
 
--   **Purpose:** Enable faster search of MCN's bike reviews, filtering
-    by bike specs, to accelerate content ideation.
--   **Tech:** Elisp, CSV parse, URL fetch, DOM node tree traversal,
-    hashmap storage, query language/DSL.
--   **Impact:** Reduced manual review, improved content discovery,
-    scalable for editorial teams.
+-   **Purpose:** Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
+-   **Tech:** Elisp, CSV parse, URL fetch, DOM node tree traversal, hashmap storage, query language/DSL.
+-   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
 
 # See Also
 
-See this README for high-level workflow and business context, and
-example usage.
+See this README for high-level workflow and business context, and example usage.
 
 For reference-style documentation, see:
 
--   \`[query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its
-    docstring contains all parameters and return format.
--   \`pc-extract-specs-from-table\` – Extracts bike specs from HTML
-    tables into a structured property list (plist).
+-   \`[query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
+-   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 
-These functions form the core of the tool’s programmatic API.
+These functions form the core of the tool's functionality.
 
 # Motivations & Background Info
 
-This is a workflow automation tool I have made while working as a
-Commercial Content Writer at [Motorcycle
-News](https://www.motorcyclenews.com/bike-reviews/). During a meeting,
-one of my colleagues mentioned in passing:
+This is a workflow automation tool I have made while working as a Commercial Content Writer at [Motorcycle News](https://www.motorcyclenews.com/bike-reviews/). During a meeting, one of my colleagues mentioned in passing:
 
-> "Wouldn't it be great to be able to search and filter bike reviews by
-> their specs? That would make content ideation so much quicker!"
+> "Wouldn't it be great to be able to search and filter bike reviews by their specs? That would make content ideation so much quicker!"
 
-At the time, it was left as "one to sleep on". Nobody on the team had
-enough programming ability to make it a reality, and the business was
-notoriously slow with implementing suggested features. As with most
-other workflow automation ideas, it was left to gather dust in the
-wish-list.
+At the time, it was left as "one to sleep on". Nobody on the team had enough programming ability to make it a reality, and the business was notoriously slow with implementing suggested features. As with most other workflow automation ideas, it was left to gather dust in the wish-list.
 
-But, instead of sleeping on it, I took it upon myself to build it. This
-is a MVP used to pitch a full version to the business.
+But, instead of sleeping on it, I took it upon myself to build it. This is a MVP used to pitch a full version to the business.
 
 # The Business Pitch
 
-The Bike Reviews section is one of MCN’s highest-value digital assets,
-driving significant evergreen traffic and long-tail search demand, yet
-editorial teams still spend a significant amount of time manually
-searching bike reviews for the purpose of content creation. As each bike
-review already has a number of specs associated with them, being able to
-search and filter by spec would speed up the content creation process
-for a number of different types of content across the Bike Reviews
-section.
+The Bike Reviews section is one of MCN’s highest-value digital assets, driving significant evergreen traffic and long-tail search demand, yet editorial teams still spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search and filter by spec would speed up the content creation process for a number of different types of content across the Bike Reviews section.
 
-This tool enables that — fast, data-driven filtering of [MCN's Bike
-Reviews section](https://www.motorcyclenews.com/bike-reviews/) by any
-spec in the review (fuel economy, horsepower, yearly service cost, etc).
-It lets writers and editors instantly generate targeted content ideas by
-programmatically finding all bikes that meet a certain condition.
+This tool enables that — fast, data-driven filtering of [MCN's Bike Reviews section](https://www.motorcyclenews.com/bike-reviews/) by any spec in the review (fuel economy, horsepower, yearly service cost, etc). It lets writers and editors instantly generate targeted content ideas by programmatically finding all bikes that meet a certain condition. 
 
 Some example uses include finding:
 
 -   Bikes exceeding 100mpg → “Best fuel-sippers” page
--   Bikes with seat height under 800mm → “Best bikes for shorter riders”
-    page
--   Bikes between 15–47bhp and with an MCN score of 4/5 or higher →
-    “Best A2 bikes” page
+-   Bikes with seat height under 800mm → “Best bikes for shorter riders” page
+-   Bikes between 15–47bhp and with an MCN score of 4/5 or higher → “Best A2 bikes” page
 
-With small additions, the tool could also search for any data in the
-bike review page — collating owners reviews, processing review copy for
-relevant phrases ("great commuter", "solid engine", "full of character",
-etc). It could also form the basis of a more general-use application
-that publications across the business would benefit from.
+With small additions, the tool could also search for any data in the bike review page — collating owners reviews, processing review copy for relevant phrases ("great commuter", "solid engine", "full of character", etc). It could also form the basis of a more general-use application that publications across the business would benefit from.
 
-We also see strong potential for an integration with a LLM (ChatGPT,
-Gemini, etc). By combining an AI agent with this consistent searching
-and filtering capability, it can generate consistent bike selections,
-and produce a first-draft for multiple types of content in seconds. This
-would accelerate content creation even further, while ensuring bike
-choice isn't subject to a LLM's tendency for hallucination or
-short-cutting.
+We also see strong potential for an integration with a LLM (ChatGPT, Gemini, etc). By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination or short-cutting.
 
-The current implementation is written in Elisp, chosen for fast
-prototyping within my existing workflow. The underlying logic is
-portable to any general-purpose programming language.
+The current implementation is written in Elisp, chosen for fast prototyping within my existing workflow. The underlying logic is portable to any general-purpose programming language.
 
 # Usage
 
@@ -127,16 +87,11 @@ looks like this:
 ;;    ...
 ```
 
-For the whole bike reviews section (on my M1 Macbook Air work laptop),
-the initial process takes about three minutes. Once bike reviews are
-stored in memory, new entries can be added quickly. It takes advantage
-of a hashmap's fast lookup times, at the cost of about 1.3gb of memory
-usage.
+For the whole bike reviews section (on my M1 Macbook Air work laptop), the initial process takes about three minutes. Once bike reviews are stored in memory, new entries can be added quickly. It takes advantage of a hashmap's fast lookup times, at the cost of about 1.3gb of memory usage.
 
 # Install
 
-The supplied install script automates install for this tool plus Emacs
-on MacOS and Debian/Ubuntu:
+The supplied install script automates install for this tool plus Emacs on MacOS and Debian/Ubuntu:
 
 ``` bash
 git clone https://github.com/musicnark/mcn-bike-reviews-search
@@ -159,7 +114,7 @@ git clone https://github.com/musicnark/mcn-bike-reviews-search
 mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/elisp/mcn-bike-reviews-search/
 ```
 
--   Optionally, you can byte compile the elisp files:
+-   Optionally, you can byte compile the elisp files for quicker loading:
 
 ``` bash
 	emacs --batch \
@@ -174,8 +129,7 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/el
 (add-to-list 'load-path (expand-file-name "lisp/mcn-bike-reviews-search" user-emacs-directory))
 ```
 
--   When you want to use the package, load it in (it takes about 3
-    minutes to load it all):
+-   When you want to use the package, load it in (it takes about 3 minutes to load it all):
 
 ``` elisp
 (require 'bike-reviews)
