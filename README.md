@@ -1,9 +1,9 @@
 # Jump to:
 
 -   [TL;DR](#TL;DR)
--   [See Also](#See Also)
--   [Motivations & Background Info](#Motivations & Background Info)
--   [The Business Pitch](#The Business Pitch)
+-   [See Also](#See-Also)
+-   [Motivations & Background Info](#Motivations--Background-Info)
+-   [The Business Pitch](#The-Business-Pitch)
 -   [Usage](#Usage)
 -   [Install](#Install)
 
@@ -97,11 +97,11 @@ portable to any general-purpose programming language.
 This tool works by:
 
 1.  **Importing a CSV** of all bike reviews
-2.  Individually **accessing web pages** for each bike review from the
-    live site
+2.  Individually **accessing web pages** for each bike review from the live site
 3.  **Extracting the spec tables**
-4.  **Storing each bike’s specs in a hashmap** keyed by bike name, with
-    a structured property list of all attributes.
+4.  **Storing each bike’s specs in a hashmap** keyed by bike name, with a structured property list of all attributes.
+
+This program is not (yet) interactive, and is best called from `eshell' or `ielm'.
 
 The hashmap returned looks like this:
 
