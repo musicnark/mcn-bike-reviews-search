@@ -15,11 +15,11 @@
 
 # See Also
 
-See this README for high-level workflow and business context, and example usage.
+See this README for the high-level workflow and business context, and example usage.
 
 For reference-style documentation, see:
 
--   \`[query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
+-   \`[mcn/query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
 -   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 
 These functions form the core of the tool's functionality.
@@ -61,7 +61,7 @@ This tool works by:
 3.  **Extracting the spec tables**
 4.  **Storing each bike’s specs in a hashmap** keyed by bike name, with a structured property list of all attributes.
 
-This program is not (yet) interactive, and is best called from `eshell' or `ielm'.
+This program is not (yet) interactive, and is best called from within `eshell` or `ielm`.
 
 The hashmap returned looks like this:
 
@@ -77,7 +77,7 @@ So an example query to find:
 looks like this:
 
 ``` elisp
-(query-bikes
+(mcn/query-bikes
  '(and
      (:used-price < 2500)
      (:seat-height < 800)
@@ -96,7 +96,7 @@ The supplied install script automates install for this tool plus Emacs on MacOS 
 ``` bash
 git clone https://github.com/musicnark/mcn-bike-reviews-search
 cd mcn-bike-reviews-search
-chmod +x ./install.sh
+chmod +x install.sh
 ./install.sh
 ```
 
@@ -108,7 +108,7 @@ If installing manually:
 git clone https://github.com/musicnark/mcn-bike-reviews-search
 ```
 
--   Move the elisp files to your local emacs elisp executable directory:
+-   Copy the elisp files and CSV to your Emacs config folder:
 
 ``` bash
 mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/elisp/mcn-bike-reviews-search/
@@ -117,10 +117,10 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/el
 -   Optionally, you can byte compile the elisp files for quicker loading:
 
 ``` bash
-	emacs --batch \
-		  -Q \
-		  -L ~/.emacs.d/elisp/mcn-bike-reviews-search \
-		  -f batch-byte-compile *.el
+emacs --batch \
+	-Q \
+	-L ~/.emacs.d/elisp/mcn-bike-reviews-search \
+	-f batch-byte-compile *.el
 ```
 
 -   In your init.el, add the lisp directory to your Emacs path:
@@ -129,14 +129,14 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/el
 (add-to-list 'load-path (expand-file-name "lisp/mcn-bike-reviews-search" user-emacs-directory))
 ```
 
--   When you want to use the package, load it in (it takes about 3 minutes to load it all):
+-   When you want to use this package, run `eshell` or `ielm` from Emacs and load it in:
 
 ``` elisp
-(require 'bike-reviews)
+(mcn/bike-search-initialise)
 ```
 
 -   By default, it will load a local version of the bikes hashmap. If
-    you want to try the download behaviour:
+    you want to try the download behaviour, set it with this variable:
 
 ``` elisp
 (setq mcn/download-from-live-site t)

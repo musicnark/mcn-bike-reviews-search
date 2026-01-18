@@ -57,7 +57,7 @@ Example:
 
 Raises an error if TABLE-NODE is not a <table> node or if no <tbody> is found.
 
-See also `query-bikes' and `pc-eval-query'."
+See also `mcn/query-bikes' and `pc-eval-query'."
 	(unless (and (listp table-node) (eq (car table-node) 'table))
 	  (error "Expected a <table> DOM node"))
 	
@@ -144,7 +144,7 @@ Returns t if the bike matches QUERY, nil otherwise.
 
 Raises an error for invalid query expressions.
 
-Designed to be called by `query-bikes' for end-users."
+Designed to be called by `mcn/query-bikes' for end-users."
   (pcase query
     ;; Boolean operators
     (`(and . ,clauses)
@@ -163,10 +163,8 @@ Designed to be called by `query-bikes' for end-users."
             (funcall op num value))))
     (_ (error "Invalid query: %S" query))))
 
-(defun query-bikes (query &optional sort-tag descending)
+(defun mcn/query-bikes (query &optional sort-tag descending)
   "Return a list of (bike-name sort-value url) matching QUERY.
-
-This function is not (yet) interactive, and is best called from `eshell' or `ielm'.
 
 QUERY is a compound filter expression supporting <, >, =, etc.
 
@@ -199,7 +197,7 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
                  (nth 1 a) (nth 1 b))))
       (nreverse results))))
 
-  (defun bike-search-initialise ()
+  (defun mcn/bike-search-initialise ()
   (interactive)
   ;; convert CSV to hash table
   (setq br (pc-csv-parse-file "~/.emacs.d/lisp/mcn-bike-reviews-search/Bike_Reviews.csv"))
