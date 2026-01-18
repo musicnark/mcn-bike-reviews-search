@@ -76,7 +76,7 @@ So an example query to find:
 
 looks like this:
 
-``` elisp
+```elisp
 (mcn/query-bikes
  '(and
      (:used-price < 2500)
