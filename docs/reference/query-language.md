@@ -54,3 +54,9 @@ Queries can be combined with three combinators:
 `or` - at least one filter must return true
 `not` - returns the inverse
 Each spec can be filtered by 
+
+# Expected Errors
+The errors expected by the program are as follows:
+- fetching a URL may return 'nil' if it encounters any error (e.g., no internet connection), but that page will be skipped and the process will continue
+- parsing the page contents will return 'nil' if the sub-page was not found, but that page will be skipped and the process will continue
+- when extracting specs from the HTML <table> node, the function will raise an error if it's not given a HTML <table> node, or if no <tbody> tag is found within it.
