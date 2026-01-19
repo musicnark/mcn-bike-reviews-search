@@ -1,31 +1,33 @@
-# Jump to:
-
+# Jump To:
 -   [TL;DR](#TL;DR)
 -   [See Also](#See-Also)
 -   [Motivations & Background Info](#Motivations--Background-Info)
 -   [The Business Pitch](#The-Business-Pitch)
--   [Usage](#Usage)
--   [Install](#Install)
 
 # TL;DR
-
 -   **Purpose:** Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
 -   **Tech:** Elisp, CSV parse, URL fetch, DOM node tree traversal, hashmap storage, query language/DSL.
 -   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
 
 # See Also
+This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
 
-See this README for the high-level workflow and business context, and example usage.
+See this README for the high-level workflow and business context.
 
-For reference-style documentation, see:
+To get started using the tool, see [install](./how-to/install.md).
 
+For example queries, see [basic usage](./how-to/basic-usage.md)
+
+For reference while using the tool, see [query language](./reference/query-language.md).
+
+For an understanding of how and why this was made, see [problem space](./concepts/problem-space.md), [design decisions](./concepts/design-decisions.md), and [constraints](./concepts/constraints.md).
+
+For developer reference documentation, see:
 -   \`[mcn/query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
 -   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 
-These functions form the core of the tool's functionality.
 
 # Motivations & Background Info
-
 This is a workflow automation tool I have made while working as a Commercial Content Writer at [Motorcycle News](https://www.motorcyclenews.com/bike-reviews/). During a meeting, one of my colleagues mentioned in passing:
 
 > "Wouldn't it be great to be able to search and filter bike reviews by their specs? That would make content ideation so much quicker!"
@@ -35,7 +37,6 @@ At the time, it was left as "one to sleep on". Nobody on the team had enough pro
 But, instead of sleeping on it, I took it upon myself to build it. This is a MVP used to pitch a full version to the business.
 
 # The Business Pitch
-
 The Bike Reviews section is one of MCN’s highest-value digital assets, driving significant evergreen traffic and long-tail search demand, yet editorial teams still spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search and filter by spec would speed up the content creation process for a number of different types of content across the Bike Reviews section.
 
 This tool enables that — fast, data-driven filtering of [MCN's Bike Reviews section](https://www.motorcyclenews.com/bike-reviews/) by any spec in the review (fuel economy, horsepower, yearly service cost, etc). It lets writers and editors instantly generate targeted content ideas by programmatically finding all bikes that meet a certain condition. 
@@ -51,95 +52,3 @@ With small additions, the tool could also search for any data in the bike review
 We also see strong potential for an integration with a LLM (ChatGPT, Gemini, etc). By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination or short-cutting.
 
 The current implementation is written in Elisp, chosen for fast prototyping within my existing workflow. The underlying logic is portable to any general-purpose programming language.
-
-# Usage
-
-This tool works by:
-
-1.  **Importing a CSV** of all bike reviews
-2.  Individually **accessing web pages** for each bike review from the live site
-3.  **Extracting the spec tables**
-4.  **Storing each bike’s specs in a hashmap** keyed by bike name, with a structured property list of all attributes.
-
-This program is not (yet) interactive, and is best called from within `eshell` or `ielm`.
-
-The hashmap returned looks like this:
-
-``` elisp
-(gethash "honda msx125-grom 2014" bike-review-hashmap)
-;; => (:engine-size "125cc" :engine-type "Air-cooled..." :seat-height "765mm" ...)
-```
-
-So an example query to find:
-
-> "best budget A2 bikes for shorter riders"
-
-looks like this:
-
-``` elisp
-(mcn/query-bikes
- '(and
-     (:used-price < 2500)
-     (:seat-height < 800)
-     (:max-power > 15)
-     (:max-power < 47)))
-;; => ("2024-on CF-moto 450NK" ... "https://www.motorcyclenews.com/bike-reviews/...")
-;;    ...
-```
-
-For the whole bike reviews section (on my M1 Macbook Air work laptop), the initial process takes about three minutes. Once bike reviews are stored in memory, new entries can be added quickly. It takes advantage of a hashmap's fast lookup times, at the cost of about 1.3gb of memory usage.
-
-# Install
-
-The supplied install script automates install for this tool plus Emacs on MacOS and Debian/Ubuntu:
-
-``` bash
-git clone https://github.com/musicnark/mcn-bike-reviews-search
-cd mcn-bike-reviews-search
-chmod +x install.sh
-./install.sh
-```
-
-If installing manually:
-
--   Clone the repo:
-
-``` bash
-git clone https://github.com/musicnark/mcn-bike-reviews-search
-```
-
--   Copy the elisp files and CSV to your Emacs config folder:
-
-``` bash
-mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/elisp/mcn-bike-reviews-search/
-```
-
--   Optionally, you can byte compile the elisp files for quicker loading:
-
-``` bash
-emacs --batch \
-	-Q \
-	-L ~/.emacs.d/elisp/mcn-bike-reviews-search \
-	-f batch-byte-compile *.el
-```
-
--   In your init.el, add the lisp directory to your Emacs path:
-
-``` elisp
-(add-to-list 'load-path (expand-file-name "lisp/mcn-bike-reviews-search" user-emacs-directory))
-```
-
--   When you want to use this package, run `eshell` or `ielm` from Emacs and load it in:
-
-``` elisp
-(mcn/bike-search-initialise)
-```
-
--   By default, it will load a local version of the bikes hashmap. If
-    you want to try the download behaviour, set it with this variable:
-
-``` elisp
-(setq mcn/download-from-live-site t)
-```
-
-Then, you can refer to [Usage](#Usage) to get started.
