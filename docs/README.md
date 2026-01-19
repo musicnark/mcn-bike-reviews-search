@@ -12,20 +12,14 @@
 # See Also
 This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
 
-See this README for the high-level background info and business context.
-
-To get started using the tool, see [install](./how-to/install.md).
-
-For example queries, see [basic usage](./how-to/basic-usage.md)
-
-For reference while using the tool, see [query language](./reference/query-language.md).
-
-For an understanding of how and why this was made, see [problem space](./concepts/problem-space.md), [design decisions](./concepts/design-decisions.md), and [constraints](./concepts/constraints.md).
-
-For developer reference documentation, see:
--   \`[mcn/query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
--   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
-
+- See this README for the high-level background info and business context.
+- To get started using the tool, see [install](./how-to/install.md).
+- For example queries, see [basic usage](./how-to/basic-usage.md)
+- For reference while using the tool, see [query language](./reference/query-language.md).
+- For an understanding of how and why this was made, see [problem space](./concepts/problem-space.md), [design decisions](./concepts/design-decisions.md), and [constraints](./concepts/constraints.md).
+- For developer reference documentation, see:
+  -   \`[mcn/query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
+  -   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 
 # Motivations & Background Info
 This is a workflow automation tool I have made while working as a Commercial Content Writer at [Motorcycle News](https://www.motorcyclenews.com/bike-reviews/). During a meeting, one of my colleagues mentioned in passing:
