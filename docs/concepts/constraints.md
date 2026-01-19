@@ -11,5 +11,3 @@ The URLs are also pre-defined in a pre-formatted CSV file, which was manually do
 As well as this, a database would be more suitable than a hash map for storing the page data, but for speed of development I also decided against this. The hash map does use about 1.3gb of memory when fully loaded, which will noticeably slow down a laptop.
 
 This tool also relies on the live site not changing its formatting, which is inherently fragile. This is mitigated by my own knowledge of the site, as it hasn't changed its front-end format for as long as I've worked at MCN, but if it was changed an update to the code would be needed to retain functionality.
-
-

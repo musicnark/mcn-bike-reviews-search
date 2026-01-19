@@ -37,9 +37,15 @@ See the README for usage.
 }
 
 install_emacs_macos() {
-	echo "Installing Emacs for MacOS.."
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" &&
-	mkdir -p ~/.homebrew_apps && brew install emacs --cask --Appdir ~/.homebrew_apps/ && echo "Emacs install finished successfully"
+	# bypasses the need for root privileges during install
+	echo "Installing Emacs for MacOS..."
+	mkdir ~/.homebrew &&
+		curl -L https://github.com/Homebrew/brew/tarball/master |
+			tar xz --strip 1 -C ~/.homebrew &&
+		mkdir -p ~/.homebrew_apps &&
+		xcode-select --install &&
+		~/.homebrew/bin/brew install emacs --cask --Appdir ~/.homebrew_apps/ &&
+		echo "Emacs install finished successfully"
 }
 
 install_emacs_debian_ubuntu() {

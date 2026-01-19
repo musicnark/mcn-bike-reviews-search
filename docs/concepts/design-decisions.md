@@ -1,3 +1,6 @@
+# Documentation Structure
+This documentation follows the Diátaxis standard, in order to meet the needs of many different potential users from one set of code docs. The current documentation practice equally serves non-technical editorial teams using this tool to save time, as much as IT departments who might wish to re-implement its functionality.
+
 # Platform
 I decided to write this tool for Emacs, in Emacs Lisp. With all that in mind, I decided to use the tools I'm most fluent with, to prioritise prototyping speed, and Emacs is the tool I use most in my day-to-day role as a writer.
 
@@ -7,8 +10,15 @@ Emacs was also chosen as it's a cross-platform tool with an existing open-source
 
 Knowing that a full rewrite would have to take place to scale to business needs, the underlying logic was kept as portable as possible. In its MVP state, there's no functionality in this tool unique to Emacs that couldn't be easily transferred to any other general purpose programming language. E.g., PHP for a WordPress plugin, Python for a script leveraging Pandas for data retrieval, JavaScript for a web browser plugin, etc.
 
-# Documentation Structure
-This documentation follows the Diátaxis standard, in order to meet the needs of many different potential users from one set of code docs. The current documentation practice equally serves non-technical editorial teams using this tool to save time, as much as IT departments who might wish to re-implement its functionality.
-
 # Algorithms & Data Structures
-Most Elisp functions operate at C-like speed, and it lends itself naturally to recursive tree algorithms
+At a high level, this tool works by:
+
+1.  **Importing a CSV** of all bike reviews
+2.  Individually **accessing web pages** for each bike review from the live site
+3.  **Extracting the spec tables**
+4.  **Storing each bike’s specs in a hash map** keyed by bike name, with a structured property list of all attributes.
+5. Giving the user a **query language to search and filter the hash map's contents**.
+
+For a more granular look at the design, see the [main code](../../bike-reviews.el).
+
+Most Elisp functions operate at C-like speed, and the language lends itself naturally to recursive tree algorithms - which were the most challenging part of this tool to implement. Elisp also has highly ergonomic string handling with the use of buffers and editor commands, which made parsing the input file quick and easy to implement.

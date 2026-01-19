@@ -17,3 +17,4 @@ Here's the current road-map of every planned feature that isn't yet implemented:
 - [ ] add more filterable properties to each bike:
   - [ ] make/model
   - [ ] MCN star rating
+- [ ] improve overall readability of the main code
