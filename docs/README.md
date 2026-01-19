@@ -1,8 +1,8 @@
 # Jump To:
--   [TL;DR](#TL;DR)
--   [See Also](#See-Also)
--   [Motivations & Background Info](#Motivations--Background-Info)
--   [The Business Pitch](#The-Business-Pitch)
+-   [TL;DR](#tldr)
+-   [See Also](#see-also)
+-   [Motivations & Background Info](#motivations--background-info)
+-   [The Business Pitch](#the-business-pitch)
 
 # TL;DR
 -   **Purpose:** Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
