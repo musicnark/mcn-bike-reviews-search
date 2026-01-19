@@ -18,7 +18,7 @@ For the sake of ease of use, you don't need to put the unit of a spec (bhp/break
 Running the above will produce an output similar to this:
 
 ```elisp
-;; => ("honda msx125-grom 2014" ... "https://www.motorcyclenews.com/bike-reviews/...")
+("honda msx125-grom 2014" ... "https://www.motorcyclenews.com/bike-reviews/...")
 ;;    ...
 ```
 
