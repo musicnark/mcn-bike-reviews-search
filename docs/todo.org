@@ -1,8 +1,0 @@
-* TODO
-- [ ] add forward-backward links to each page
-- [ ] fill out each page in docs
-- [ ] test each code block
-- [ ] add audience.md/explanation.md
-- [ ] reformat main README
-  - [ ] stripped out anyhing reference/install/how-to/concepts
-  - [ ] "This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background."

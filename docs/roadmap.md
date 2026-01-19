@@ -1,11 +1,8 @@
-# Development Roadmap
-Here's the current road-map of every planned feature that isn't yet implemented:
-
-## Documentation
+# Documentation
 - [ ] Add interactive tutorials
 - [ ] Add editorial case studies
 
-## Code
+# Code
 - [ ] add a major mode with GUI to interact with the tool
 - [ ] add code to install.sh that automatically loads it on 
 - [ ] enhance URL fetch capabilities with:
