@@ -1,3 +1,8 @@
+# Documentation Structure
+This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
+
+To get started, see [sadsa]().
+
 # Jump to:
 
 -   [TL;DR](#TL;DR)
@@ -14,8 +19,11 @@
 -   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
 
 # See Also
+See this README for the high-level workflow and business context.
 
-See this README for the high-level workflow and business context, and example usage.
+To get started using the tool, see [install](./how-to/install.md).
+
+For reference while using the tool, see [query language](./reference/query-language.md)
 
 For reference-style documentation, see:
 
@@ -23,6 +31,8 @@ For reference-style documentation, see:
 -   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 
 These functions form the core of the tool's functionality.
+
+This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
 
 # Motivations & Background Info
 

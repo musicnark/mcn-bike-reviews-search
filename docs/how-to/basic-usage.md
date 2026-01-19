@@ -3,7 +3,7 @@ This program is not (yet) interactive, and is designed to be called from within 
 
 # Queries
 See [Query Language](../reference/query-language.md) to reference:
-- a list of [bike specs](../reference/query-language.md#bike-specs) each bike can be filtered by
+- the list of [bike specs](../reference/query-language.md#bike-specs) each bike can be filtered by
 - the supported [operators and combinators](../reference/query-language.md#operators--combinators)
 
 The basic syntax of a query looks like this:
@@ -27,3 +27,5 @@ To see all the available specs for a certain bike, you can search for it by name
 ```
 
 To learn more about Elisp syntax, reference [Introduction to Programming in Emacs Lisp](https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html).
+
+previous: [sadsad]() next: [sadjasdjas]()

@@ -1,3 +1,10 @@
+# Overview
+The grammar for constructing a query is as follows:
+
+
+# Examples
+example-queries.el
+
 # Bike Specs
 The list of bike specs available to filter by are listed as follows:
 
@@ -29,7 +36,7 @@ Spec    Unit of Measurement (if filterable)
 `:1/4-mile-acceleration` - "secs"
 `:tank-range` "miles"
 
-`TBC` denotes a spec that can't yet be filtered by.
+`TBC` denotes a spec that can't yet be filtered by this tool.
 
 # Operators & Combinators
 Numerical comparison operators are supported:
