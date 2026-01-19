@@ -1,10 +1,8 @@
-# Jump to:
+# Jump To:
 -   [TL;DR](#TL;DR)
 -   [See Also](#See-Also)
 -   [Motivations & Background Info](#Motivations--Background-Info)
 -   [The Business Pitch](#The-Business-Pitch)
--   [Usage](#Usage)
--   [Install](#Install)
 
 # TL;DR
 -   **Purpose:** Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
@@ -12,20 +10,22 @@
 -   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
 
 # See Also
+This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
+
 See this README for the high-level workflow and business context.
 
 To get started using the tool, see [install](./how-to/install.md).
 
-For reference while using the tool, see [query language](./reference/query-language.md)
+For example queries, see [basic usage](./how-to/basic-usage.md)
 
-For reference-style documentation, see:
+For reference while using the tool, see [query language](./reference/query-language.md).
 
+For an understanding of how and why this was made, see [problem space](./concepts/problem-space.md), [design decisions](./concepts/design-decisions.md), and [constraints](./concepts/constraints.md).
+
+For developer reference documentation, see:
 -   \`[mcn/query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
 -   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 
-These functions form the core of the tool's functionality.
-
-This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
 
 # Motivations & Background Info
 This is a workflow automation tool I have made while working as a Commercial Content Writer at [Motorcycle News](https://www.motorcyclenews.com/bike-reviews/). During a meeting, one of my colleagues mentioned in passing:
@@ -52,39 +52,3 @@ With small additions, the tool could also search for any data in the bike review
 We also see strong potential for an integration with a LLM (ChatGPT, Gemini, etc). By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination or short-cutting.
 
 The current implementation is written in Elisp, chosen for fast prototyping within my existing workflow. The underlying logic is portable to any general-purpose programming language.
-
-# Usage
-This tool works by:
-
-1.  **Importing a CSV** of all bike reviews
-2.  Individually **accessing web pages** for each bike review from the live site
-3.  **Extracting the spec tables**
-4.  **Storing each bike’s specs in a hashmap** keyed by bike name, with a structured property list of all attributes.
-
-This program is not (yet) interactive, and is best called from within `eshell` or `ielm`.
-
-The hashmap returned looks like this:
-
-``` elisp
-(gethash "honda msx125-grom 2014" bike-review-hashmap)
-;; => (:engine-size "125cc" :engine-type "Air-cooled..." :seat-height "765mm" ...)
-```
-
-So an example query to find:
-
-> "best budget A2 bikes for shorter riders"
-
-looks like this:
-
-```elisp
-(mcn/query-bikes
- '(and
-     (:used-price < 2500)
-     (:seat-height < 800)
-     (:max-power > 15)
-     (:max-power < 47)))
-;; => ("2024-on CF-moto 450NK" ... "https://www.motorcyclenews.com/bike-reviews/...")
-;;    ...
-```
-
-For the whole bike reviews section (on my M1 Macbook Air work laptop), the initial process takes about three minutes. Once bike reviews are stored in memory, new entries can be added quickly. It takes advantage of a hashmap's fast lookup times, at the cost of about 1.3gb of memory usage.

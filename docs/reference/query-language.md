@@ -1,14 +1,7 @@
-# Overview
-The grammar for constructing a query is as follows:
-
-
-# Examples
-example-queries.el
-
 # Bike Specs
 The list of bike specs available to filter by are listed as follows:
 
-Spec    Unit of Measurement (if filterable)
+Spec - Unit of Measurement (if filterable)
 `:engine-size` - "cc"
 `:engine-type` - `TBC`
 `:frame-type` - `TBC`
@@ -50,9 +43,9 @@ Numerical comparison operators are supported:
 
 Queries can be combined with three combinators:
 
-`and` - all filters must return true
-`or` - at least one filter must return true
-`not` - returns the inverse
+`(and)` - all filters must return true
+`(or)` - at least one filter must return true
+`(not)` - returns the inverse
 Each spec can be filtered by 
 
 # Expected Errors

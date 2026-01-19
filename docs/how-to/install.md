@@ -16,7 +16,9 @@ If you're unfamiliar with Emacs, now's a good time to [familiarise yourself with
 # Manual Install
 If installing manually, open a terminal and follow the below instructions:
 
-- Clone the repo:
+- Install Emacs and add it to your PATH (check online for specific instructions on your operating system)
+
+- Clone this repository:
 
 ```bash
 git clone https://github.com/musicnark/mcn-bike-reviews-search
@@ -43,10 +45,10 @@ emacs --batch \
 (add-to-list 'load-path (expand-file-name "lisp/mcn-bike-reviews-search" user-emacs-directory))
 ```
 
-- When you want to use this package, run `eshell` or `ielm` from Emacs and load it in:
+- When you want to use this package, load it in:
 
 ```elisp
-(mcn/bike-search-initialise)
+M-x mcn/bike-search-initialise
 ```
 
 - By default, it will load a local version of the bikes hashmap. If you want to try the download behaviour, set it with this variable:

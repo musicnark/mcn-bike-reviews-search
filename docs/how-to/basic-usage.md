@@ -9,12 +9,18 @@ The basic syntax of a query looks like this:
  '(and                                  ;; (optional) combine filters
 	 (:average-fuel-consumption > 150)  ;; filter a specific spec
 	 (:top-speed >= 60)))               ;; ^^^
-;; => ("honda msx125-grom 2014" ... "https://www.motorcyclenews.com/bike-reviews/...")
-;;    ...
+ ```
 
 For the sake of ease of use, you don't need to put the unit of a spec (bhp/break horse power, mm/milometers, cc/cubic centimetres, etc), just the number.
+ 
+Running the above will produce an output similar to this:
 
-To see all the available specs for a certain bike, you can search for it by name:
+```elisp
+;; => ("honda msx125-grom 2014" ... "https://www.motorcyclenews.com/bike-reviews/...")
+;;    ...
+```
+
+To see all the available specs for a certain bike, you can search for it by name with the following command:
 
 ```elisp
 (gethash "honda msx125-grom 2014" bike-review-hashmap)
@@ -24,4 +30,4 @@ See [Query Language](../reference/query-language.md) to reference:
 - the list of [bike specs](../reference/query-language.md#bike-specs) each bike can be filtered by
 - the supported [operators and combinators](../reference/query-language.md#operators--combinators)
 
-To learn more about Elisp syntax, reference [Introduction to Programming in Emacs Lisp](https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html).
+To learn more about basic Elisp syntax, reference [Introduction to Programming in Emacs Lisp](https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html).
