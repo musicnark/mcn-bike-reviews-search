@@ -52,7 +52,7 @@ You can also use this tool to help with inspiration for content ideas, as playin
 There are many specs that go under-represented across our content that can be used to search too:
 
 ```elisp
-(query-bikes
+(mcn/query-bikes
 	'(and
 		(:average-fuel-consumption > 150)
 		(:top-speed >= 60)))
