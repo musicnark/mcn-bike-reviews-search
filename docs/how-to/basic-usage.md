@@ -11,7 +11,7 @@ The basic syntax of a query looks like this:
 	 (:top-speed >= 60)))               ;; ^^^
  ```
 
-Don't forget to put the single quote `'` before your filter.
+_Don't forget to put the single quote `'` before your filter!_
 
 For the sake of ease of use, you don't need to put the unit of a spec (bhp/break horse power, mm/milometers, cc/cubic centimetres, etc), just the number.
  
