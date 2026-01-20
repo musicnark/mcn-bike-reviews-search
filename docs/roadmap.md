@@ -3,8 +3,8 @@
 - [ ] Add editorial case studies
 
 # Code
-- [ ] add a major mode with GUI to interact with the tool
-- [ ] add code to install.sh that automatically loads it on 
+- [ ] add an Emacs major mode with GUI to interact with the tool
+- [ ] add more supported operating systems to install.sh
 - [ ] enhance URL fetch capabilities with:
   - [ ] asynchronous fetching
   - [ ] ability to add only new URLs to an existing hash map
