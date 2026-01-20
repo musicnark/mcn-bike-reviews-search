@@ -5,7 +5,7 @@ install_mcn_bike_reviews_search() {
 	# check if running in the project directory
 	pwd | grep "mcn-bike-reviews-search" || {
 		echo "Please run this script from the project root, run:
-cd mcn-bike-reviews-search" &&
+cd mcn-bike-reviews-search"
 			return 1
 		}
 
@@ -20,19 +20,24 @@ cd mcn-bike-reviews-search" &&
 		  -L ~/.emacs.d/elisp/mcn-bike-reviews-search \
 		  -f batch-byte-compile *.el >/dev/null 2>&1 ||
 		echo "Warning: byte-compilation failed, continuing."
+
+	# configure emacs
 	echo ";; Automatic configuration from mcn-bike-reviews-search install
 (add-to-list 'load-path (expand-file-name \"lisp/mcn-bike-reviews-search\" user-emacs-directory))
 (require 'bike-reviews)" >> ~/.emacs.d/init.el
+
 	# provide instruction how to run it
 	echo -e "\n
 Install successful.
-You can now launch emacs, and load this tool via:
+You can now launch emacs, which is installed in:
+$emacs_dir
 
+When emacs is loaded, load this tool via:
 M-x bike-search-initialise
 
 See the README for usage.
 
-(HINT: M-x means 'Alt + x', or 'Cmd + x'. If you're new to Emacs, you can click the tutorial on the home page to learn the basics.)
+(HINT: M-x means 'Alt + x', or 'Option + x'. If you're new to Emacs, you can click the tutorial on the home page to learn the basics.)
 "
 }
 
@@ -42,21 +47,24 @@ install_emacs_macos() {
 	mkdir ~/.homebrew &&
 		curl -L https://github.com/Homebrew/brew/tarball/master |
 			tar xz --strip 1 -C ~/.homebrew &&
-		mkdir -p ~/.homebrew_apps &&
+		mkdir -p ~/homebrew_apps &&
 		xcode-select --install &&
-		~/.homebrew/bin/brew install emacs --cask --Appdir ~/.homebrew_apps/ &&
+		~/.homebrew/bin/brew install emacs --cask --Appdir ~/homebrew_apps/ &&
 		echo "Emacs install finished successfully"
+	emacs_dir="~/homebrew_apps/"
 }
 
 install_emacs_debian_ubuntu() {
 	echo "Installing Emacs for Ubuntu/Debian..."
 	sudo apt install emacs -y && echo "Emacs install finished successfully"
+	emacs_dir="$(which emacs)"
 }
 
 main() {
 echo -e "Setting up MCN Bike Reviews Search Tool...\n"
 
-which emacs >/dev/null 2>&1 ||
+which emacs >/dev/null 2>&1 &&
+	emacs_dir="$(which emacs)" || {
 if [ $(uname -s) = "Darwin" ]; then
 	# install for macos
 	install_emacs_macos
@@ -68,6 +76,7 @@ else
 	echo "Unsupported host - cannot install Emacs automatically. Please install emacs manually, add it to your path, and run this script again."
 	return 1
 fi
+}
 
 install_mcn_bike_reviews_search
 }
