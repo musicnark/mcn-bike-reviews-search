@@ -11,6 +11,8 @@ Once installed, launch or restart Emacs and run `M-x mcn/bike-search-initialise`
 
 Then, you can get started with some [basic usage](./basic-usage.md).
 
+On MacOS, `M-x` means pressing `Option + x`. On Windows/Linux, it means `Alt + x`. After that, you type the name of the function to run — in this case `mcn/bike-search-initialise` — and hit enter to run it.
+
 If you're unfamiliar with Emacs, now's a good time to [familiarise yourself with the basics](https://www.gnu.org/software/emacs/tour/) before continuing.
 
 ---
