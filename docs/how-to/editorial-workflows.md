@@ -53,9 +53,7 @@ You can also use this tool to help with inspiration for content ideas, as playin
 
 ```elisp
 (mcn/query-bikes
-	'(and
-		(:quarter-mile-acceleration < 8)
-		(:top-speed >= 150)))
+		'(:top-speed >= 180))
 ```
 > "Best bikes for speed-demons"?
 
