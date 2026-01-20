@@ -22,6 +22,8 @@ Running the above will produce an output similar to this:
 ;;    ...
 ```
 
+By default, the results display from top → bottom, **low → high**.
+
 To see all the available specs for a certain bike, you can search for it by name with the following command:
 
 ```elisp
