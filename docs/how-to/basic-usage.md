@@ -1,7 +1,7 @@
 # Usage Overview
 This tool does not (yet) feature a graphical interface. Before continuing, be sure to channel your inner hacker.
 
-This tool currently operates best within Emacs' terminal environments (namely `M-x eshell` or `M-x ielm`). Once you're there, type out a query and hit enter.
+This tool currently operates best within Emacs' terminal environments. Run `M-x eshell` or `M-x ielm`, and once you're there, type out a query and hit enter.
 
 # Queries
 The basic syntax of a query looks like this:
