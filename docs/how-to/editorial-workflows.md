@@ -53,9 +53,12 @@ You can also use this tool to help with inspiration for content ideas, as playin
 
 ```elisp
 (mcn/query-bikes
-		'(:top-speed >= 180))
+	'(and
+		(:used-price < 5000)
+		(:used-price > 0)
+		(:top-speed >= 180))
 ```
-> "Best bikes for speed-demons"?
+> "Best bargain bikes for speed-demons"?
 
 # Integration with LLMs
 To further accelerate content creation, an integration with ChatGPT is currently in development. In the meantime, you can copy and paste the output from this tool directly into your choice of LLM, and ask it to draft a piece of content with those bikes. This gives the LLM less work to do searching for the bikes, which it does far less reliably than this tool, and generates a first-draft for content rapidly.
