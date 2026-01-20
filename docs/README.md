@@ -12,7 +12,7 @@
 # See Also
 This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
 
-- See this README for the high-level background info and business context.
+- See this README for the high-level background info and business pitch.
 - To get started using the tool, see [install](./how-to/install.md).
 - For example queries, see [basic usage](./how-to/basic-usage.md).
 - For advanced usage, see [editorial workflows](./how-to/editorial-workflows.md).

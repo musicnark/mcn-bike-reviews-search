@@ -7,7 +7,7 @@ cd mcn-bike-reviews-search &&
 chmod +x install.sh &&
 ./install.sh
 ```
-Once installed, launch or restart Emacs and run `M-x mcn/bike-search-initialise` to load the bike reviews data.
+Once installed, the script will tell you where to find the Emacs app. Navigate to it and launch Emacs, then and run `M-x mcn/bike-search-initialise` to load the bike reviews data.
 
 Then, you can get started with some [basic usage](./basic-usage.md).
 
