@@ -1,6 +1,6 @@
 # Documentation
-- [ ] Add interactive tutorials
-- [ ] Add editorial case studies
+- [ ] add interactive tutorials
+- [ ] add editorial case studies
 
 # Code
 - [ ] add an Emacs major mode with GUI to interact with the tool
