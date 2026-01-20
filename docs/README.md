@@ -26,6 +26,8 @@ This documentation follows the Diátaxis framework, separating explanation, how-
   -   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 - If you'd like to contribute, see [contributing](./CONTRIBUTING.md).
 
+---
+
 # Motivations & Background Info
 This is a workflow automation tool I have made while working as a Commercial Content Writer at [Motorcycle News](https://www.motorcyclenews.com/bike-reviews/). During a meeting, one of my colleagues mentioned in passing:
 
