@@ -3,7 +3,7 @@ This tool does not (yet) feature a graphical interface. Before continuing, be su
 
 This tool currently operates best within Emacs' terminal environments. Run Emacs, and when you get to the home screen, run `M-x eshell` or `M-x ielm`. Once you're there, type out a query and hit enter.
 
-On MacOS, `M-x` means pressing `Option + x`. On Windows/Linux, it means `Alt + x`. After that, you type the name of the terminal to run — in this case `eshell`, or `ielm`.
+On MacOS, `M-x` means pressing `Option + x`. On Windows/Linux, it means `Alt + x`. After that, you type the name of the terminal to run — in this case `eshell`, or `ielm`, and hit enter to launch it.
 
 # Queries
 The basic syntax of a query looks like this:
