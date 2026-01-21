@@ -1,5 +1,5 @@
 # Intended audience
-This tool is intended for two main audiences:
+This tool serves two main audiences:
 
 Primary:
 - Editorial staff with basic technical literacy

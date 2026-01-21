@@ -1,6 +1,7 @@
 # Documentation
 - [ ] add interactive tutorials
 - [ ] add editorial case studies
+- [ ] add custom Vale style
 
 # Code
 - [ ] add an Emacs major mode with GUI to interact with the tool
