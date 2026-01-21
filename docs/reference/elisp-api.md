@@ -1,5 +1,5 @@
 # API
-See the [main code](../../bike-reviews.el) for API documentation.
+See the doc strings of each function in the [main code](../../bike-reviews.el) for API documentation.
 
 # Limitations
 If fetching URLs from the live site, this tool fetches them synchronously (one at a time), which is slow compared to asynchronous methods. Emacs does have asynchronous URL fetching available, but to prioritise speed of development I decided against implementing it in this tool.
