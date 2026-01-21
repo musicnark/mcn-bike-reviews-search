@@ -1,0 +1,8 @@
+# Vale
+.vale/
+.vale-cache/
+.cache/vale/
+
+# Editors 
+.vscode/
+.idea/

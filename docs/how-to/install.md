@@ -1,5 +1,5 @@
 # Recommended Install
-The recommended install method is via the supplied [install script](../../install.sh), which automates install for this tool and Emacs on MacOS, Debian, and Ubuntu. Copy and paste the following into a terminal and hit enter:
+To follow the recommended install method, run the supplied [install script](../../install.sh), which automates install for this tool and Emacs on MacOS, Debian, and Ubuntu. Copy and paste the following into a terminal and hit enter:
 
 ``` bash
 git clone https://github.com/musicnark/mcn-bike-reviews-search &&
@@ -11,9 +11,9 @@ Once installed, the script will tell you where to find the Emacs app. Navigate t
 
 Then, you can get started with some [basic usage](./basic-usage.md).
 
-On MacOS, `M-x` means pressing `Option + x`. On Windows/Linux, it means `Alt + x`. After that, you type the name of the function to run — in this case `mcn/bike-search-initialise` — and hit enter to run it.
+On MacOS, `M-x` means pressing `Option + x`. On Windows/Linux, it means `Alt + x`. After that, you type the name of the function to run (in this case `mcn/bike-search-initialise`) and hit enter to run it.
 
-If you're unfamiliar with Emacs, now's a good time to [familiarise yourself with the basics](https://www.gnu.org/software/emacs/tour/) before continuing.
+If unfamiliar with Emacs, now's a good time to [familiarise yourself with the basics](https://www.gnu.org/software/emacs/tour/) before continuing.
 
 ---
 
@@ -55,7 +55,7 @@ emacs --batch \
 M-x mcn/bike-search-initialise
 ```
 
-- By default, it will load a local version of the bikes hashmap. If you want to try the download behaviour, set it with this variable:
+- By default, it will load a local version of the bikes hash map. If you want to try the download behaviour, set it with this variable:
 
 ```elisp
 (setq mcn/download-from-live-site t)
