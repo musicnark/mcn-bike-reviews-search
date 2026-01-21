@@ -1,4 +1,4 @@
-# Bike Specs
+# Bike specs
 The list of bike specs available to filter by are listed as follows:
 
 | Spec                        | Unit of measurement (if filterable) |
@@ -49,7 +49,7 @@ Queries can be combined with three combinators:
 | `(or)`     | at least one filter must return true |
 | `(not)`    | returns the inverse                  |
 
-# Expected Errors
+# Expected errors
 The errors expected by the program are as follows:
 - fetching a URL may return 'nil' if it encounters any error (e.g., no internet connection), but that page will be skipped and the process will continue
 - parsing the page contents will return 'nil' if the sub-page was not found, but that page will be skipped and the process will continue
