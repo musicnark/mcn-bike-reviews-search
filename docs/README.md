@@ -21,11 +21,11 @@ This documentation follows the Diátaxis framework, separating explanation, how-
 - To learn who this tool is for, and who it's _not_ for, see [audience](./audience.md).
 - For a roadmap of planned future features, see [roadmap](./roadmap.md).
 - To see the conventions for this project, see [style](./style.md).
+- For all the terminology used in this project, see [definitions](./definitions.md).
 - For developer reference documentation, see:
   -   \`[mcn/query-bikes](./bike-reviews.el#L166)\` – Filter and sort bike reviews programmatically. Its docstring contains all parameters and return format.
   -   \`[pc-extract-specs-from-table](./bike-reviews.el#L48)\` – Extracts bike specs from HTML tables into a structured property list (plist).
 - If you'd like to contribute, see [contributing](./CONTRIBUTING.md).
-- For all the terminology used in this project, see [definitions](./definitions.md).
 
 ---
 
