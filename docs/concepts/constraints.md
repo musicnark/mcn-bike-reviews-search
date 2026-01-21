@@ -1,9 +1,9 @@
-# Emacssh
+# Emacs
 Emacs is a good platform insofar as it's cross-platform, and brings potential new users into the church. It requires learning a new tool for many target users though, which can add friction to their workflows initially - particularly in its current command-line based implementation. Emacs also doesn't integrate well with many business tools such as Monday.com, WordPress, etc., so the overall project scope is limited by the choice of basing it on Emacs. Emacs as the base is only viable for the MVP, not a full business integration.
 
 Using Homebrew for installation on MacOS takes a long time too, as users will likely need to install Xcode developer tools.
 
-# Design Limitations
+# Design limitations
 In its current state this tool does have some limitations stemming from the design:
 
 If fetching URLs from the live site, this tool fetches them synchronously (one at a time), which is quite slow compared to asynchronous methods. Emacs does have asynchronous URL fetching available, but to prioritise speed of development I decided against implementing it in this tool.

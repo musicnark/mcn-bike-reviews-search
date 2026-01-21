@@ -1,4 +1,4 @@
-# Intended Audience
+# Intended audience
 This tool is intended for two main audiences:
 
 Primary:

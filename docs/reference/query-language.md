@@ -30,7 +30,7 @@ The list of bike specs available to filter by are listed as follows:
 
 `TBC` denotes a spec that can't yet be filtered by this tool.
 
-# Operators & Combinators
+# Operators & combinators
 Numerical comparison operators are supported:
 
 | Operator | Meaning                  |

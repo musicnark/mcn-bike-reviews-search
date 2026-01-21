@@ -1,4 +1,4 @@
-# Recommended Install
+# Recommended install
 To follow the recommended install method, run the supplied [install script](../../install.sh), which automates install for this tool and Emacs on MacOS, Debian, and Ubuntu. Copy and paste the following into a terminal and hit enter:
 
 ``` bash
@@ -17,7 +17,7 @@ If unfamiliar with Emacs, now's a good time to [familiarise yourself with the ba
 
 ---
 
-# Manual Install
+# Manual install
 If installing manually, open a terminal and follow the below instructions:
 
 - Install Emacs and add it to your PATH (check online for specific instructions on your operating system)

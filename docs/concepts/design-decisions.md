@@ -1,4 +1,4 @@
-# Documentation Structure
+# Documentation structure
 This documentation follows the Diátaxis standard, in order to meet the needs of many different potential users from one set of code docs. The current documentation practice equally serves non-technical editorial teams using this tool to save time, as much as IT departments who might wish to re-implement its functionality.
 
 # Platform
@@ -10,7 +10,7 @@ Emacs was also chosen as it's a cross-platform tool with an existing open-source
 
 Knowing that a full rewrite would have to take place to scale to business needs, the underlying logic was kept as portable as possible. In its MVP state, there's no functionality in this tool unique to Emacs that couldn't be easily transferred to any other general purpose programming language. E.g., PHP for a WordPress plugin, Python for a script leveraging Pandas for data retrieval, JavaScript for a web browser plugin, etc.
 
-# Algorithms & Data Structures
+# Algorithms & data structures
 At a high level, this tool works by:
 
 1.  **Importing a CSV** of all bike reviews

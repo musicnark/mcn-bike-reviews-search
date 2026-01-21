@@ -1,4 +1,4 @@
-# Jump To:
+# Jump to:
 -   [TL;DR](#tldr)
 -   [See Also](#see-also)
 -   [Motivations & Background Info](#motivations--background-info)
@@ -9,7 +9,7 @@
 -   **Tech:** Elisp, CSV parse, URL fetch, DOM node tree traversal, hashmap storage, query language/DSL.
 -   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
 
-# See Also
+# See also
 This documentation follows the Diátaxis framework, separating explanation, how-to guides, reference material, and conceptual background.
 
 - See this README for the high-level background info and business pitch.
@@ -28,7 +28,7 @@ This documentation follows the Diátaxis framework, separating explanation, how-
 
 ---
 
-# Motivations & Background Info
+# Motivations & background info
 This is a workflow automation tool I have made while working as a Commercial Content Writer at [Motorcycle News](https://www.motorcyclenews.com/bike-reviews/). During a meeting, one of my colleagues mentioned in passing:
 
 > "Wouldn't it be great to be able to search and filter bike reviews by their specs? That would make content ideation so much quicker!"
@@ -37,7 +37,7 @@ At the time, it was left as "one to sleep on". Nobody on the team had enough pro
 
 But, instead of sleeping on it, I took it upon myself to build it. This is a MVP used to pitch a full version to the business.
 
-# The Business Pitch
+# The business pitch
 The Bike Reviews section is one of MCN’s highest-value digital assets, driving significant evergreen traffic and long-tail search demand, yet editorial teams still spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search and filter by spec would speed up the content creation process for a number of different types of content across the Bike Reviews section.
 
 This tool enables that — fast, data-driven filtering of [MCN's Bike Reviews section](https://www.motorcyclenews.com/bike-reviews/) by any spec in the review (fuel economy, horsepower, yearly service cost, etc). It lets writers and editors instantly generate targeted content ideas by programmatically finding all bikes that meet a certain condition. 
