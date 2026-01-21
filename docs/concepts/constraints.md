@@ -6,9 +6,9 @@ Using Homebrew for installation on MacOS takes a long time too, as users will li
 # Design limitations
 In its current state this tool does have some limitations stemming from the design:
 
-If fetching URLs from the live site, this tool fetches them synchronously (one at a time), which is quite slow compared to asynchronous methods. Emacs does have asynchronous URL fetching available, but to prioritise speed of development I decided against implementing it in this tool.
+If fetching URLs from the live site, this tool fetches them synchronously (one at a time), which is slow compared to asynchronous methods. Emacs does have asynchronous URL fetching available, but to prioritise speed of development I decided against implementing it in this tool.
 
-The URLs are also pre-defined in a pre-formatted CSV file, which was manually downloaded from our organisation board (Monday.com) and manually formatted. Additions to the code that integrate with the Monday.com API and/or automatically format the CSV contents would be ideal, but weren't practical to achieve the pace of development I was after. A completely different algorithm could be used to scrape the live site, but legal implications related to web scraping would have to be considered.
+The URLs are also pre-defined in a pre-formatted CSV file, which was manually downloaded from our organisation board (Monday.com) and manually formatted. Additions to the code that integrate with the Monday.com API and/or automatically format the CSV contents would be ideal, but weren't practical to achieve the pace of development I was after. A different algorithm could be used to scrape the live site, but legal implications related to web scraping would have to be considered.
 
 As well as this, a database may be more suitable than a hash map for storing the page data, but for speed of development I also decided against this. The downloaded web pages use about 800mb of memory when fully loaded, which could noticeably slow down a laptop, even if the hash map of specs alone uses less than 5mb. Ideally, the web pages would not need to be stored locally at all.
 

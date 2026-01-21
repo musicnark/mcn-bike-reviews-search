@@ -1,7 +1,6 @@
-# Acronyms
-| Acronym | Definition                |
-|---------|---------------------------|
-| MCN     | Motor Cycle News          |
-| CMS     | Content Management System |
-| MVP     | Minimum Viable Product    |
-| LLM     | Large Language Model      |
+# Definitions
+**CMS** - Content Management System
+**DSL** - Domain-Specific Language
+**LLM** - Large Language Model
+**MCN** - Motor Cycle News
+**MVP** - Minimum Viable Product

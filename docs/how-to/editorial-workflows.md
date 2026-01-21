@@ -1,5 +1,5 @@
 # Accelerating content creation
-Utilising a programmatic mindset, this tool promises to significantly accelerate content creation for editorial teams at MCN. Instead of relying on deep expert knowledge, or spending countless hours manually searching for each bike worth featuring in a piece of content, this tool can find them all with a single well-constructed query.
+Utilising a programmatic mindset, this tool promises to accelerate content creation for editorial teams at MCN. Instead of relying on deep expert knowledge, or spending countless hours manually searching for each bike worth featuring in a piece of content, this tool can find them all with a single well-constructed query.
 
 If we have an idea for a buying guide or newsletter, let's say:
 
