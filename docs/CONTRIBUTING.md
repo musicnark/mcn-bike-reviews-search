@@ -10,7 +10,7 @@ Some encouraged contributions include:
 - adding unit tests (for completeness)
 
 # Setting up the project
-To get started, clone the repo:
+To get started, clone the repository:
 
 ```sh
 git clone https://github.com/musicnark/mcn-bike-reviews-search/
