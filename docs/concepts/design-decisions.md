@@ -2,7 +2,7 @@
 This documentation follows the Diátaxis standard, in order to meet the needs of many different potential users from one set of code docs. The current documentation practice equally serves non-technical editorial teams using this tool to save time, as much as IT departments who might wish to re-implement its functionality.
 
 # Platform
-I decided to write this tool for Emacs, in Emacs Lisp. With all that in mind, I decided to use the tools I'm most fluent with, to prioritise prototyping speed, and Emacs is the tool I use most in my day-to-day role as a writer.
+To create this tool, I decided to use the software tools I'm most fluent with, which led me to basing it on Emacs. This was to prioritise prototyping speed, as Emacs is the tool I use most in my day-to-day role as a writer.
 
 This tool has also been designed such that, should the need arise, an expanded and more user-friendly version can be made quickly and distributed within the wider team. This is because I anticipated the business would take a long time to implement the tool in their way, but the value this tool adds is still worth having today. Emacs has a functional graphics library that's easy enough to work with, so a custom mode that loads this tool with a simple GUI would be serviceable for small-scale distribution within my team. 
 
