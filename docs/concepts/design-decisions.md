@@ -8,7 +8,7 @@ This tool has also been designed such that, should the need arise, an expanded a
 
 Emacs was also chosen as it's a cross-platform tool with an existing open-source ecosystem of tools for editorial teams. Emacs gives easy access to common system needs, like the system clipboard, and integrates well with conversion tools to output to any format desired. Being cross platform, it also avoids doubling up on work to distribute across Windows and MacOS.
 
-Knowing that a full rewrite would have to take place to scale to business needs, the underlying logic was kept as portable as possible. In its MVP state, there's no functionality in this tool unique to Emacs that couldn't be easily transferred to any other general purpose programming language. For example, PHP for a WordPress plugin, Python for a script leveraging Pandas for data retrieval, JavaScript for a web browser plugin, etc.
+Knowing that a full rewrite would have to take place to scale to business needs, the underlying logic was kept as portable as possible. In its MVP state, there's no functionality in this tool unique to Emacs that couldn't be easily transferred to any other general purpose programming language. For example, PHP for a WordPress plugin, a Python script leveraging Pandas for data retrieval, JavaScript for a web browser plugin, etc.
 
 # Algorithms & data structures
 At a high level, this tool works by:
