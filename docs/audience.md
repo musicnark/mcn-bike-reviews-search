@@ -3,10 +3,9 @@ This tool serves two main audiences:
 
 Primary:
 - Editorial staff with basic technical literacy
-- Researchers working with structured review data
+- Developers extending/re-implementing the query engine
 
 Secondary:
-- Developers extending/re-implementing the query engine
 - Technical authors interested in editorial tooling
 
 Not intended for:
