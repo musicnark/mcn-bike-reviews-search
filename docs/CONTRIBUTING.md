@@ -4,7 +4,20 @@ Contributions are welcome in any way, shape, or form, so long as you can justify
 If you're not a developer, you can still contribute by posting issues when you run into problems using the tool. Be as descriptive as you can with any issues relating to usage, outlining what happened and what led up to it.
 
 Some encouraged contributions include:
-- documentation improvements
+- documentation improvements (run `vale docs/` for some easy wins)
 - reporting bugs and unexpected behaviour
 - adding support for more systems in [install.sh](../install.sh)
 - adding unit tests (for completeness)
+
+# Setting up the Project
+To get started, clone the repo:
+
+```sh
+git clone https://github.com/musicnark/mcn-bike-reviews-search/
+```
+
+Setting up `Vale` is recommended for prose linting. Install `Vale` for your operating system, `cd` to the project root, and run:
+
+```sh
+vale sync
+```
