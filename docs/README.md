@@ -1,13 +1,13 @@
+# TL;DR
+-   **Purpose:** Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
+-   **Tech:** Elisp, CSV parse, URL fetch, DOM node tree traversal, hashmap storage, query language/DSL.
+-   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
+
 # Jump to:
 -   [TL;DR](#tldr)
 -   [See Also](#see-also)
 -   [Motivations & Background Info](#motivations--background-info)
 -   [The Business Pitch](#the-business-pitch)
-
-# TL;DR
--   **Purpose:** Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
--   **Tech:** Elisp, CSV parse, URL fetch, DOM node tree traversal, hashmap storage, query language/DSL.
--   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
 
 # See also
 This documentation follows the Diátaxis framework GGH, separating explanation, how-to guides, reference material, and conceptual background.
