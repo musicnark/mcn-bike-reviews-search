@@ -49,7 +49,7 @@ Some example uses include finding:
 -   Bikes with seat height under 800mm → “Best bikes for shorter riders” page
 -   Bikes between 15–47bhp and with an MCN score of 4/5 or higher → “Best A2 bikes” page
 
-All these ideas and more can be generated in seconds with this tool, instead of manually searching for each bike with the right specs, or leaning on specialist knowledge that takes years to hone.
+All these ideas and more can be generated in seconds with this tool, instead of days manually searching for each bike with the right specs, or leaning on specialist knowledge that takes years to hone.
 
 With small additions, the tool could also search for any data in the bike review page — collating owners reviews, processing review copy for relevant phrases ("great commuter", "solid engine", "full of character", etc). It could also form the basis of a more general-use application that publications across the business would benefit from.
 
