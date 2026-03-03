@@ -2,9 +2,11 @@
 - [ ] add interactive tutorials
 - [ ] add editorial case studies
 - [ ] add custom Vale style
+- [ ] deeper explanations of architecture decisions
 
 # Code
-- [ ] add an Emacs major mode with GUI to interact with the tool
+- [ ] add a GUI web front-end to interact with the tool
+- [ ] include tests
 - [ ] add more supported operating systems to install.sh
 - [ ] enhance URL fetch capabilities with:
   - [ ] asynchronous fetching
