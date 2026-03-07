@@ -11,7 +11,7 @@ cd mcn-bike-reviews-search"
 
 	# extract program files to .emacs.d/lisp/
 	mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
-		cp *.el *.csv ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
+		cp src/*.el *.csv ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
 		cd ~/.emacs.d/lisp/mcn-bike-reviews-search/
 
 	# (optional) byte compile program files for faster loading time
