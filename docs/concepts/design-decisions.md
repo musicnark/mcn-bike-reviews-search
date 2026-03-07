@@ -19,6 +19,6 @@ At a high level, this tool works by:
 4.  **Storing each bike’s specs in a hash map** keyed by bike name, with a structured property list of all attributes.
 5. Giving the user a **query language to search and filter the hash map's contents**.
 
-For a more granular look at the design, see the [main code](../../bike-reviews.el).
+For a more granular look at the design, see the [main code](../../el/bike-reviews.el).
 
 Most Elisp functions operate at C-like speed, and the language lends itself naturally to recursive tree algorithms - which were the most challenging part of this tool to implement. Elisp also has highly ergonomic string handling with the use of buffers and editor commands, which made parsing the input file quick and easy to implement.

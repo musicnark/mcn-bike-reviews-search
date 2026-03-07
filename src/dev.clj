@@ -3,11 +3,16 @@
   (:require [net.cgrand.enlive-html :as html])
   (:require [clojure.string :as string]))
 
+;; (add-tap (fn [x] (spit "src/log.txt" (pr-str x) :append true)))
+
 (def url "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
 
 (def doc
-  (html/html-snippet (:body (http/get url
-                      {:headers {"User-Agent" "Mozilla/5.0"}}))))
+  (-> (http/get url {:headers {"User-Agent" "Mozilla/5.0"}})
+      :body
+      (tap>)
+      html/html-snippet
+      ))
 
 (defn get-star-rating [url]
   (let [doc (html/html-snippet (:body (http/get url
