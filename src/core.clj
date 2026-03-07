@@ -67,14 +67,12 @@
     (if (and (string? res) (not (empty? res)))
       {:ok res}
       {:err {:type :query
-             :message "invalid query"}})))
+             :message "key or value not found"}})))
 
 ;; Main
-
   (-> (fetch-bike url)
       (bind parse-bike)
       (bind test-query-bike)) ;; FIXME
-  
 
 ;; TODO:
 ;; - implement DSL/query language
