@@ -76,6 +76,7 @@
 
 ;; TODO:
 ;; - implement DSL/query language
+;; - import CSV of bikes and map over them
 ;; - include tests
 ;; - add accumulated logging 
 ;; - make it async~
