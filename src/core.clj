@@ -60,7 +60,7 @@
         {:err {:type :parse
                  :message "labels or values weren't found in HTML response."}})))
 
-;; FIXME test - query engine goes in front-end code
+;; FIXME test
 (defn test-query-bike [response]
   ;; await query input from user
   (let [res (:mcn-rating response)] ;; test
@@ -75,8 +75,9 @@
       (bind test-query-bike)) ;; FIXME
 
 ;; TODO:
-;; - implement DSL/query language
 ;; - import CSV of bikes and map over them
+;; - implement DSL/query language
+;; - implement API
 ;; - include tests
 ;; - add accumulated logging 
 ;; - make it async~
