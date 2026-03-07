@@ -1,3 +1,9 @@
+# CLJ
+.clj-kondo
+.cpcache
+.lsp
+.nrepl-port
+
 # Vale
 .vale_styles
 .vale/
