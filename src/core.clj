@@ -1,7 +1,9 @@
 (ns core
   (:require [clj-http.client :as http])
   (:require [net.cgrand.enlive-html :as html])
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string])
+  (:require [clojure.data.csv :as csv])
+  (:require [clojure.java.io :as io]))
 
 ;; helpers 
 (defn clean-keyword [s]
@@ -26,7 +28,31 @@
     (f (:ok res))
     res))
 
+(defn map-ok [f]
+  (fn [xs]
+    {:ok (map f xs)}))
+
+(defn pmap-ok [f]
+  (fn [xs]
+    {:ok (pmap f xs)}))
+
 ;; TODO import + clean up CSV of bikes (or scrape them all from the live site?)
+(def url "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
+
+;; parse csv for each second column (url), store in list
+(def input-table
+  (try
+  {:ok (with-open [reader (io/reader "src/Bike_Reviews.csv")]
+    (doall
+     (csv/read-csv reader)))}
+  (catch Exception e
+    {:err {:type :file
+           :message (.getMessage e)}})))
+
+(defn parse-urls [table]
+  {:ok
+   (map second table)})
+
 
 (defn fetch-bike [url]
   (try
@@ -37,7 +63,7 @@
              :message (.getMessage e)}})))
 
 (defn parse-bike [response]
-  (let [doc (html/html-snippet (:body response))
+  (let [doc (html/html-snippet (:body (:ok response)))
         ;; all elements in "Facts & Figures" tables
         facts-figures-labels (map #(clean-keyword (apply str (:content %)))
                                         (html/select doc [:.review__facts-and-figures__item__label]))
@@ -69,15 +95,19 @@
              :message "key or value not found"}})))
 
 ;; Main
-  (-> (fetch-bike url)
-      (bind parse-bike)
-      (bind test-query-bike)) ;; FIXME
+(-> input-table
+    (bind parse-urls)
+    (bind (pmap-ok fetch-bike))
+    (bind (map-ok parse-bike))
+    (bind (fn [bikes] {:ok (doall bikes)}))
+    ) ;; FIXME
 
 ;; TODO:
-;; - import CSV of bikes and map over them
+;; - put name of the bike in the map (test with just one url)
+;; - fix newlines and tabs included in some strings?
+;; - make it async~
 ;; - implement DSL/query language
 ;; - implement API + docs
 ;; - include tests
 ;; - add accumulated logging
 ;; - add documentation strings to functions
-;; - make it async~
