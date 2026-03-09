@@ -14,6 +14,18 @@
       (string/replace #" " "-")
       keyword))
 
+;; TODO improve parsing logic
+(defn clean-bike-name [s]
+  (-> s
+      (string/split #"bike-reviews/")
+      second
+      (string/replace #"/" " ")
+      string/trim
+      (string/replace #" " "-")
+      ))
+
+(clean-bike-name "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
+
 (defn first-token [s]
   (let [i (.indexOf s " ")]
     (if (neg? i)
@@ -39,7 +51,7 @@
 ;; TODO import + clean up CSV of bikes (or scrape them all from the live site?)
 (def url "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
 
-;; parse csv for each second column (url), store in list
+;; basic CSV parsing
 (def input-table
   (try
   {:ok (with-open [reader (io/reader "src/Bike_Reviews.csv")]
@@ -66,22 +78,30 @@
   (let [doc (html/html-snippet (:body (:ok response)))
         ;; all elements in "Facts & Figures" tables
         facts-figures-labels (map #(clean-keyword (apply str (:content %)))
-                                        (html/select doc [:.review__facts-and-figures__item__label]))
-        facts-figures-values (map #(apply str (:content %))
-                                        (html/select doc [:.review__facts-and-figures__item__value]))
+                                  (html/select doc [:.review__facts-and-figures__item__label]))
+        facts-figures-values (map #(apply str (:content %)) ;; TODO apply filtered-str? that parses and filters out HTML gubbins?
+                                  (html/select doc [:.review__facts-and-figures__item__value]))
         ;; MCN Star Rating (separate from other facts/figures)
         mcn-star-rating-label [:mcn-rating]
         mcn-star-rating-value [(some-> (html/select doc [:.star-rating__stars])
+                                       first
+                                       :attrs
+                                       :title
+                                       first-token)]
+        bike-name-label [:bike-name]
+
+        bike-name-value [(some-> doc
+                                (html/select [[:link (html/attr= :rel "canonical")]])
                                 first
                                 :attrs
-                                :title
-                                first-token)]]
+                                :href
+                                clean-bike-name)]]
 
     ;; wrap return val:
       (if (and (seq facts-figures-labels) (seq facts-figures-values) (not (nil? mcn-star-rating-value)))
         {:ok (zipmap
-              (concat facts-figures-labels mcn-star-rating-label)   ;; <- these *should* always be equal lengths
-              (concat facts-figures-values mcn-star-rating-value))} ;; <-
+              (concat facts-figures-labels mcn-star-rating-label bike-name-label)   ;; <- these *should* always be equal lengths
+              (concat facts-figures-values mcn-star-rating-value bike-name-value))} ;; <-
         {:err {:type :parse
                  :message "labels or values weren't found in HTML response."}})))
 
@@ -105,6 +125,7 @@
 ;; TODO:
 ;; - put name of the bike in the map (test with just one url)
 ;; - fix newlines and tabs included in some strings?
+;;   - put logic in to individually parse each inner tag of data 
 ;; - make it async~
 ;; - implement DSL/query language
 ;; - implement API + docs
