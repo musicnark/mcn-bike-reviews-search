@@ -73,3 +73,31 @@
 
 (let [x [0 1 2 3 4]]
   (map #(- 1 %) x))
+
+;; Inspiration for parse-bike rewrite
+(defn parse-bike [response]
+  (let [doc (html/html-snippet (:body (:ok response)))
+        facts-figures-pairs (for [label (html/select doc [:.review__facts-and-figures__item__label])
+                                   value (html/select doc [:.review__facts-and-figures__item__value])
+                                   :when (= (:content label) (:content (html/select doc [:.review__facts-and-figures__item__value])))]
+                               [(clean-keyword (apply str (:content label)))
+                                (apply str (:content value))])
+        
+        mcn-rating (-> (html/select doc [:.star-rating__stars])
+                       first
+                       :attrs
+                       :title
+                       first-token)
+        
+        bike-name (-> (html/select doc [[:link (html/attr= :rel "canonical")]])
+                     first
+                     :attrs
+                     :href
+                     clean-bike-name)
+        all-data (into {} (concat facts-figures-pairs
+                                  [[:mcn-rating mcn-rating]
+                                   [:bike-name bike-name]]))]
+    (if (and (seq facts-figures-pairs) mcn-rating bike-name)
+      {:ok all-data}
+      {:err {:type :parse
+             :message "Required fields missing in HTML response."}})));

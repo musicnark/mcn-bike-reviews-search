@@ -16,13 +16,14 @@
 
 ;; TODO improve parsing logic
 (defn clean-bike-name [s]
-  (-> s
-      (string/split #"bike-reviews/")
-      second
-      (string/replace #"/" " ")
-      string/trim
-      (string/replace #" " "-")
-      ))
+  (when (url? s)
+    (-> s
+        (string/split #"bike-reviews/")
+        second
+        (string/replace #"/" " ")
+        string/trim
+        (string/replace #" " "-")
+        )))
 
 (clean-bike-name "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
 
@@ -31,6 +32,11 @@
     (if (neg? i)
       s
       (subs s 0 i))))
+
+(defn url? [s]
+  (try
+    (some? (java.net.URL. s))
+    (catch Exception _ false)))
 
 (defn ok? [res] (contains? res :ok))
 (defn err? [res] (contains? res :err))
@@ -89,13 +95,15 @@
                                        :title
                                        first-token)]
         bike-name-label [:bike-name]
-
         bike-name-value [(some-> doc
                                 (html/select [[:link (html/attr= :rel "canonical")]])
                                 first
                                 :attrs
                                 :href
-                                clean-bike-name)]]
+                                clean-bike-name)]
+
+        ;; all-data (into {} (concat facts-figures-labels))
+        ]
 
     ;; wrap return val:
       (if (and (seq facts-figures-labels) (seq facts-figures-values) (not (nil? mcn-star-rating-value)))
@@ -124,6 +132,8 @@
 
 ;; TODO:
 ;; - put name of the bike in the map (test with just one url)
+;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
+;; - add bike review url as field in map
 ;; - fix newlines and tabs included in some strings?
 ;;   - put logic in to individually parse each inner tag of data 
 ;; - make it async~
