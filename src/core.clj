@@ -3,7 +3,8 @@
   (:require [net.cgrand.enlive-html :as html])
   (:require [clojure.string :as string])
   (:require [clojure.data.csv :as csv])
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io])
+  (:require [clojure.core.async :refer [go <! >! chan close! take!]]))
 
 ;; helpers 
 (defn clean-keyword [s]
@@ -13,6 +14,11 @@
       string/lower-case
       (string/replace #" " "-")
       keyword))
+
+(defn url? [s]
+  (try
+    (some? (java.net.URL. s))
+    (catch Exception _ false)))
 
 ;; TODO improve parsing logic
 (defn clean-bike-name [s]
@@ -33,10 +39,6 @@
       s
       (subs s 0 i))))
 
-(defn url? [s]
-  (try
-    (some? (java.net.URL. s))
-    (catch Exception _ false)))
 
 (defn ok? [res] (contains? res :ok))
 (defn err? [res] (contains? res :err))
@@ -80,6 +82,28 @@
       {:err {:type :network
              :message (.getMessage e)}})))
 
+(defn fetch-bikes-async [url]
+  (let [ch (chan)]
+    (http/get url {:headers {"User-Agent" "Mozilla/5.0"}
+                   :async? true}
+              ;; success callback
+              (fn [r]
+                (go
+                  (>! ch {:ok r})
+                  (close! ch)))
+              ;; error callback
+              (fn [e]
+                (go
+                  (>! ch {:err {:type    :network
+                                :message (.getMessage e)}})
+                  (close! ch))))
+    ch))
+
+;; TODO implement in main function
+(go
+  (let [result (<! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/"))]
+    (println (parse-bike result))))
+
 (defn parse-bike [response]
   (let [doc (html/html-snippet (:body (:ok response)))
         ;; all elements in "Facts & Figures" tables
@@ -122,13 +146,13 @@
       {:err {:type :query
              :message "key or value not found"}})))
 
-;; Main
-(-> input-table
-    (bind parse-urls)
-    (bind (pmap-ok fetch-bike))
-    (bind (map-ok parse-bike))
-    (bind (fn [bikes] {:ok (doall bikes)}))
-    ) ;; FIXME
+;; ;; Main
+;; (-> input-table
+;;     (bind parse-urls)
+;;     (bind (pmap-ok fetch-bike))
+;;     (bind (pmap-ok parse-bike))
+;;     (bind (fn [bikes] {:ok (doall bikes)}))
+;;     ) ;; FIXME
 
 ;; TODO:
 ;; - put name of the bike in the map (test with just one url)
