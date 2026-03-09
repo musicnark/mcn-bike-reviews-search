@@ -4,6 +4,20 @@
   (:require [clojure.string :as string]))
 
 ;; helpers 
+(defn clean-keyword [s]
+  (-> s
+      string/trim
+      (string/replace #":" "")
+      string/lower-case
+      (string/replace #" " "-")
+      keyword))
+
+(defn first-token [s]
+  (let [i (.indexOf s " ")]
+    (if (neg? i)
+      s
+      (subs s 0 i))))
+
 (defn ok? [res] (contains? res :ok))
 (defn err? [res] (contains? res :err))
 ;; essentially 'unwrap' or 'match'. think 'then' in pipeline
@@ -23,20 +37,6 @@
       {:err {:type :network
              :message (.getMessage e)}})))
 
-(defn clean-keyword [s]
-  (-> s
-      string/trim
-      (string/replace #":" "")
-      string/lower-case
-      (string/replace #" " "-")
-      keyword))
-
-(defn first-token [s]
-  (let [i (.indexOf s " ")]
-    (if (neg? i)
-      s
-      (subs s 0 i))))
-
 (defn parse-bike [response]
   (let [doc (html/html-snippet (:body response))
         ;; all elements in "Facts & Figures" tables
@@ -53,7 +53,7 @@
                                 first-token)]]
 
     ;; wrap return val:
-      (if (and (seq facts-figures-labels) (seq facts-figures-values))
+      (if (and (seq facts-figures-labels) (seq facts-figures-values) (not (nil? mcn-star-rating-value)))
         {:ok (zipmap
               (concat facts-figures-labels mcn-star-rating-label)   ;; <- these *should* always be equal lengths
               (concat facts-figures-values mcn-star-rating-value))} ;; <-
@@ -77,7 +77,8 @@
 ;; TODO:
 ;; - import CSV of bikes and map over them
 ;; - implement DSL/query language
-;; - implement API
+;; - implement API + docs
 ;; - include tests
-;; - add accumulated logging 
+;; - add accumulated logging
+;; - add documentation strings to functions
 ;; - make it async~

@@ -17,5 +17,33 @@
 (defn get-star-rating [url]
   (let [doc (html/html-snippet (:body (http/get url
                       {:headers {"User-Agent" "Mozilla/5.0"}})))]
-(:title (:attrs (first (html/select doc [:.star-rating__stars]))))
-    ))
+    (-> doc
+        (html/select [:.star-rating__stars])
+        first
+        :attrs
+        :title)))
+
+(->> [\a \b \c \d \e \f \g \h \i \j \k \l \m \n \o \p \q \r \s \t \u \v \w \x \y \z]
+     (map 
+      (fn [c]
+        (-> c
+            int
+            inc
+            char
+            )))
+     (map int)
+     (filter even?)
+     (map char))
+
+(->> [2 4 3 1 5 7 6 8 9 0]
+     sort
+     (filter even?)
+     (reduce +))
+
+
+(->> [1 2 3 4 5 6 7]
+     (map inc)
+     (filter even?))
+
+(let [x [0 1 2 3 4]]
+  (map #(- 1 %) x))
