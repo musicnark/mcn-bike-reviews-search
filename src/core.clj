@@ -27,7 +27,6 @@
     res))
 
 ;; TODO import + clean up CSV of bikes (or scrape them all from the live site?)
-(def url "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
 
 (defn fetch-bike [url]
   (try
