@@ -51,6 +51,7 @@
       ))
 
 ;; ASYNC
+;; 'fan-out'
 (def merged-chans (async/merge (doall (map mcn/fetch-bikes-async urls-to-fetch))))
 
 (def result (<!!
@@ -85,10 +86,10 @@
 ;;                        (println "Got: " val)
 ;;                        (recur (dec n) (conj res val)))))))
 
-(println "Final result:" result)
+;; (println "Final result:" result)
 
 ;; TODO rewrite to take directly from channels while fetching urls
-  (def maps (pmap parse-bike result))
+  ;; (def maps (pmap parse-bike result))
 
 ;; /ASYNC
 
@@ -165,5 +166,5 @@
 ;;              :message "Required fields missing in HTML response."}})));
 
 ;; TODO
-;; - how to batch async jobs with timeout
-;; - how to parse results as they come back in batches?
+;; - how to batch async jobs with timeout [DONE]
+;; - *how to parse results as they come back asynchronously?*
