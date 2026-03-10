@@ -66,8 +66,8 @@
                      batch (if (reduced? batch) @batch batch)]
                  (if (seq batch)
                    (do
-                     (<! (timeout 50))
-                     (println "New Batch")
+                     (<! (timeout 500))
+                     (println "^^ Batch ^^")
                      ;; maybe here is where you parse the bikes? can it be done asynchronously too?
                      (recur (into res batch)))
                    res)))))
