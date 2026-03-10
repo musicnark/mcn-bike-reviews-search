@@ -4,7 +4,7 @@
   (:require [clojure.string :as string])
   (:require [clojure.data.csv :as csv])
   (:require [clojure.java.io :as io])
-  (:require [clojure.core.async :as async :refer [go-loop go <! >! <!! >!! chan take merge timeout]])
+  (:require [clojure.core.async :as async :refer [go-loop go thread <! >! <!! >!! chan take merge timeout pipeline]])
   (:require [core :as mcn])
   (:require [clj-http.conn-mgr :as conn]))
 
@@ -50,6 +50,7 @@
       (:ok)
       ))
 
+;; ASYNC
 (def merged-chans (async/merge (doall (map mcn/fetch-bikes-async urls-to-fetch))))
 
 (def result (<!!
@@ -61,7 +62,9 @@
                                (if-let [val (<! merged-chans)]
                                  (do
                                    (println "Val: " (str (clojure.core/take 100 val)))
-                                   (recur (dec n) (conj batch val)))
+                                   (if (mcn/ok? val) ;; ignore failed fetches
+                                     (recur (dec n) (conj batch val))
+                                     (recur (dec n) batch)))
                                  (reduced batch))))
                      batch (if (reduced? batch) @batch batch)]
                  (if (seq batch)
@@ -84,9 +87,10 @@
 
 (println "Final result:" result)
 
+;; TODO rewrite to take directly from channels while fetching urls
+  (def maps (pmap parse-bike result))
 
-
-
+;; /ASYNC
 
 (defn parse-bike [response]
   (let [doc (html/html-snippet (:body (:ok response)))
