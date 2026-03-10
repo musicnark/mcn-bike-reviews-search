@@ -84,9 +84,9 @@
              :message (.getMessage e)}})))
 
 (def cm (conn/make-reusable-async-conn-manager
-          {:threads 100              ; max threads for connecting
-           :default-per-route 100   ; max connections PER HOST
-           :timeout 1}))
+          {:threads 50              ; max threads for connecting
+           :default-per-route 50   ; max connections PER HOST
+           :timeout 10}))
 
 (defn fetch-bikes-async [url]
   (let [ch (chan)]
@@ -168,6 +168,8 @@
 ;; - fix newlines and tabs included in some strings?
 ;;   - put logic in to individually parse each inner tag of data 
 ;; - make it async~
+;;   - url fetching [done]
+;;   - page parsing
 ;; - implement DSL/query language
 ;; - implement API + docs
 ;; - include tests
