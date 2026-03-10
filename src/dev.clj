@@ -4,20 +4,27 @@
   (:require [clojure.string :as string])
   (:require [clojure.data.csv :as csv])
   (:require [clojure.java.io :as io])
-  (:require [clojure.core.async :refer [go <! >! chan]]))
+  (:require [clojure.core.async :as async :refer [go-loop go <! >! <!! >!! chan take merge timeout]])
+  (:require [core :as mcn])
+  (:require [clj-http.conn-mgr :as conn]))
 
 ;; (add-tap (fn [x] (spit "src/log.txt" (pr-str x) :append true)))
 
-(defn ok? [res] (contains? res :ok))
-
 (defn bind [res f]
-  (if (ok? res)
+  (if (mcn/ok? res)
     (f (:ok res))
     res))
 
 (def url "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
 
 ;; parse csv for each second column (url), store in list
+(defn valid-url? [url]
+  (and (string? url)
+       (seq url)
+       (> (count url) 5)  ; minimum reasonable length
+       (and (.contains url ".")
+           (.startsWith url "http"))))
+
 (def input-table
   (try
   {:ok (with-open [reader (io/reader "src/Bike_Reviews.csv")]
@@ -29,46 +36,62 @@
 
 (defn parse-urls [table]
   {:ok
-   (map second table)})
+   (->> table
+        (map second)
+        (filter valid-url?)
+        (vec))})
 
-(-> input-table
-    (bind parse-urls))
+(def urls (-> input-table
+     (bind parse-urls)))
 
-(def doc
-  (-> (http/get url {:headers {"User-Agent" "Mozilla/5.0"}})
-      :body
-      (tap>)
-      html/html-snippet
+(def urls-to-fetch
+  (-> input-table
+      (bind parse-urls)
+      (:ok)
       ))
 
-(defn get-star-rating [url]
-  (let [doc (html/html-snippet (:body (http/get url
-                      {:headers {"User-Agent" "Mozilla/5.0"}})))]
-    (-> doc
-        (html/select [:.star-rating__stars])
-        first
-        :attrs
-        :title)))
+(def merged-chans (async/merge (doall (map mcn/fetch-bikes-async urls-to-fetch))))
+
+(def result (<!!
+             (go-loop [res []] ;; outer loop (to restart batch when it's finished)
+               (let [batch (loop [n 50
+                                  batch []]
+                             (if (zero? n)
+                               batch
+                               (if-let [val (<! merged-chans)]
+                                 (do
+                                   (println "Val: " (str (clojure.core/take 100 val)))
+                                   (recur (dec n) (conj batch val)))
+                                 (reduced batch))))
+                     batch (if (reduced? batch) @batch batch)]
+                 (if (seq batch)
+                   (do
+                     (<! (timeout 50))
+                     (println "New Batch")
+                     ;; maybe here is where you parse the bikes? can it be done asynchronously too?
+                     (recur (into res batch)))
+                   res)))))
+
+;; (def result (<!!
+;;              ;; add outer-loop that passes 50 elements at a time, batch it up, timeout for a second, repeat, handling the case where there's less than 50 elements with 'reduced'
+;;              (go-loop [n 50
+;;                             res []]
+;;                    (if (zero? n)
+;;                      res
+;;                      (when-let [val (<! merged-chans)]
+;;                        (println "Got: " val)
+;;                        (recur (dec n) (conj res val)))))))
+
+(println "Final result:" result)
 
 
-(defn fetch-bikes-async [url]
-  (http/get url
-            {:headers {"User-Agent" "Mozilla/5.0"}
-             :async? true}
-            (fn [response]
-              {:ok response})
-            (fn [exception]
-              {:err {:type :network
-                     :message (.getMessage exception)}})))
 
-(go
-  (let [result (<! (fetch-bike url))]
-    (println "Parsed result:" result)))
+
 
 (defn parse-bike [response]
   (let [doc (html/html-snippet (:body (:ok response)))
         ;; all elements in "Facts & Figures" tables
-        facts-figures-labels (map #(clean-keyword (apply str (:content %)))
+        facts-figures-labels (map #(mcn/clean-keyword (apply str (:content %)))
                                   (html/select doc [:.review__facts-and-figures__item__label]))
         facts-figures-values (map #(apply str (:content %)) ;; TODO apply filtered-str? that parses and filters out HTML gubbins?
                                   (html/select doc [:.review__facts-and-figures__item__value]))
@@ -78,14 +101,14 @@
                                        first
                                        :attrs
                                        :title
-                                       first-token)]
+                                       mcn/first-token)]
         bike-name-label [:bike-name]
         bike-name-value [(some-> doc
                                 (html/select [[:link (html/attr= :rel "canonical")]])
                                 first
                                 :attrs
                                 :href
-                                clean-bike-name)]
+                                mcn/clean-bike-name)]
 
         ;; all-data (into {} (concat facts-figures-labels))
         ]
@@ -98,19 +121,6 @@
         {:err {:type :parse
                  :message "labels or values weren't found in HTML response."}})))
 
-(defn fetch-and-parse-single-bike-async [url]
-      (let [result-chan (chan 1)]
-        (go
-          (let [deferred-result (fetch-bike url)
-                final-result @deferred-result] ;; This parks the go block, non-blocking for CPU thread
-            (if (:ok final-result)
-              (>! result-chan (parse-bike (:ok final-result)))
-              (>! result-chan final-result))))
-        result-chan))
-    ;; Usage:
-    (go
-      (let [result (<! (fetch-and-parse-single-bike-async url))]
-        (println "Parsed result:" result)))
 
 ;;  ;; :async? in options map need to be true
 ;; (http/get "https://google.com"
@@ -149,3 +159,7 @@
 ;;       {:ok all-data}
 ;;       {:err {:type :parse
 ;;              :message "Required fields missing in HTML response."}})));
+
+;; TODO
+;; - how to batch async jobs with timeout
+;; - how to parse results as they come back in batches?

@@ -4,7 +4,8 @@
   (:require [clojure.string :as string])
   (:require [clojure.data.csv :as csv])
   (:require [clojure.java.io :as io])
-  (:require [clojure.core.async :refer [go <! >! chan close! take!]]))
+  (:require [clojure.core.async :refer [go <! >! chan close! take!]])
+  (:require [clj-http.conn-mgr :as conn]))
 
 ;; helpers 
 (defn clean-keyword [s]
@@ -82,10 +83,16 @@
       {:err {:type :network
              :message (.getMessage e)}})))
 
+(def cm (conn/make-reusable-async-conn-manager
+          {:threads 100              ; max threads for connecting
+           :default-per-route 100   ; max connections PER HOST
+           :timeout 1}))
+
 (defn fetch-bikes-async [url]
   (let [ch (chan)]
     (http/get url {:headers {"User-Agent" "Mozilla/5.0"}
-                   :async? true}
+                   :async? true
+                   :connection-manager cm}
               ;; success callback
               (fn [r]
                 (go
@@ -100,9 +107,9 @@
     ch))
 
 ;; TODO implement in main function
-(go
-  (let [result (<! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/"))]
-    (println (parse-bike result))))
+;; (go
+;;   (let [result (<! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/"))]
+;;     (println (parse-bike result))))
 
 (defn parse-bike [response]
   (let [doc (html/html-snippet (:body (:ok response)))
@@ -166,3 +173,7 @@
 ;; - include tests
 ;; - add accumulated logging
 ;; - add documentation strings to functions
+
+;; TODO Concurrency Tutorial:
+;; - threads vs go routines?
+;; - generate exercises with dummy json data to internalise the basics (message passing, assigning futures, putting and taking from threads/go routines, watching the speed-up real-time)
