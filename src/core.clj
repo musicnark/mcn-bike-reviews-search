@@ -121,14 +121,15 @@
                                        :attrs
                                        :title
                                        first-token)]
-        bike-name-label [:bike-name]
-        bike-name-value [(some-> doc
+        bike-url-label [:url]
+        bike-url-value [(some-> doc ;; TODO rename as bike-url, get bike name from it
                                 (html/select [[:link (html/attr= :rel "canonical")]])
                                 first
                                 :attrs
                                 :href
-                                clean-bike-name)]
-
+                                )]
+        bike-name-label [:bike-name]
+        bike-name-value [(clean-bike-name (first bike-url-value))]
         ;; all-data (into {} (concat facts-figures-labels))
         ]
 
@@ -136,8 +137,8 @@
     ;; wrap return val:
       (if (and (seq facts-figures-labels) (seq facts-figures-values) (not (nil? mcn-star-rating-value)))
         {:ok (zipmap
-              (concat facts-figures-labels mcn-star-rating-label bike-name-label)   ;; <- these *should* always be equal lengths
-              (concat facts-figures-values mcn-star-rating-value bike-name-value))} ;; <-
+              (concat facts-figures-labels mcn-star-rating-label bike-url-label bike-name-label)   ;; <- these *should* always be equal lengths
+              (concat facts-figures-values mcn-star-rating-value bike-url-value bike-name-value))} ;; <-
         {:err {:type :parse
                  :message "labels or values weren't found in HTML response."}})))
 
@@ -181,7 +182,7 @@
 ;; TODO:
 ;; - put name of the bike in the map (test with just one url) [DONE]
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
-;; - add bike review url as field in map
+;; - add bike review url as field in map [DONE]
 ;; - fix newlines and tabs included in some strings?
 ;;   - put logic in to individually parse each inner tag of data 
 ;; - make it async~
