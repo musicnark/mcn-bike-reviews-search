@@ -170,6 +170,7 @@
       (bind parse-urls)
       (:ok))) ;; TODO proper error handling needed
 
+;; Main
 (defn results [urls-to-fetch]
   (-> urls-to-fetch
       merge-html-chans
@@ -177,17 +178,8 @@
       collect-results
       <!!))
 
-;; Main
-(comment
- (-> input-table
-    (bind parse-urls)
-    (bind (pmap-ok fetch-bike))
-    (bind (pmap-ok parse-bike))
-    (bind (fn [bikes] {:ok (doall bikes)}))
-    )) ;; FIXME
-
 ;; TODO:
-;; - put name of the bike in the map (test with just one url)
+;; - put name of the bike in the map (test with just one url) [DONE]
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - add bike review url as field in map
 ;; - fix newlines and tabs included in some strings?

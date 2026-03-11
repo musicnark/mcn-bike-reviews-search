@@ -78,7 +78,7 @@
                     (if-let [val (<! merged-chans)]
                       (do
                         (println "Val: " (str (clojure.core/take 100 val)))
-                        (if (mcn/ok? val) ;; TODO ignores failed fetches, but need putting into a 'failed' queue for later retries
+                        (if (ok? val) ;; TODO ignores failed fetches, but need putting into a 'failed' queue for later retries
                           (recur (dec n) (conj batch val))
                           (recur (dec n) batch)))
                       (reduced batch))))
@@ -90,6 +90,16 @@
           ;; maybe here is where you parse the bikes? can it be done asynchronously too?
           (recur (into res batch)))
         res))))
+
+;; Old Main
+(comment
+ (-> input-table
+    (bind parse-urls)
+    (bind (pmap-ok fetch-bike))
+    (bind (pmap-ok parse-bike))
+    (bind (fn [bikes] {:ok (doall bikes)}))
+    )) ;; FIXME
+
 
 ;; TODO
 ;; - how to batch async jobs with timeout [DONE]
