@@ -4,7 +4,7 @@
   (:require [clojure.string :as string])
   (:require [clojure.data.csv :as csv])
   (:require [clojure.java.io :as io])
-  (:require [clojure.core.async :refer [go <! >! chan close! take!]])
+  (:require [clojure.core.async :as async :refer [go <! >! <!! chan close!]])
   (:require [clj-http.conn-mgr :as conn]))
 
 ;; helpers 
@@ -21,6 +21,13 @@
     (some? (java.net.URL. s))
     (catch Exception _ false)))
 
+(defn parse-urls [table]
+  {:ok
+   (->> table
+        (map second)
+        (filter url?)
+        (vec))})
+
 ;; TODO improve parsing logic
 (defn clean-bike-name [s]
   (when (url? s)
@@ -32,7 +39,8 @@
         (string/replace #" " "-")
         )))
 
-(clean-bike-name "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
+(comment
+(clean-bike-name "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/"))
 
 (defn first-token [s]
   (let [i (.indexOf s " ")]
@@ -70,22 +78,9 @@
     {:err {:type :file
            :message (.getMessage e)}})))
 
-(defn parse-urls [table]
-  {:ok
-   (map second table)})
-
-
-(defn fetch-bike [url]
-  (try
-    {:ok (http/get url
-                   {:headers {"User-Agent" "Mozilla/5.0"}})}
-    (catch Exception e
-      {:err {:type :network
-             :message (.getMessage e)}})))
-
 (def cm (conn/make-reusable-async-conn-manager
-          {:threads 50              ; max threads for connecting
-           :default-per-route 50   ; max connections PER HOST
+          {:threads 50              ;; max threads for connecting
+           :default-per-route 50   ;; max connections *per host*
            :timeout 10}))
 
 (defn fetch-bikes-async [url]
@@ -137,6 +132,7 @@
         ;; all-data (into {} (concat facts-figures-labels))
         ]
 
+    (println "parsed: " bike-name-value)
     ;; wrap return val:
       (if (and (seq facts-figures-labels) (seq facts-figures-values) (not (nil? mcn-star-rating-value)))
         {:ok (zipmap
@@ -145,22 +141,50 @@
         {:err {:type :parse
                  :message "labels or values weren't found in HTML response."}})))
 
-;; FIXME test
-(defn test-query-bike [response]
-  ;; await query input from user
-  (let [res (:mcn-rating response)] ;; test
-    (if (and (string? res) (not (empty? res)))
-      {:ok res}
-      {:err {:type :query
-             :message "key or value not found"}})))
+(defn merge-html-chans [urls-to-fetch]
+  (async/merge (doall (map fetch-bikes-async urls-to-fetch))))
 
-;; ;; Main
-;; (-> input-table
-;;     (bind parse-urls)
-;;     (bind (pmap-ok fetch-bike))
-;;     (bind (pmap-ok parse-bike))
-;;     (bind (fn [bikes] {:ok (doall bikes)}))
-;;     ) ;; FIXME
+(defn parse-pipeline [input-chan num-workers]
+  (let [output-chan (chan)]
+    (async/pipeline
+     num-workers
+     output-chan
+     (map parse-bike)
+     input-chan)
+    output-chan))
+
+(defn collect-results [parsed-chan]
+  (async/go-loop [results {}]
+    (let [result (<! parsed-chan)]
+      (if result
+        (let [key (or (get-in result [:ok :bike-name])
+                      (keyword (str "bike-" (count results))))
+              ;; TODO: Track failed fetches here (when (:err result))
+              ]
+          (recur (assoc results key result)))
+        results))))
+
+
+(def urls-to-fetch
+  (-> input-table
+      (bind parse-urls)
+      (:ok))) ;; TODO proper error handling needed
+
+(defn results [urls-to-fetch]
+  (-> urls-to-fetch
+      merge-html-chans
+      (parse-pipeline 15)
+      collect-results
+      <!!))
+
+;; Main
+(comment
+ (-> input-table
+    (bind parse-urls)
+    (bind (pmap-ok fetch-bike))
+    (bind (pmap-ok parse-bike))
+    (bind (fn [bikes] {:ok (doall bikes)}))
+    )) ;; FIXME
 
 ;; TODO:
 ;; - put name of the bike in the map (test with just one url)
@@ -169,13 +193,21 @@
 ;; - fix newlines and tabs included in some strings?
 ;;   - put logic in to individually parse each inner tag of data 
 ;; - make it async~
-;;   - url fetching [done]
-;;   - page parsing
+;;   - url fetching [DONE]
+;;   - page parsing [DONE]
 ;; - implement DSL/query language
 ;; - implement API + docs
 ;; - include tests
 ;; - add accumulated logging
 ;; - add documentation strings to functions
+;; - *organise functions into different namespaces*
+
+;; TODO (prototyping):
+;; - how to batch async jobs with timeout [DONE]
+;; - how to parse results as they come back asynchronously? [DONE]
+;; - handling for duplicate bikes
+;; - write a sync version of the code to test against?
+;; - integrate rate limiting and global error handling (via an atom) into async pipeline
 
 ;; TODO Concurrency Tutorial:
 ;; - threads vs go routines?
