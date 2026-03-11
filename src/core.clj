@@ -97,7 +97,8 @@
               (fn [r]
                 (go
                   (>! ch {:ok r})
-                  (close! ch)))
+                  (close! ch)
+                  (println "successfully fetched bike")))
               ;; error callback
               (fn [e]
                 (go

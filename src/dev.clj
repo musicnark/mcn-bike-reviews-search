@@ -47,44 +47,69 @@
 (def urls-to-fetch
   (-> input-table
       (bind parse-urls)
-      (:ok)
-      ))
+      (:ok)))
 
 ;; ASYNC
-;; 'fan-out'
-(def merged-chans (async/merge (doall (map mcn/fetch-bikes-async urls-to-fetch))))
+;; 'fan-in'
+(defn merge-html-chans [urls-to-fetch]
+  (async/merge (doall (map mcn/fetch-bikes-async urls-to-fetch))))
 
-(def result (<!!
-             (go-loop [res []] ;; outer loop (to restart batch when it's finished)
-               (let [batch (loop [n 50
-                                  batch []]
-                             (if (zero? n)
-                               batch
-                               (if-let [val (<! merged-chans)]
-                                 (do
-                                   (println "Val: " (str (clojure.core/take 100 val)))
-                                   (if (mcn/ok? val) ;; ignore failed fetches
-                                     (recur (dec n) (conj batch val))
-                                     (recur (dec n) batch)))
-                                 (reduced batch))))
-                     batch (if (reduced? batch) @batch batch)]
-                 (if (seq batch)
-                   (do
-                     (<! (timeout 500))
-                     (println "^^ Batch ^^")
-                     ;; maybe here is where you parse the bikes? can it be done asynchronously too?
-                     (recur (into res batch)))
-                   res)))))
+(defn parse-pipeline [input-chan num-workers]
+  (let [output-chan (chan)]
+    (pipeline num-workers output-chan (map parse-bike) input-chan)
+    output-chan))
 
-;; (def result (<!!
-;;              ;; add outer-loop that passes 50 elements at a time, batch it up, timeout for a second, repeat, handling the case where there's less than 50 elements with 'reduced'
-;;              (go-loop [n 50
-;;                             res []]
-;;                    (if (zero? n)
-;;                      res
-;;                      (when-let [val (<! merged-chans)]
-;;                        (println "Got: " val)
-;;                        (recur (dec n) (conj res val)))))))
+(defn collect-results [parsed-chan]
+  (go-loop [results {}]
+    (let [result (<! parsed-chan)]
+      (if result
+        (let [key (or (get-in result [:ok :bike-name])
+                      (keyword (str "bike-" (count results))))
+              ;; TODO: Track failed fetches here (when (:err result))
+              ]
+          (recur (assoc results key result)))
+        results))))
+
+(defn results [urls-to-fetch]
+  (-> urls-to-fetch
+      merge-html-chans
+      (parse-pipeline 15)
+      collect-results
+      <!!))
+
+;; (<!! (collect-results (parse-pipeline (merged-chans urls-to-fetch) 5)))
+
+
+;; (go-loop [results {}]
+;;   (let [result (<! parsed-chan)]
+;;     (if result
+;;       (let [key (or (get-in result [:ok :bike-name])
+;;                     (keyword (str "bike-" (count results))))]
+;;         (recur (assoc results key result)))
+;;       results)))  ; returns final map when channel closes
+
+;; TODO is this still needed or?
+(defn fan-out [merged-chans]
+  (go-loop [res []] ;; outer loop (to restart batch when it's finished)
+    (let [batch (loop [n 50
+                       batch []]
+                  (if (zero? n)
+                    batch
+                    (if-let [val (<! merged-chans)]
+                      (do
+                        (println "Val: " (str (clojure.core/take 100 val)))
+                        (if (mcn/ok? val) ;; TODO ignores failed fetches, but need putting into a 'failed' queue for later retries
+                          (recur (dec n) (conj batch val))
+                          (recur (dec n) batch)))
+                      (reduced batch))))
+          batch (if (reduced? batch) @batch batch)]
+      (if (seq batch)
+        (do
+          (<! (timeout 500))
+          (println "^^ Batch ^^")
+          ;; maybe here is where you parse the bikes? can it be done asynchronously too?
+          (recur (into res batch)))
+        res))))
 
 ;; (println "Final result:" result)
 
@@ -93,8 +118,8 @@
 
 ;; /ASYNC
 
-(defn parse-bike [response]
-  (let [doc (html/html-snippet (:body (:ok response)))
+(defn parse-bike [response-chan]
+  (let [doc (html/html-snippet (:body (:ok response-chan)))
         ;; all elements in "Facts & Figures" tables
         facts-figures-labels (map #(mcn/clean-keyword (apply str (:content %)))
                                   (html/select doc [:.review__facts-and-figures__item__label]))
@@ -109,7 +134,7 @@
                                        mcn/first-token)]
         bike-name-label [:bike-name]
         bike-name-value [(some-> doc
-                                (html/select [[:link (html/attr= :rel "canonical")]])
+                                (html/select [[:link (html/attr= :rel "canonical")]]) ;; TODO make each of these parsing functions async?
                                 first
                                 :attrs
                                 :href
@@ -119,6 +144,7 @@
         ]
 
     ;; wrap return val:
+    (println "parsed: " bike-name-value)
       (if (and (seq facts-figures-labels) (seq facts-figures-values) (not (nil? mcn-star-rating-value)))
         {:ok (zipmap
               (concat facts-figures-labels mcn-star-rating-label bike-name-label)   ;; <- these *should* always be equal lengths
@@ -165,6 +191,36 @@
 ;;       {:err {:type :parse
 ;;              :message "Required fields missing in HTML response."}})));
 
+
+(defn merge-html-chans [urls-to-fetch]
+  (async/merge (doall (map mcn/fetch-bikes-async urls-to-fetch))))
+
+(defn parse-pipeline [input-chan num-workers]
+  (let [output-chan (chan)]
+    (pipeline num-workers output-chan (map parse-bike) input-chan)
+    output-chan))
+
+(defn collect-results [parsed-chan]
+  (go-loop [results {}]
+    (let [result (<! parsed-chan)]
+      (if result
+        (let [key (or (get-in result [:ok :bike-name])
+                      (keyword (str "bike-" (count results))))
+              ;; TODO: Track failed fetches here (when (:err result))
+              ]
+          (recur (assoc results key result)))
+        results))))
+
+(defn results [urls-to-fetch]
+  (-> urls-to-fetch
+      merge-html-chans
+      (parse-pipeline 15)
+      collect-results
+      <!!))
+
 ;; TODO
 ;; - how to batch async jobs with timeout [DONE]
 ;; - *how to parse results as they come back asynchronously?*
+;; - handling for duplicate bikes
+;; - write a sync version of the code to test against?
+;; - integrate rate limiting and error handling into async pipeline
