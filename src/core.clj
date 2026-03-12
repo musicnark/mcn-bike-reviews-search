@@ -183,7 +183,9 @@
 ;; - put name of the bike in the map (test with just one url) [DONE]
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - add bike review url as field in map [DONE]
-;; - fetch bike urls from sitemap
+;; - add owners reviews  as field in map
+;; - fetch bike urls from sitemap (https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz)
+;;   - compare file hashes to see if it's changed, no update = no fetch operation
 ;; - fix newlines and tabs included in some strings?
 ;;   - put logic in to individually parse each inner tag of data 
 ;; - make it async~
