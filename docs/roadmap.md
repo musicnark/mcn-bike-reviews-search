@@ -1,5 +1,8 @@
 # Documentation
-- [ ] add interactive tutorials
+- [ ] add interactive tutorials 
+  - [ ] popups in gui
+  - [ ] video demonstrations
+  - [ ] evaluatable code snippets?
 - [ ] add editorial case studies
 - [ ] add custom Vale style
 - [ ] deeper explanations of architectural decisions
@@ -15,7 +18,7 @@
 - [ ] add more supported operating systems to install.sh
 - [-] enhance URL fetch capabilities with:
   - [x] asynchronous fetching
-  - [ ] ability to add only new URLs to an existing hash map
+  - [ ] ability to automatically add only new URLs to an existing hash map
   - [ ] improved error handling
 - [x] rewrite the extraction of <table> specs for modularity and fault tolerance
 - [ ] add partial string match predicate support for filtering with custom strings (or pre-filter each string during html parsing)

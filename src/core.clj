@@ -79,8 +79,8 @@
            :message (.getMessage e)}})))
 
 (def cm (conn/make-reusable-async-conn-manager
-          {:threads 50              ;; max threads for connecting
-           :default-per-route 50   ;; max connections *per host*
+          {:threads 1500              ;; max threads for connecting
+           :default-per-route 20   ;; max connections *per host*
            :timeout 10}))
 
 (defn fetch-bikes-async [url]

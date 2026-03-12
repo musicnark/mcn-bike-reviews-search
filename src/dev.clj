@@ -91,6 +91,16 @@
           (recur (into res batch)))
         res))))
 
+
+;; TODO add to main code - trim insurance group
+(string/trim
+ (->> (-> rez
+          (get "suzuki-rv125-van-van-2003")
+          :ok
+          :insurance-group)
+      (re-find #"\d*\ ")))
+
+
 ;; Old Main
 (comment
  (-> input-table
@@ -108,3 +118,9 @@
 ;; - write a sync version of the code to test against?
 ;; - integrate rate limiting and global error handling (via an atom) into async pipeline
 ;; - *organise functions into different namespaces*
+
+;; TODO Outline:
+;; - API
+;;   - rate limiting + escalating bans
+;;   - back-end architecture (web server or nginx?)
+
