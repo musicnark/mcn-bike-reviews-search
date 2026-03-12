@@ -6,6 +6,7 @@
 - [ ] consistently acknowledge Clojure version
 
 # Code
+- [ ] **random query button**
 - [ ] include tests
 - [ ] add a GUI web front-end to interact with the tool
 - [ ] add + document an API (/search/?weight=200)
