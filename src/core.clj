@@ -75,7 +75,7 @@
     {:ok (pmap f xs)}))
 
 ;; TODO import + clean up CSV of bikes (or scrape them all from the live site?)
-(def url "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
+(def url "https://www.motrcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
 
 ;; basic CSV parsing
 ;; (def input-table
@@ -87,7 +87,7 @@
 ;;     {:err {:type :file
 ;;            :message (.getMessage e)}})))
 
-(def manifest (try
+(def site-manifest (try
                 {:ok (http/get "https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz"
                        {:headers {"User-Agent" "Mozilla/5.0"}
                         :decompress-body false
@@ -124,7 +124,7 @@
 (def cm (conn/make-reusable-async-conn-manager
           {:threads 1500              ;; max threads for connecting
            :default-per-route 20   ;; max connections *per host*
-           :timeout 10}))
+           :timeout 30}))
 
 (defn fetch-bikes-async [url]
   (let [ch (chan)]
@@ -206,7 +206,7 @@
               ;; TODO: Track failed fetches here (when (:err result))
               ]
           (recur (assoc results key result)))
-        {:ok results}))))
+        results))))
 
 
 ;; (def urls-to-fetch
@@ -215,20 +215,33 @@
 ;;       (:ok))) ;; TODO proper error handling needed
 
 ;; Main
-(defn results [manifest]
-  (-> (bind manifest parse-manifest)
-      (bind urls-to-fetch)
-      (bind merge-html-chans)
-      (bind parse-pipeline)
-      (bind collect-results)
-      <!!))
+(defn get-bikes-map [site-manifest]
+  (let [out (-> (bind site-manifest parse-manifest)
+                (bind urls-to-fetch)
+                (bind merge-html-chans)
+                (bind parse-pipeline)
+                (bind collect-results))]
+    
+    (if (instance? clojure.core.async.impl.channels.ManyToManyChannel out)
+      (<!! out)
+      out)))
+
+
+(comment
+  (def rez (get-bikes-map site-manifest)) ;; WORKS
+  
+  (first rez)
+  (get (:ok rez) "suzuki-burgman-650-2003")
+  (get rez "suzuki-burgman-650-2003")
+  
+  )
 
 ;; TODO:
 ;; - put name of the bike in the map (test with just one url) [DONE]
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - add bike review url as field in map [DONE]
 ;; - add owners reviews  as field in map
-;; - fetch bike urls from sitemap (https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz)
+;; - fetch bike urls from sitemap (https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz) [DONE]
 ;;   - compare file hashes to see if it's changed, no update = no fetch operation
 ;; - fix newlines and tabs included in some strings?
 ;;   - put logic in to individually parse each inner tag of data 
