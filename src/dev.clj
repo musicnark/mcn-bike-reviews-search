@@ -1,8 +1,10 @@
 (ns dev
   (:require [clj-http.client :as http])
+  (:require [clj-http.util :as util])
   (:require [net.cgrand.enlive-html :as html])
   (:require [clojure.string :as string])
   (:require [clojure.data.csv :as csv])
+  (:require [clojure.data.xml :as xml])
   (:require [clojure.java.io :as io])
   (:require [clojure.core.async :as async :refer [go-loop go thread <! >! <!! >!! chan take merge timeout pipeline]])
   (:require [core])
@@ -100,6 +102,31 @@
           :insurance-group)
       (re-find #"\d*\ ")))
 
+(defn strip-bom [s]
+  (if (.startsWith s "\uFEFF")
+    (subs s 1)
+    s))
+
+(def res (-> (http/get "https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz"
+                       {:headers {"User-Agent" "Mozilla/5.0"}
+                        :decompress-body false
+                        :as :byte-array
+                        })
+             :body
+             util/gunzip
+             String.
+             strip-bom
+             xml/parse-str
+             :content))
+
+(def output
+  (map (fn [loc]
+         (-> loc
+             :content
+             first
+             :content
+             first))
+       res))
 
 ;; Old Main
 (comment
