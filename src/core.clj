@@ -87,19 +87,19 @@
 ;;     {:err {:type :file
 ;;            :message (.getMessage e)}})))
 
-(def site-manifest (try
+(def sitemap (try
                 {:ok (http/get "https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz"
                        {:headers {"User-Agent" "Mozilla/5.0"}
                         :decompress-body false
                         :as :byte-array
                         })}
                 (catch Exception e
-                  {:err {:type :network-manifest
+                  {:err {:type :network-sitemap
                          :message (.getMessage e)}})))
 
-(defn parse-manifest [manifest]
+(defn parse-sitemap [sitemap]
   (try
-    {:ok (-> manifest
+    {:ok (-> sitemap
       :body
       util/gunzip
       String.
@@ -107,10 +107,10 @@
       xml/parse-str
       :content)}
     (catch Exception e
-      {:err {:type :parse-manifest
+      {:err {:type :parse-sitemap
              :message (.getMessage e)}})))
 
-(defn urls-to-fetch [parsed-manifest]
+(defn urls-to-fetch [parsed-sitemap]
   (let [res (doall
    (map (fn [loc]
           (-> loc
@@ -118,7 +118,7 @@
               first
               :content
               first))
-        parsed-manifest))]
+        parsed-sitemap))]
     {:ok res}))
 
 (def cm (conn/make-reusable-async-conn-manager
@@ -215,8 +215,8 @@
 ;;       (:ok))) ;; TODO proper error handling needed
 
 ;; Main
-(defn get-bikes-map [site-manifest]
-  (let [out (-> (bind site-manifest parse-manifest)
+(defn get-bikes-map [sitemap]
+  (let [out (-> (bind sitemap parse-sitemap)
                 (bind urls-to-fetch)
                 (bind merge-html-chans)
                 (bind parse-pipeline)
@@ -228,7 +228,7 @@
 
 
 (comment
-  (def rez (get-bikes-map site-manifest)) ;; WORKS
+  (def rez (get-bikes-map sitemap)) ;; WORKS
   
   (first rez)
   (get (:ok rez) "suzuki-burgman-650-2003")
