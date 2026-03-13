@@ -1,8 +1,10 @@
 (ns core
   (:require [clj-http.client :as http])
+  (:require [clj-http.util :as util])
   (:require [net.cgrand.enlive-html :as html])
   (:require [clojure.string :as string])
   (:require [clojure.data.csv :as csv])
+  (:require [clojure.data.xml :as xml])
   (:require [clojure.java.io :as io])
   (:require [clojure.core.async :as async :refer [go <! >! <!! chan close!]])
   (:require [clj-http.conn-mgr :as conn]))
@@ -20,6 +22,12 @@
   (try
     (some? (java.net.URL. s))
     (catch Exception _ false)))
+
+
+(defn strip-bom [s]
+  (if (.startsWith s "\uFEFF")
+    (subs s 1)
+    s))
 
 (defn parse-urls [table]
   {:ok
@@ -51,6 +59,7 @@
 
 (defn ok? [res] (contains? res :ok))
 (defn err? [res] (contains? res :err))
+
 ;; essentially 'unwrap' or 'match'. think 'then' in pipeline
 (defn bind [res f]
   (if (ok? res)
@@ -66,22 +75,56 @@
     {:ok (pmap f xs)}))
 
 ;; TODO import + clean up CSV of bikes (or scrape them all from the live site?)
-(def url "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
+(def url "https://www.motrcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
 
 ;; basic CSV parsing
-(def input-table
+;; (def input-table
+;;   (try
+;;   {:ok (with-open [reader (io/reader "src/Bike_Reviews.csv")]
+;;     (doall
+;;      (csv/read-csv reader)))}
+;;   (catch Exception e
+;;     {:err {:type :file
+;;            :message (.getMessage e)}})))
+
+(def site-manifest (try
+                {:ok (http/get "https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz"
+                       {:headers {"User-Agent" "Mozilla/5.0"}
+                        :decompress-body false
+                        :as :byte-array
+                        })}
+                (catch Exception e
+                  {:err {:type :network-manifest
+                         :message (.getMessage e)}})))
+
+(defn parse-manifest [manifest]
   (try
-  {:ok (with-open [reader (io/reader "src/Bike_Reviews.csv")]
-    (doall
-     (csv/read-csv reader)))}
-  (catch Exception e
-    {:err {:type :file
-           :message (.getMessage e)}})))
+    {:ok (-> manifest
+      :body
+      util/gunzip
+      String.
+      strip-bom
+      xml/parse-str
+      :content)}
+    (catch Exception e
+      {:err {:type :parse-manifest
+             :message (.getMessage e)}})))
+
+(defn urls-to-fetch [parsed-manifest]
+  (let [res (doall
+   (map (fn [loc]
+          (-> loc
+              :content
+              first
+              :content
+              first))
+        parsed-manifest))]
+    {:ok res}))
 
 (def cm (conn/make-reusable-async-conn-manager
           {:threads 1500              ;; max threads for connecting
            :default-per-route 20   ;; max connections *per host*
-           :timeout 10}))
+           :timeout 30}))
 
 (defn fetch-bikes-async [url]
   (let [ch (chan)]
@@ -97,7 +140,7 @@
               ;; error callback
               (fn [e]
                 (go
-                  (>! ch {:err {:type    :network
+                  (>! ch {:err {:type :network-page
                                 :message (.getMessage e)}})
                   (close! ch))))
     ch))
@@ -139,20 +182,20 @@
         {:ok (zipmap
               (concat facts-figures-labels mcn-star-rating-label bike-url-label bike-name-label)   ;; <- these *should* always be equal lengths
               (concat facts-figures-values mcn-star-rating-value bike-url-value bike-name-value))} ;; <-
-        {:err {:type :parse
+        {:err {:type :parse-html
                  :message "labels or values weren't found in HTML response."}})))
 
 (defn merge-html-chans [urls-to-fetch]
-  (async/merge (doall (map fetch-bikes-async urls-to-fetch))))
+  {:ok (async/merge (doall (map fetch-bikes-async urls-to-fetch)))})
 
-(defn parse-pipeline [input-chan num-workers]
+(defn parse-pipeline [input-chan]
   (let [output-chan (chan)]
     (async/pipeline
-     num-workers
+     15
      output-chan
      (map parse-bike)
      input-chan)
-    output-chan))
+    {:ok output-chan}))
 
 (defn collect-results [parsed-chan]
   (async/go-loop [results {}]
@@ -166,25 +209,39 @@
         results))))
 
 
-(def urls-to-fetch
-  (-> input-table
-      (bind parse-urls)
-      (:ok))) ;; TODO proper error handling needed
+;; (def urls-to-fetch
+;;   (-> input-table
+;;       (bind parse-urls)
+;;       (:ok))) ;; TODO proper error handling needed
 
 ;; Main
-(defn results [urls-to-fetch]
-  (-> urls-to-fetch
-      merge-html-chans
-      (parse-pipeline 15)
-      collect-results
-      <!!))
+(defn get-bikes-map [site-manifest]
+  (let [out (-> (bind site-manifest parse-manifest)
+                (bind urls-to-fetch)
+                (bind merge-html-chans)
+                (bind parse-pipeline)
+                (bind collect-results))]
+    
+    (if (instance? clojure.core.async.impl.channels.ManyToManyChannel out)
+      (<!! out)
+      out)))
+
+
+(comment
+  (def rez (get-bikes-map site-manifest)) ;; WORKS
+  
+  (first rez)
+  (get (:ok rez) "suzuki-burgman-650-2003")
+  (get rez "suzuki-burgman-650-2003")
+  
+  )
 
 ;; TODO:
 ;; - put name of the bike in the map (test with just one url) [DONE]
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - add bike review url as field in map [DONE]
 ;; - add owners reviews  as field in map
-;; - fetch bike urls from sitemap (https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz)
+;; - fetch bike urls from sitemap (https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz) [DONE]
 ;;   - compare file hashes to see if it's changed, no update = no fetch operation
 ;; - fix newlines and tabs included in some strings?
 ;;   - put logic in to individually parse each inner tag of data 
