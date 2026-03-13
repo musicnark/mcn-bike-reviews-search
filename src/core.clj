@@ -23,8 +23,9 @@
     (some? (java.net.URL. s))
     (catch Exception _ false)))
 
-
-(defn strip-bom [s]
+(defn strip-bom
+  "Strips the byte-order mark from the beginning of string `s`, in preparation for XML parsing."
+  [s]
   (if (.startsWith s "\uFEFF")
     (subs s 1)
     s))
@@ -60,8 +61,17 @@
 (defn ok? [res] (contains? res :ok))
 (defn err? [res] (contains? res :err))
 
-;; essentially 'unwrap' or 'match'. think 'then' in pipeline
-(defn bind [res f]
+(defn bind
+  "Binds the :ok value of `res` to the function `f`, or propagates the error :err.
+
+  If `res` contains :err, the supplied function is not evaluated.
+
+  Reads well in pipelines (substitute 'bind' for 'then').
+
+  If unfamiliar with the bind pattern, think:
+
+  'unwrap `res` and apply it to `f`, or return :err'"
+  [res f]
   (if (ok? res)
     (f (:ok res))
     res))
