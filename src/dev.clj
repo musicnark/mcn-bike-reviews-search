@@ -1,3 +1,4 @@
+;; welcome to the graveyard~
 (ns dev
   (:require [clj-http.client :as http])
   (:require [clj-http.util :as util])
@@ -127,6 +128,11 @@
              :content
              first))
        res))
+
+;; TODO implement in main function?
+;; (go
+;;   (let [result (<! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/"))]
+;;     (println (parse-bike result))))
 
 ;; Old Main
 (comment

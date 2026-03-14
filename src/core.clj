@@ -1,13 +1,11 @@
 (ns core
   (:require [clj-http.client :as http])
   (:require [clj-http.util :as util])
+  (:require [clj-http.conn-mgr :as conn])
   (:require [net.cgrand.enlive-html :as html])
   (:require [clojure.string :as string])
-  (:require [clojure.data.csv :as csv])
   (:require [clojure.data.xml :as xml])
-  (:require [clojure.java.io :as io])
-  (:require [clojure.core.async :as async :refer [go <! >! <!! chan close!]])
-  (:require [clj-http.conn-mgr :as conn]))
+  (:require [clojure.core.async :as async :refer [go <! >! <!! chan close!]]))
 
 ;; helpers 
 (defn clean-keyword [s]
@@ -18,6 +16,7 @@
       (string/replace #" " "-")
       keyword))
 
+;; TODO make this more robust
 (defn url? [s]
   (try
     (some? (java.net.URL. s))
@@ -30,12 +29,13 @@
     (subs s 1)
     s))
 
-(defn parse-urls [table]
-  {:ok
-   (->> table
-        (map second)
-        (filter url?)
-        (vec))})
+;; for CSV
+;; (defn parse-urls [table]
+;;   {:ok
+;;    (->> table
+;;         (map second)
+;;         (filter url?)
+;;         (vec))})
 
 ;; TODO improve parsing logic
 (defn clean-bike-name [s]
@@ -57,6 +57,10 @@
       s
       (subs s 0 i))))
 
+(comment
+  (first-token "8 out of 17")
+  (first-token "15 out of 17"))
+
 
 (defn ok? [res] (contains? res :ok))
 (defn err? [res] (contains? res :err))
@@ -76,16 +80,14 @@
     (f (:ok res))
     res))
 
-(defn map-ok [f]
-  (fn [xs]
-    {:ok (map f xs)}))
+;; TODO why are these here?
+;; (defn map-ok [f]
+;;   (fn [xs]
+;;     {:ok (map f xs)}))
 
-(defn pmap-ok [f]
-  (fn [xs]
-    {:ok (pmap f xs)}))
-
-;; TODO import + clean up CSV of bikes (or scrape them all from the live site?)
-(def url "https://www.motrcyclenews.com/bike-reviews/kawasaki/kle500/2026/")
+;; (defn pmap-ok [f]
+;;   (fn [xs]
+;;     {:ok (pmap f xs)}))
 
 ;; basic CSV parsing
 ;; (def input-table
@@ -97,15 +99,16 @@
 ;;     {:err {:type :file
 ;;            :message (.getMessage e)}})))
 
-(def sitemap (try
-                {:ok (http/get "https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz"
-                       {:headers {"User-Agent" "Mozilla/5.0"}
-                        :decompress-body false
-                        :as :byte-array
-                        })}
-                (catch Exception e
-                  {:err {:type :network-sitemap
-                         :message (.getMessage e)}})))
+(def sitemap
+  (try
+    {:ok (http/get "https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz"
+                   {:headers {"User-Agent" "Mozilla/5.0"}
+                    :decompress-body false
+                    :as :byte-array
+                    })}
+    (catch Exception e
+      {:err {:type :network-sitemap
+             :message (.getMessage e)}})))
 
 (defn parse-sitemap [sitemap]
   (try
@@ -120,6 +123,7 @@
       {:err {:type :parse-sitemap
              :message (.getMessage e)}})))
 
+;; TODO can it be done more safely? or with error handling at least?
 (defn urls-to-fetch [parsed-sitemap]
   (let [res (doall
    (map (fn [loc]
@@ -134,7 +138,7 @@
 (def cm (conn/make-reusable-async-conn-manager
           {:threads 1500              ;; max threads for connecting
            :default-per-route 20   ;; max connections *per host*
-           :timeout 30}))
+           :timeout 10}))
 
 (defn fetch-bikes-async [url]
   (let [ch (chan)]
@@ -152,13 +156,9 @@
                 (go
                   (>! ch {:err {:type :network-page
                                 :message (.getMessage e)}})
+                  (println "ERR: " e) ;; TODO redirect to logging
                   (close! ch))))
     ch))
-
-;; TODO implement in main function
-;; (go
-;;   (let [result (<! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/kawasaki/kle500/2026/"))]
-;;     (println (parse-bike result))))
 
 (defn parse-bike [response]
   (let [doc (html/html-snippet (:body (:ok response)))
@@ -183,7 +183,7 @@
                                 )]
         bike-name-label [:bike-name]
         bike-name-value [(clean-bike-name (first bike-url-value))]
-        ;; all-data (into {} (concat facts-figures-labels))
+        ;; TODO all-data (into {} (concat facts-figures-labels))
         ]
 
     (println "parsed: " bike-name-value)
@@ -196,7 +196,7 @@
                  :message "labels or values weren't found in HTML response."}})))
 
 (defn merge-html-chans [urls-to-fetch]
-  {:ok (async/merge (doall (map fetch-bikes-async urls-to-fetch)))})
+  {:ok (async/merge (doall (map fetch-bikes-async urls-to-fetch)))}) ;; TODO proper error handling needed
 
 (defn parse-pipeline [input-chan]
   (let [output-chan (chan)]
@@ -205,7 +205,7 @@
      output-chan
      (map parse-bike)
      input-chan)
-    {:ok output-chan}))
+    {:ok output-chan})) ;; TODO proper error handling needed
 
 (defn collect-results [parsed-chan]
   (async/go-loop [results {}]
@@ -218,27 +218,21 @@
           (recur (assoc results key result)))
         results))))
 
-
-;; (def urls-to-fetch
-;;   (-> input-table
-;;       (bind parse-urls)
-;;       (:ok))) ;; TODO proper error handling needed
-
 ;; Main
 (defn get-bikes-map [sitemap]
-  (let [out (-> (bind sitemap parse-sitemap)
+  (let [bikes (-> (bind sitemap parse-sitemap)
                 (bind urls-to-fetch)
                 (bind merge-html-chans)
                 (bind parse-pipeline)
                 (bind collect-results))]
-    
-    (if (instance? clojure.core.async.impl.channels.ManyToManyChannel out)
-      (<!! out)
-      out)))
+
+    (if (instance? clojure.core.async.impl.channels.ManyToManyChannel bikes)
+      (<!! bikes)
+      bikes)))
 
 
 (comment
-  (def rez (get-bikes-map sitemap)) ;; WORKS
+  (def rez (get-bikes-map sitemap))
   
   (first rez)
   (get (:ok rez) "suzuki-burgman-650-2003")
@@ -261,7 +255,8 @@
 ;; - implement DSL/query language
 ;; - implement API + docs
 ;; - include tests
-;; - add accumulated logging
+;; - add accumulated logging/log-centric error handling
+;;   - basically turn every println into a redirect to logs~
 ;; - add documentation strings to functions
 ;; - *organise functions into different namespaces*
 
