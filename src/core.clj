@@ -161,8 +161,8 @@
     ch))
 
 (defn parse-bike [response]
-  (let [doc (html/html-snippet (:body (:ok response)))
-        ;; all elements in "Facts & Figures" tables
+  (let [doc (html/html-snippet (-> response :ok :body))
+        ;; select all elements in "Facts & Figures" tables
         facts-figures-labels (map #(clean-keyword (apply str (:content %)))
                                   (html/select doc [:.review__facts-and-figures__item__label]))
         facts-figures-values (map #(apply str (:content %)) ;; TODO apply filtered-str? that parses and filters out HTML gubbins?

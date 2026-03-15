@@ -157,3 +157,26 @@
 ;;   - rate limiting + escalating bans
 ;;   - back-end architecture (web server or nginx?)
 
+;; TODO integrate into main parse/query (formatting the bike price) (also add support for ranges of used prices (just take highest and call it at that?))
+(def prices (->> rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :new-price))))))
+
+(defn format-price [s]
+  (let [f-string (when (some? s)(-> s
+  (string/replace #"£" "")
+  (string/replace #"," "")
+  ))]
+    (try
+      {:ok (Integer/parseUnsignedInt f-string)}
+      (catch Exception e
+        {:err {:type :parse-price
+               :message (.getMessage e)}}))))
+
+(defn +vm [map]
+  (when (ok? map)
+    (:ok map)))
+
+(->> prices (map format-price) (filter ok?) (map +vm) (apply +))
+
+;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
+
+;; (map (fn [price] (if (= (first-token price) "£") ( prices)
