@@ -136,7 +136,7 @@
     {:ok res}))
 
 (def cm (conn/make-reusable-async-conn-manager
-          {:threads 1500              ;; max threads for connecting
+          {:threads 50             ;; max threads for connecting
            :default-per-route 20   ;; max connections *per host*
            :timeout 10}))
 
@@ -235,7 +235,6 @@
   (def rez (get-bikes-map sitemap))
   
   (first rez)
-  (get (:ok rez) "suzuki-burgman-650-2003")
   (get rez "suzuki-burgman-650-2003")
   
   )
@@ -255,6 +254,7 @@
 ;; - implement DSL/query language
 ;; - implement API + docs
 ;; - include tests
+;; - add CI/CD pipelines
 ;; - add accumulated logging/log-centric error handling
 ;;   - basically turn every println into a redirect to logs~
 ;; - add documentation strings to functions
@@ -263,8 +263,8 @@
 ;; TODO (prototyping):
 ;; - how to batch async jobs with timeout [DONE]
 ;; - how to parse results as they come back asynchronously? [DONE]
-;; - handling for duplicate bikes
-;; - write a sync version of the code to test against?
+;; - handling for duplicate bikes [DONE?]
+;; - write a sync version of the code to test against? [DONE?]
 ;; - integrate rate limiting and global error handling (via an atom) into async pipeline
 
 ;; TODO Concurrency Tutorial:

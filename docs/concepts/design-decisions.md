@@ -22,3 +22,9 @@ At a high level, this tool works by:
 For a more granular look at the design, see the [main code](../../el/bike-reviews.el).
 
 Most Elisp functions operate at C-like speed, and the language lends itself naturally to recursive tree algorithms - which were the most challenging part of this tool to implement. Elisp also has highly ergonomic string handling with the use of buffers and editor commands, which made parsing the input file quick and easy to implement.
+
+# Async
+Although new async patterns offered by libraries like Manifold/Aleph are popular within the Clojure community, I decided to stick with core.async for this project. The flow of data from HTTP request to HTML parsing maps well to a producer-consumer pipeline, which core.async handles well. Manifold is best when you need a single abstraction to interface between multiple async implementations (e.g., service aggregation, Java interop), which wasn't necessary for this project.
+
+# API
+I decided to use a REST API for this project, instead of newer technologies like GraphQL. GraphQL works best when you have multiple consumers with different data needs from the same API, and that's outside the scope of this project. The existing DSL implementation allows querying for exact sub-sets of data, and can be used effectively by both developers and users.

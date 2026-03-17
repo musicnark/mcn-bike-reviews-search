@@ -8,7 +8,7 @@
   (:require [clojure.data.xml :as xml])
   (:require [clojure.java.io :as io])
   (:require [clojure.core.async :as async :refer [go-loop go thread <! >! <!! >!! chan take merge timeout pipeline]])
-  (:require [core])
+  (:require [core :as mcn])
   (:require [clj-http.conn-mgr :as conn]))
 
 ;; (add-tap (fn [x] (spit "src/log.txt" (pr-str x) :append true)))
@@ -72,36 +72,36 @@
 ;;       {:err {:type :parse
 ;;              :message "Required fields missing in HTML response."}})));
 
-(defn fan-out [merged-chans]
-  (go-loop [res []] ;; outer loop (to restart batch when it's finished)
-    (let [batch (loop [n 50
-                       batch []]
-                  (if (zero? n)
-                    batch
-                    (if-let [val (<! merged-chans)]
-                      (do
-                        (println "Val: " (str (clojure.core/take 100 val)))
-                        (if (ok? val) ;; TODO ignores failed fetches, but need putting into a 'failed' queue for later retries
-                          (recur (dec n) (conj batch val))
-                          (recur (dec n) batch)))
-                      (reduced batch))))
-          batch (if (reduced? batch) @batch batch)]
-      (if (seq batch)
-        (do
-          (<! (timeout 500))
-          (println "^^ Batch ^^")
-          ;; maybe here is where you parse the bikes? can it be done asynchronously too?
-          (recur (into res batch)))
-        res))))
+;; (defn fan-out [merged-chans]
+;;   (go-loop [res []] ;; outer loop (to restart batch when it's finished)
+;;     (let [batch (loop [n 50
+;;                        batch []]
+;;                   (if (zero? n)
+;;                     batch
+;;                     (if-let [val (<! merged-chans)]
+;;                       (do
+;;                         (println "Val: " (str (clojure.core/take 100 val)))
+;;                         (if (ok? val) ;; TODO ignores failed fetches, but need putting into a 'failed' queue for later retries
+;;                           (recur (dec n) (conj batch val))
+;;                           (recur (dec n) batch)))
+;;                       (reduced batch))))
+;;           batch (if (reduced? batch) @batch batch)]
+;;       (if (seq batch)
+;;         (do
+;;           (<! (timeout 500))
+;;           (println "^^ Batch ^^")
+;;           ;; maybe here is where you parse the bikes? can it be done asynchronously too?
+;;           (recur (into res batch)))
+;;         res))))
 
 
 ;; TODO add to main code - trim insurance group
-(string/trim
- (->> (-> rez
-          (get "suzuki-rv125-van-van-2003")
-          :ok
-          :insurance-group)
-      (re-find #"\d*\ ")))
+;; (string/trim
+;;  (->> (-> mcn/rez
+;;           (get "suzuki-rv125-van-van-2003")
+;;           :ok
+;;           :insurance-group)
+;;       (re-find #"\d*\ ")))
 
 (defn strip-bom [s]
   (if (.startsWith s "\uFEFF")
@@ -158,24 +158,47 @@
 ;;   - back-end architecture (web server or nginx?)
 
 ;; TODO integrate into main parse/query (formatting the bike price) (also add support for ranges of used prices (just take highest and call it at that?))
-(def prices (->> rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :new-price))))))
+(def new-prices (->> mcn/rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :new-price))))))
+(def used-prices (->> mcn/rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :used-price))))))
 
+;; TODO add support for price ranges
 (defn format-price [s]
-  (let [f-string (when (some? s)(-> s
-  (string/replace #"£" "")
-  (string/replace #"," "")
-  ))]
+  (let [f-str
+        (when (some? s)
+          (-> s
+              (string/replace #"£" "")
+              (string/replace #"," "")))]
     (try
-      {:ok (Integer/parseUnsignedInt f-string)}
+      {:ok (Integer/parseUnsignedInt f-str)} ;; TODO filter first, then format - errors not needed for logging, so removes unnecessary try/catch
       (catch Exception e
         {:err {:type :parse-price
                :message (.getMessage e)}}))))
 
+;; TODO
+(defn valid-price-str? [s]
+  )
+
 (defn +vm [map]
-  (when (ok? map)
+  (when (mcn/ok? map)
     (:ok map)))
 
-(->> prices (map format-price) (filter ok?) (map +vm) (apply +))
+(comment
+  (->> new-prices
+       (map format-price)
+       (filter mcn/ok?)
+       (map +vm)
+       (apply +)))
+
+(comment
+  (->> used-prices
+       (filter some?)
+       (map string/trim)
+       (map format-price)
+       (filter mcn/ok?)))
+
+(comment
+  ;; this should be able to parse a price range too
+  (->> used-prices (filter some?) (map string/trim) (map format-price)))
 
 ;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
 
