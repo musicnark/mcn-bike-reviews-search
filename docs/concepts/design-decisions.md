@@ -13,11 +13,11 @@ Knowing that a full rewrite would have to take place to scale to business needs,
 # Algorithms & data structures
 At a high level, this tool works by:
 
-1.  **Importing a CSV** of all bike reviews
-2.  Individually **accessing web pages** for each bike review from the live site
-3.  **Extracting the spec tables**
-4.  **Storing each bike’s specs in a hash map** keyed by bike name, with a structured property list of all attributes.
-5. Giving the user a **query language to search and filter the hash map's contents**.
+1. **Fetching, decompressing, & parsing** the motorcyclenews.com sitemap, to find URLs for all bike reviews
+2. Asynchronously **fetching web pages** for each bike review from the live site
+3. **Parsing the spec tables** within the HTML body to extract bike specs
+4. **Storing each bike's specs in a map** keyed by bike name, containing a map of all attributes.
+5. Giving the user a **query language to search and filter the map's contents**.
 
 For a more granular look at the design, see the [main code](../../el/bike-reviews.el).
 

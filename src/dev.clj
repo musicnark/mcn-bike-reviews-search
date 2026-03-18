@@ -2,14 +2,9 @@
 (ns dev
   (:require [clj-http.client :as http])
   (:require [clj-http.util :as util])
-  (:require [net.cgrand.enlive-html :as html])
   (:require [clojure.string :as string])
-  (:require [clojure.data.csv :as csv])
   (:require [clojure.data.xml :as xml])
-  (:require [clojure.java.io :as io])
-  (:require [clojure.core.async :as async :refer [go-loop go thread <! >! <!! >!! chan take merge timeout pipeline]])
-  (:require [core :as mcn])
-  (:require [clj-http.conn-mgr :as conn]))
+  (:require [core :as mcn]))
 
 ;; (add-tap (fn [x] (spit "src/log.txt" (pr-str x) :append true)))
 
@@ -158,8 +153,9 @@
 ;;   - back-end architecture (web server or nginx?)
 
 ;; TODO integrate into main parse/query (formatting the bike price) (also add support for ranges of used prices (just take highest and call it at that?))
-(def new-prices (->> mcn/rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :new-price))))))
-(def used-prices (->> mcn/rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :used-price))))))
+(comment
+  (def new-prices (->> mcn/rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :new-price))))))
+(def used-prices (->> mcn/rez (map (fn [bike] (when (contains? (second bike) :ok) (-> bike second :ok :used-price)))))))
 
 ;; TODO add support for price ranges
 (defn format-price [s]
