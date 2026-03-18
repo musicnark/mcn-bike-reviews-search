@@ -243,7 +243,8 @@
 ;; - put name of the bike in the map (test with just one url) [DONE]
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - add bike review url as field in map [DONE]
-;; - add owners reviews  as field in map
+;; - add owners reviews rating as field in map
+;; - add bike model year       as field in map
 ;; - fetch bike urls from sitemap (https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz) [DONE]
 ;;   - compare file hashes to see if it's changed, no update = no fetch operation
 ;; - fix newlines and tabs included in some strings?
@@ -252,6 +253,7 @@
 ;;   - url fetching [DONE]
 ;;   - page parsing [DONE]
 ;; - implement DSL/query language
+;;   - function takes map/json and searches based on given parameters
 ;; - implement API + docs
 ;; - include tests
 ;; - add CI/CD pipelines

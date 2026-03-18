@@ -196,6 +196,10 @@
   ;; this should be able to parse a price range too
   (->> used-prices (filter some?) (map string/trim) (map format-price)))
 
+
+;; prototype query
+(filter (fn [val] (and (some? (:max-power (:ok val)))(string/includes? (:max-power (:ok val)) "97"))) (vals rez))
+
 ;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
 
 ;; (map (fn [price] (if (= (first-token price) "£") ( prices)
