@@ -198,7 +198,7 @@
 
 
 ;; prototype query
-(filter (fn [val] (and (some? (:max-power (:ok val)))(string/includes? (:max-power (:ok val)) "97"))) (vals rez))
+(filter (fn [val] (and (some? (:max-power (:ok val)))(re-find #"^97 " (:max-power (:ok val))))) (vals rez))
 
 ;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
 
