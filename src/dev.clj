@@ -200,10 +200,13 @@
 ;; prototype query
 (filter (fn [val] (and (some? (:max-power (:ok val)))(re-find #"^97 " (:max-power (:ok val))))) (vals rez))
 
-;; reliability rating
-(let [h2 (some-> (html/select test-page [[:h2 (html/attr-contains :class "review__main-content__heading")]]))
-      rating (some-> (html/select test-page [[:div (html/attr-contains :class "review__main-content__rating-container")]]))]
-  (map vector h2 rating))
+;; reliability rating (run in core ns)
+(comment
+  (def test-page (html/html-snippet (<!! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/ducati/multistrada-v2s/2022/"))))
+
+  (let [h2 (some-> (html/select test-page [[:h2 (html/attr-contains :class "review__main-content__heading")]]))
+        rating (some-> (html/select test-page [[:div (html/attr-contains :class "review__main-content__rating-container")]]))]
+    (map vector h2 rating)))
 
 ;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
 
