@@ -202,7 +202,7 @@
 
 ;; reliability rating (run in core ns)
 (let [test-page (html/html-snippet (<!! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/ducati/multistrada-v2s/2022/")))
-      old-method (html/select test-page [[:div (html/attr-contains :data-rating "reliability")]])
+      alternate-method (some-> (html/select test-page [[:h2 (html/attr-contains :class "wp-block-heading")]]))
       h2 (some-> (html/select test-page [[:h2 (html/attr-contains :class "review__main-content__heading")]]))
         rating (some-> (html/select test-page [[:div (html/attr-contains :class "review__main-content__rating-container")]]))
         combo (map vector h2 rating)]
