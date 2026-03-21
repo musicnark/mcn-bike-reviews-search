@@ -207,6 +207,7 @@
   (let [h2 (some-> (html/select test-page [[:h2 (html/attr-contains :class "review__main-content__heading")]]))
         rating (some-> (html/select test-page [[:div (html/attr-contains :class "review__main-content__rating-container")]]))]
     (map vector h2 rating)))
+;; TODO select and pair each heading with its value
 
 ;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
 
