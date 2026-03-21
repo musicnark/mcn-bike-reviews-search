@@ -244,6 +244,7 @@
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - add bike review url as field in map [DONE]
 ;; - add owners reviews rating as field in map
+;; - add in-copy scores as a field in map (reliability, looks, suspension, engine, etc)
 ;; - add bike model year       as field in map
 ;; - fetch bike urls from sitemap (https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz) [DONE]
 ;;   - compare file hashes to see if it's changed, no update = no fetch operation
