@@ -201,12 +201,25 @@
 (filter (fn [val] (and (some? (:max-power (:ok val)))(re-find #"^97 " (:max-power (:ok val))))) (vals rez))
 
 ;; reliability rating (run in core ns)
-(comment
-  (def test-page (html/html-snippet (<!! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/ducati/multistrada-v2s/2022/"))))
+(let [test-page (html/html-snippet (<!! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/ducati/multistrada-v2s/2022/")))
+      old-method (html/select test-page [[:div (html/attr-contains :data-rating "reliability")]])
+      h2 (some-> (html/select test-page [[:h2 (html/attr-contains :class "review__main-content__heading")]]))
+        rating (some-> (html/select test-page [[:div (html/attr-contains :class "review__main-content__rating-container")]]))
+        combo (map vector h2 rating)]
 
-  (let [h2 (some-> (html/select test-page [[:h2 (html/attr-contains :class "review__main-content__heading")]]))
-        rating (some-> (html/select test-page [[:div (html/attr-contains :class "review__main-content__rating-container")]]))]
-    (map vector h2 rating)))
+    (map (fn [el] (let [f (first (:content (first el)))
+                        s (some-> (html/select el [[:div (html/attr-contains :class "review__main-content__rating-container")]]) first :content second :content first :content second :content second :content first)]
+                    (vector f s))) combo))
+
+
+;; TODO integrate old method with the ^new^
+;; reliability-rating [(some-> (html/select doc [[:div (html/attr-contains :data-rating "reliability")]])
+;;                             (html/select [[:span (html/attr-contains :class "star-rating__stars__value")]])
+;;                             first
+;;                             :content
+;;                             first
+;;                             first-token)]
+  
 ;; TODO select and pair each heading with its value
 
 ;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
