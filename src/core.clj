@@ -150,7 +150,7 @@
                 (go
                   (>! ch {:ok r})
                   (close! ch)
-                  (println "successfully fetched bike")))
+                  (println "successfully fetched bike: " (clean-bike-name url))))
               ;; error callback
               (fn [e]
                 (go
@@ -174,6 +174,15 @@
                                        :attrs
                                        :title
                                        first-token)]
+        ;; TODO see dev.clj
+        ;; reliability-label [:reliability-rating]
+        ;; reliability-rating [(some-> (html/select doc [[:div (html/attr-contains :data-rating "reliability")]])
+        ;;                             (html/select [[:span (html/attr-contains :class "star-rating__stars__value")]])
+        ;;                             first
+        ;;                             :content
+        ;;                             first
+        ;;                             first-token)]
+
         bike-url-label [:url]
         bike-url-value [(some-> doc ;; TODO rename as bike-url, get bike name from it
                                 (html/select [[:link (html/attr= :rel "canonical")]])
@@ -190,8 +199,8 @@
     ;; wrap return val:
       (if (and (seq facts-figures-labels) (seq facts-figures-values) (not (nil? mcn-star-rating-value)))
         {:ok (zipmap
-              (concat facts-figures-labels mcn-star-rating-label bike-url-label bike-name-label)   ;; <- these *should* always be equal lengths
-              (concat facts-figures-values mcn-star-rating-value bike-url-value bike-name-value))} ;; <-
+              (concat facts-figures-labels mcn-star-rating-label bike-url-label bike-name-label reliability-label)   ;; <- these *should* always be equal lengths
+              (concat facts-figures-values mcn-star-rating-value bike-url-value bike-name-value reliability-rating))} ;; <-
         {:err {:type :parse-html
                  :message "labels or values weren't found in HTML response."}})))
 
