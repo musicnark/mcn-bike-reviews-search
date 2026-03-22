@@ -200,6 +200,7 @@
 ;; prototype query
 (filter (fn [val] (and (some? (:max-power (:ok val)))(re-find #"^97 " (:max-power (:ok val))))) (vals rez))
 
+;; TODO test success rate for these two searches across the whole site?
 ;; TODO needs custom search algorithm, to find each h2 with a rating underneath it
 (let [test-page (html/html-snippet (<!! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/triumph/street-triple-765-rx/2026/")))
       p1-h2s (some-> (html/select test-page [[:h2 (html/attr-contains :class "wp-block-heading")]]))
