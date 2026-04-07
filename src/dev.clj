@@ -201,8 +201,8 @@
 (filter (fn [val] (and (some? (:max-power (:ok val)))(re-find #"^97 " (:max-power (:ok val))))) (vals rez))
 
 ;; TODO test success rate for these two searches across the whole site?
-;; TODO needs custom search algorithm, to find each h2 with a rating underneath it
-(let [test-page (html/html-snippet (<!! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/triumph/street-triple-765-rx/2026/")))
+;; TODO needs custom DFS search algorithm, to find each h2 with a rating underneath it
+(let [test-page (html/html-snippet (<!! (fetch-bikes-async "https://www.motorcyclenews.com/bike-reviews/triumph/tiger-660-sport/2026/"))) ;; this bike only has two ratings
       p1-h2s (some-> (html/select test-page [[:h2 (html/attr-contains :class "wp-block-heading")]]))
       p1-ratings (some-> (html/select test-page [[:div (html/attr-contains :class "review-rating")]]))
       p2-h2s (some-> (html/select test-page [[:h2 (html/attr-contains :class "review__main-content__heading")]]))
@@ -210,13 +210,17 @@
         p2-combo (map vector p2-h2s p2-ratings)
         p1-combo (map vector p1-h2s p1-ratings)]
 
+  (println p2-h2s p2-ratings)
+
   (if (empty? p2-h2s)
-(map (fn [el] (let [f (first (:content (first el)))
-                        s (some-> (html/select el [[:div (html/attr-contains :class "review-rating")]]) first :content first :content first :content second :content second :content)]
-                    (vector f s))) p1-combo)
-    (map (fn [el] (let [f (first (:content (first el)))
-                        s (some-> (html/select el [[:div (html/attr-contains :class "review__main-content__rating-container")]]) first :content second :content first :content second :content second :content first)]
-                    (vector f s))) p2-combo)))
+    (do
+      (map (fn [el] (let [f (first (:content (first el)))
+                          s (some-> (html/select el [[:div (html/attr-contains :class "review-rating")]]) first :content first :content first :content second :content second :content)]
+                      (vector f s))) p1-combo))
+    (do
+      (map (fn [el] (let [f (first (:content (first el)))
+                          s (some-> (html/select el [[:div (html/attr-contains :class "review__main-content__rating-container")]]) first :content second :content first :content second :content second :content first)]
+                      (vector f s))) p2-combo))))
 
 
 ;; TODO integrate old method with the ^new^
