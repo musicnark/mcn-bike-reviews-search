@@ -1,6 +1,6 @@
 # TL;DR
 -   **Purpose:** Enable faster search of MCN's bike reviews, filtering by bike specs, to accelerate content ideation.
--   **Tech:** Clojure, web scraping, data pipelines, HTML parsing, core.async, REST API, DOM node tree traversal, query language/DSL.
+-   **Tech:** Clojure, web scraping, data pipelines, HTML parsing, core.async, DOM node tree traversal, query language/DSL.
 -   **Impact:** Reduced manual review, improved content discovery, scalable for editorial teams.
 
 # Jump to:
