@@ -29,14 +29,6 @@
     (subs s 1)
     s))
 
-;; for CSV
-;; (defn parse-urls [table]
-;;   {:ok
-;;    (->> table
-;;         (map second)
-;;         (filter url?)
-;;         (vec))})
-
 ;; TODO improve parsing logic
 (defn clean-bike-name [s]
   (when (url? s)
@@ -79,25 +71,6 @@
   (if (ok? res)
     (f (:ok res))
     res))
-
-;; TODO why are these here?
-;; (defn map-ok [f]
-;;   (fn [xs]
-;;     {:ok (map f xs)}))
-
-;; (defn pmap-ok [f]
-;;   (fn [xs]
-;;     {:ok (pmap f xs)}))
-
-;; basic CSV parsing
-;; (def input-table
-;;   (try
-;;   {:ok (with-open [reader (io/reader "src/Bike_Reviews.csv")]
-;;     (doall
-;;      (csv/read-csv reader)))}
-;;   (catch Exception e
-;;     {:err {:type :file
-;;            :message (.getMessage e)}})))
 
 (def sitemap
   (try
@@ -200,8 +173,7 @@
 
 (defn parse-pipeline [input-chan]
   (let [output-chan (chan)]
-    (async/pipeline
-     15
+    (async/pipeline 15
      output-chan
      (map parse-bike)
      input-chan)
@@ -225,11 +197,9 @@
                 (bind merge-html-chans)
                 (bind parse-pipeline)
                 (bind collect-results))]
-
     (if (instance? clojure.core.async.impl.channels.ManyToManyChannel bikes)
       (<!! bikes)
       bikes)))
-
 
 (comment
   (def rez (get-bikes-map sitemap))
