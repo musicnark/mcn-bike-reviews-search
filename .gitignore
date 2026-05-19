@@ -1,0 +1,16 @@
+# CLJ
+.clj-kondo
+.cpcache
+.lsp
+.nrepl-port
+
+# Vale
+.vale_styles
+.vale/
+.vale-cache/
+.cache/vale/
+
+# Editors 
+.vscode/
+.idea/
+.codex
