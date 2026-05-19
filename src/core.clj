@@ -201,7 +201,7 @@
       (<!! bikes)
       bikes)))
 
-;; TODO similar implementation to elisp version?
+;; TODO similar implementation to elisp version? needs desigining with API + front-end in mind (structured data/JSON-like queries?)
 (defn query-bikes []
   (throw (ex-info "Implement me" {:fn 'query-bikes})))
 

@@ -7,6 +7,7 @@
 - [ ] add custom Vale style
 - [ ] deeper explanations of architectural decisions
 - [ ] consistently acknowledge Clojure version
+- [ ] add 'Quickstart' guide
 
 # Code
 - [ ] **random query button**
