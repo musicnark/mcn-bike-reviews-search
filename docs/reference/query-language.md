@@ -28,7 +28,7 @@ The list of bike specs available to filter by are listed as follows:
 | `:1/4-mile-acceleration`    | "secs"                              |
 | `:tank-range`               | "miles"                             |
 
-`TBC` denotes a spec that can't yet be filtered by this tool.
+`TBC` denotes a spec that can't yet be filtered by this tool, as they are currently string-only.
 
 # Operators & Combinators
 Numerical comparison operators are supported:
