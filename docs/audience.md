@@ -1,5 +1,5 @@
-# Intended Audience
-This tool is intended for two main audiences:
+# Intended audience
+This tool serves two main audiences:
 
 Primary:
 - Editorial teams in the automotive industry with basic technical literacy

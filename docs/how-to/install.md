@@ -1,19 +1,23 @@
-# Recommended Install
-The recommended install method is via the supplied \`[install script](../../install.sh)`\, which automates install for this tool and Emacs on MacOS, Debian, and Ubuntu:
+# Recommended install
+To follow the recommended install method, run the supplied [install script](../../install.sh), which automates install for this tool and Emacs on MacOS, Debian, and Ubuntu. Copy and paste the following into a terminal and hit enter:
 
 ``` bash
-git clone https://github.com/musicnark/mcn-bike-reviews-search
-cd mcn-bike-reviews-search
-chmod +x install.sh
+git clone https://github.com/musicnark/mcn-bike-reviews-search &&
+cd mcn-bike-reviews-search &&
+chmod +x install.sh &&
 ./install.sh
 ```
 Once installed, launch or restart Emacs and run `M-x bike-search-initialise` to load the bike reviews data.
 
 Then, you can get started with some [basic usage](./basic-usage.md).
 
-If you're unfamiliar with Emacs, now's a good time to [familiarise yourself with the basics](https://www.gnu.org/software/emacs/tour/) before continuing.
+On MacOS, `M-x` means pressing `Option + x`. On Windows/Linux, it means `Alt + x`. After that, you type the name of the function to run (in this case `mcn/bike-search-initialise`) and hit enter to run it.
 
-# Manual Install
+If unfamiliar with Emacs, now's a good time to [familiarise yourself with the basics](https://www.gnu.org/software/emacs/tour/) before continuing.
+
+---
+
+# Manual install
 If installing manually, open a terminal and follow the below instructions:
 
 - Install Emacs and add it to your PATH (check online for specific instructions on your operating system)
@@ -51,7 +55,7 @@ emacs --batch \
 M-x mcn/bike-search-initialise
 ```
 
-- By default, it will load a local version of the bikes hashmap. If you want to try the download behaviour, set it with this variable:
+- By default, it will load a local version of the bikes hash map. If you want to try the download behaviour, set it with this variable:
 
 ```elisp
 (setq mcn/download-from-live-site t)

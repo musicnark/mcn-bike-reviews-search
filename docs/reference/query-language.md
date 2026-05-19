@@ -1,4 +1,4 @@
-# Bike Specs
+# Bike specs
 The list of bike specs available to filter by are listed as follows:
 
 | Spec                        | Unit of measurement (if filterable) |
@@ -30,7 +30,7 @@ The list of bike specs available to filter by are listed as follows:
 
 `TBC` denotes a spec that can't yet be filtered by this tool, as they are currently string-only.
 
-# Operators & Combinators
+# Operators & combinators
 Numerical comparison operators are supported:
 
 | Operator | Meaning                  |
@@ -49,8 +49,8 @@ Queries can be combined with three combinators:
 | `(or)`     | at least one filter must return true |
 | `(not)`    | returns the inverse                  |
 
-# Expected Errors
+# Expected errors
 The errors expected by the program are as follows:
-- fetching a URL may return 'nil' if it encounters any error (e.g., no internet connection), but that page will be skipped and the process will continue
+- fetching a URL may return 'nil' if it encounters any error (for example, no internet connection), but that page will be skipped and the process will continue
 - parsing the page contents will return 'nil' if the sub-page was not found, but that page will be skipped and the process will continue
 - when extracting specs from the HTML <table> node, the function will raise an error if it's not given a HTML <table> node, or if no <tbody> tag is found within it.

@@ -1,5 +1,7 @@
-# Usage Overview
-This program is not (yet) interactive, and is designed to be called from within Emacs' terminal environments (namely `M-x eshell` or `M-x ielm`). Once you're there, type out a query and hit enter.
+# Usage overview
+This tool does not (yet) feature a graphical interface. Before continuing, be sure to channel your inner hacker.
+
+Run Emacs, and when you get to the home screen, type `M-x eshell` or `M-x ielm`, and hit enter. Once loaded, you can start typing out a query.
 
 # Queries
 The basic syntax of a query looks like this:
@@ -11,16 +13,18 @@ The basic syntax of a query looks like this:
 	 (:top-speed >= 60)))               ;; ^^^
  ```
 
-Don't forget to put the single quote `'` before your filter.
+_Don't forget to put the single quote `'` before your filter!_
 
 For the sake of ease of use, you don't need to put the unit of a spec (bhp/break horsepower, mm/millimetres, cc/cubic centimetres, etc), just the number.
  
 Running the above will produce an output similar to this:
 
 ```elisp
-;; => ("honda msx125-grom 2014" ... "https://www.motorcyclenews.com/bike-reviews/...")
+("honda msx125-grom 2014" ... "https://www.motorcyclenews.com/bike-reviews/...")
 ;;    ...
 ```
+
+By default, the results display from top → bottom, **low → high**.
 
 To see all the available specs for a certain bike, you can search for it by name with the following command:
 

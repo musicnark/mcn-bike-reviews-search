@@ -1,21 +1,21 @@
-  (require 'cl-lib)
+(require 'cl-lib)
 
-  (defvar mcn/download-from-live-site nil
-	"If non-nil, fetch bike reviews from the live site.
+(defvar mcn/download-from-live-site nil
+  "If non-nil, fetch bike reviews from the live site.
 Otherwise, load the local cached hashmap.")
 
-  (setq bike-review-urls (make-hash-table :test 'equal))
-  (setq bike-review-table (make-hash-table :test 'equal))
-  (setq bike-review-hashmap (make-hash-table :test 'equal))
+(setq bike-review-urls (make-hash-table :test 'equal))
+(setq bike-review-table (make-hash-table :test 'equal))
+(setq bike-review-hashmap (make-hash-table :test 'equal))
 
-  (defun pc-csv-parse-line (line)
-	(split-string line "," t))
-  
-  (defun pc-csv-parse-file (file)
-	(with-temp-buffer
-	  (insert-file-contents file)
-	  (mapcar #'pc-csv-parse-line
-			  (split-string (buffer-string) "\n" t))))
+(defun pc-csv-parse-line (line)
+  (split-string line "," t))
+
+(defun pc-csv-parse-file (file)
+  (with-temp-buffer
+	(insert-file-contents file)
+	(mapcar #'pc-csv-parse-line
+			(split-string (buffer-string) "\n" t))))
 
 (defun fetch-html (url)
   "Fetch HTML from URL, or return nil on any failure."
@@ -29,9 +29,9 @@ Otherwise, load the local cached hashmap.")
     (error
      (message "Skipping URL %s: %s" url err)
      nil)))
-  
-  (defun parse-html (html)
-	(when html
+
+(defun parse-html (html)
+  (when html
     (condition-case err
         (with-temp-buffer
           (insert html)
@@ -40,13 +40,13 @@ Otherwise, load the local cached hashmap.")
        (message "Failed to parse HTML: %s" err)
        nil))))
 
-  (defun pc-insert-hash-table (csv-line)
-	(let ((name (nth 0 csv-line))
-		  (url (nth 1 csv-line)))
-	  (puthash name url bike-review-urls)))
+(defun pc-insert-hash-table (csv-line)
+  (let ((name (nth 0 csv-line))
+		(url (nth 1 csv-line)))
+	(puthash name url bike-review-urls)))
 
-  (defun pc-extract-specs-from-table (table-node)
-	"Extract bike specifications from a HTML <table> DOM node.
+(defun pc-extract-specs-from-table (table-node)
+  "Extract bike specifications from a HTML <table> DOM node.
 
 TABLE-NODE should be a parsed <table> node as returned by `libxml-parse-html-region'.
 Returns a property list (plist) where each key is a keyword version of the spec label
@@ -58,43 +58,43 @@ Example:
 Raises an error if TABLE-NODE is not a <table> node or if no <tbody> is found.
 
 See also `mcn/query-bikes' and `pc-eval-query'."
-	(unless (and (listp table-node) (eq (car table-node) 'table))
-	  (error "Expected a <table> DOM node"))
+  (unless (and (listp table-node) (eq (car table-node) 'table))
+	(error "Expected a <table> DOM node"))
+  
+  ;; find the <tbody> node inside the table
+  (let ((tbody (cl-find-if (lambda (n)
+							 (and (listp n) (eq (car n) 'tbody)))
+						   (cddr table-node))))
+	(unless tbody
+	  (error "No <tbody> found in table"))
 	
-	;; find the <tbody> node inside the table
-	(let ((tbody (cl-find-if (lambda (n)
-							   (and (listp n) (eq (car n) 'tbody)))
-							 (cddr table-node))))
-	  (unless tbody
-		(error "No <tbody> found in table"))
-	  
-	  (let ((specs '()))
-		;; helper to extract (label . value) from <tr>
-		(cl-labels ((extract-tr (tr-node)
-					  (when (and (listp tr-node) (eq (car tr-node) 'tr))
-						(let* ((children (cddr tr-node))
-							   (th-node (cl-find-if (lambda (n)
-													  (and (listp n) (eq (car n) 'th)))
-													children))
-							   (td-node (cl-find-if (lambda (n)
-													  (and (listp n) (eq (car n) 'td)))
-													children))
-							   (label (when th-node (car (last th-node))))
-							   (value (when td-node
-										;; flatten strings in <td>, ignore nested tags
-										(mapconcat (lambda (x) (if (stringp x) x "")) (cdr td-node) ""))))
-						  (when (and label value)
-							(cons label (string-trim value)))))))
-		  
-		  ;; iterate over all <tr> nodes in <tbody>
-		  (dolist (child (cddr tbody))
-			(let ((kv (extract-tr child)))
-			  (when kv
-				;; convert label to keyword symbol
-				(setq specs (plist-put specs
-									   (intern (concat ":" (replace-regexp-in-string " " "-" (downcase (car kv)))))
-									   (cdr kv)))))))
-		specs)))
+	(let ((specs '()))
+	  ;; helper to extract (label . value) from <tr>
+	  (cl-labels ((extract-tr (tr-node)
+					(when (and (listp tr-node) (eq (car tr-node) 'tr))
+					  (let* ((children (cddr tr-node))
+							 (th-node (cl-find-if (lambda (n)
+													(and (listp n) (eq (car n) 'th)))
+												  children))
+							 (td-node (cl-find-if (lambda (n)
+													(and (listp n) (eq (car n) 'td)))
+												  children))
+							 (label (when th-node (car (last th-node))))
+							 (value (when td-node
+									  ;; flatten strings in <td>, ignore nested tags
+									  (mapconcat (lambda (x) (if (stringp x) x "")) (cdr td-node) ""))))
+						(when (and label value)
+						  (cons label (string-trim value)))))))
+		
+		;; iterate over all <tr> nodes in <tbody>
+		(dolist (child (cddr tbody))
+		  (let ((kv (extract-tr child)))
+			(when kv
+			  ;; convert label to keyword symbol
+			  (setq specs (plist-put specs
+									 (intern (concat ":" (replace-regexp-in-string " " "-" (downcase (car kv)))))
+									 (cdr kv)))))))
+	  specs)))
 
 (defun query-bikes-by-tag (tag op value &optional descending)
   "NOTICE: This function is now depricated, only kept for posterity's sake.
@@ -103,31 +103,31 @@ TAG should be a keyword like :seat-height.
 OP should be a symbol: '<, '> , '<= , '>= , '=.
 VALUE should be a number for numeric comparisons.
 If DESCENDING is non-nil, sort in descending order."
-	(let (results)
-		(maphash
-		 (lambda (k specs)
-			 (let* ((raw (plist-get specs tag))
-							;; convert string like "810mm" to number
-							(num (when raw
-										 (string-to-number (replace-regexp-in-string "[^0-9.-]" "" raw))))
-							;; get URL for this bike
-							(url (gethash k bike-review-urls)))
-				 (when (and num
-										(pcase op
-											('<  (< num value))
-											('>  (> num value))
-											('<= (<= num value))
-											('>= (>= num value))
-											('=  (= num value))
-											('<>  (and (< num value) (> num 1)))
-											(_ (error "Unsupported operator: %S" op))))
-					 (push (list k num url) results))))
-		 bike-review-hashmap)
-		;; sort results by the numeric property
-		(sort results
-					(if descending
-							(lambda (a b) (> (nth 1 a) (nth 1 b)))
-						(lambda (a b) (< (nth 1 a) (nth 1 b)))))))
+  (let (results)
+	(maphash
+	 (lambda (k specs)
+	   (let* ((raw (plist-get specs tag))
+			  ;; convert string like "810mm" to number
+			  (num (when raw
+					 (string-to-number (replace-regexp-in-string "[^0-9.-]" "" raw))))
+			  ;; get URL for this bike
+			  (url (gethash k bike-review-urls)))
+		 (when (and num
+					(pcase op
+					  ('<  (< num value))
+					  ('>  (> num value))
+					  ('<= (<= num value))
+					  ('>= (>= num value))
+					  ('=  (= num value))
+					  ('<>  (and (< num value) (> num 1)))
+					  (_ (error "Unsupported operator: %S" op))))
+		   (push (list k num url) results))))
+	 bike-review-hashmap)
+	;; sort results by the numeric property
+	(sort results
+		  (if descending
+			  (lambda (a b) (> (nth 1 a) (nth 1 b)))
+			(lambda (a b) (< (nth 1 a) (nth 1 b)))))))
 
 (defun pc-eval-query (query specs)
   "Recursively evaluate QUERY against a SPECS property list.
@@ -197,7 +197,7 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
                  (nth 1 a) (nth 1 b))))
       (nreverse results))))
 
-  (defun mcn/bike-search-initialise ()
+(defun mcn/bike-search-initialise ()
   (interactive)
   ;; convert CSV to hash table
   (setq br (pc-csv-parse-file "~/.emacs.d/lisp/mcn-bike-reviews-search/Bike_Reviews.csv"))

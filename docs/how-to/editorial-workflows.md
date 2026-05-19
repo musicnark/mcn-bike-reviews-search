@@ -1,5 +1,5 @@
-# Accelerating Content Creation
-Utilising a programmatic mindset, this tool promises to significantly accelerate content creation for editorial teams at MCN. Instead of relying on deep expert knowledge, or spending countless hours manually searching for each bike worth featuring in a piece of content, this tool can find them all with a single well-constructed query.
+# Accelerating content creation
+Utilising a programmatic mindset, this tool promises to accelerate content creation for editorial teams at MCN. Instead of relying on deep expert knowledge, or spending countless hours manually searching for each bike worth featuring in a piece of content, this tool can find them all with a single well-constructed query.
 
 If we have an idea for a buying guide or newsletter, let's say:
 
@@ -19,7 +19,7 @@ A query can be used to find all the relevant bikes. In this case:
 ;;    ...
 ```
 
-# Accelerating Content Ideation
+# Accelerating content ideation
 You can also use this tool to help with inspiration for content ideas, as playing around with the different filters can yield interesting results. For example, think about what would these queries might output:
 
 ```elisp
@@ -35,6 +35,11 @@ You can also use this tool to help with inspiration for content ideas, as playin
 (mcn/query-bikes 
 	'(and
 		(:annual-service-cost <= 100)
+<<<<<<< docs-overhaul
+=======
+		(:insurance-group < 7)
+		(:annual-road-tax < 50)
+>>>>>>> main
 		(:used-price < 2500)))
 ```
 
@@ -49,14 +54,38 @@ You can also use this tool to help with inspiration for content ideas, as playin
 
 > "Best 750cc mile-munchers"?
 
-There are many specs that go under-represented across our content that can be used to search too:
+```elisp
+(mcn/query-bikes
+	'(and
+		(:used-price < 5000)
+		(:used-price > 0)
+		(:top-speed >= 180))
+```
+> "Best bargain bikes for speed-demons"?
 
 ```elisp
 (mcn/query-bikes
 	'(and
-		(:average-fuel-consumption > 150)
-		(:top-speed >= 60)))
+		(:year = 2026)
+		(:mcn-rating = 5))
 ```
+> "MCN Manufacturer of the Year Award"?
+
+```elisp
+(mcn/query-bikes
+	'(and
+		(:year = 2026)
+		(:owners-rating > 5))
+```
+> "'Readers Choice' — Your Favourite Bikes of the Year"
+
+```elisp
+(mcn/query-bikes
+	'(and
+		(:reliability-rating = 5)
+		(:used-price < 5000)))
+```
+> "Most reliable bikes under £5,000"
 
 # Integration with LLMs
 To further accelerate content creation, an integration with ChatGPT is currently in development. In the meantime, you can copy and paste the output from this tool directly into your choice of LLM, and ask it to draft a piece of content with those bikes. This gives the LLM less work to do searching for the bikes, which it does far less reliably than this tool, and generates a first-draft for content rapidly.
