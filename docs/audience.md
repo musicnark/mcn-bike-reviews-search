@@ -2,12 +2,13 @@
 This tool serves two main audiences:
 
 Primary:
-- Editorial staff with basic technical literacy
-- Developers extending/re-implementing the query engine
+- Editorial teams in the automotive industry with basic technical literacy
+- Researchers working with structured motorcycle review data
 
 Secondary:
-- Technical authors interested in editorial tooling
+- Developers extending/re-implementing the query engine
+- Technical authors/developers interested in editorial tooling
 
 Not intended for:
 - MCN readers
-- Emacs power users
+- Editorial teams outside the automotive industry

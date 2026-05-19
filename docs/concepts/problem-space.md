@@ -3,3 +3,6 @@ MCN is a weekly print magazine and website owned by Bauer Media. They generate r
 
 # Tech stack
 MCN's website at the time was based on WordPress, and the team uploading content to it had some technical literacy. They had been promised a new CMS by the company, that had been in the works for over twelve months, and rollout was being repeatedly delayed. Nobody on the editorial team had access to the source code for the website, including me, just the content on it. They used Monday.com to organise workflows.
+
+Clojure was used for the SLC version of this tool because:
+- its exploratory REPL-based workflows and verbose yet concise code ultimately mean the problem is central, not the language demands.

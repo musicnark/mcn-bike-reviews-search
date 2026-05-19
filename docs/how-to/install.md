@@ -7,7 +7,7 @@ cd mcn-bike-reviews-search &&
 chmod +x install.sh &&
 ./install.sh
 ```
-Once installed, the script will tell you where to find the Emacs app. Navigate to it and launch Emacs, then and run `M-x mcn/bike-search-initialise` to load the bike reviews data.
+Once installed, launch or restart Emacs and run `M-x bike-search-initialise` to load the bike reviews data.
 
 Then, you can get started with some [basic usage](./basic-usage.md).
 
@@ -39,7 +39,7 @@ mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/el
 ```bash
 emacs --batch \
 	-Q \
-	-L ~/.emacs.d/elisp/mcn-bike-reviews-search \
+	-L ~/.emacs.d/lisp/mcn-bike-reviews-search \
 	-f batch-byte-compile *.el
 ```
 

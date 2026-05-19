@@ -35,8 +35,11 @@ You can also use this tool to help with inspiration for content ideas, as playin
 (mcn/query-bikes 
 	'(and
 		(:annual-service-cost <= 100)
+<<<<<<< docs-overhaul
+=======
 		(:insurance-group < 7)
 		(:annual-road-tax < 50)
+>>>>>>> main
 		(:used-price < 2500)))
 ```
 

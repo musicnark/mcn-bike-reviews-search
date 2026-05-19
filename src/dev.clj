@@ -1,6 +1,7 @@
 ;; welcome to the graveyard~
 (ns dev
   (:require [clj-http.client :as http])
+  (:require [net.cgrand.enlive-html :as html])
   (:require [clj-http.util :as util])
   (:require [clojure.string :as string])
   (:require [clojure.data.xml :as xml])
@@ -236,3 +237,6 @@
 ;; (doall (map (fn [v] (when (contains? v :ok) (:ok v)) (map format-price prices))))
 
 ;; (map (fn [price] (if (= (first-token price) "£") ( prices)
+
+  (let [data (http/get "https://jsonplaceholder.typicode.com/users/" {:as :json})]
+  (println (html/html-snippet data)))

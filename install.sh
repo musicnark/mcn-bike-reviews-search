@@ -17,7 +17,7 @@ cd mcn-bike-reviews-search"
 	# (optional) byte compile program files for faster loading time
 	emacs --batch \
 		  -Q \
-		  -L ~/.emacs.d/elisp/mcn-bike-reviews-search \
+		  -L ~/.emacs.d/lisp/mcn-bike-reviews-search \
 		  -f batch-byte-compile *.el >/dev/null 2>&1 ||
 		echo "Warning: byte-compilation failed, continuing."
 
