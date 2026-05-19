@@ -201,6 +201,10 @@
       (<!! bikes)
       bikes)))
 
+;; TODO similar implementation to elisp version?
+(defn query-bikes []
+  (throw (ex-info "Implement me" {:fn 'query-bikes})))
+
 (comment
   (def rez (get-bikes-map sitemap))
   
