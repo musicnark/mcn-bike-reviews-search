@@ -294,8 +294,8 @@
              :field "fuel-capacity"
              :op "<"
              :value 5}
-    :sort {:field "used-price"
-           :direction "desc"}
+    :sort {:field "bike-weight"
+           :direction "asc"}
     :limit 10})
     :ok
     :results)
