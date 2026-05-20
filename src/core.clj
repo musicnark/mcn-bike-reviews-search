@@ -202,21 +202,118 @@
       bikes)))
 
 ;; TODO similar implementation to elisp version? needs desigining with API + front-end in mind (structured data/JSON-like queries?)
-(defn query-bikes []
-  (throw (ex-info "Implement me" {:fn 'query-bikes})))
+
+;; Querying
+(defn parse-number [value]
+  (cond
+    (number? value)
+    value
+    (string? value)
+    (let [cleaned (clojure.string/replace value #"," "")]
+      (when-let [match (re-find #"-?\d+(\.\d+)?" cleaned)]
+        (Double/parseDouble (first match))))
+    :else
+    nil))
+
+(def operators
+  {"<" <
+   ">" >
+   "<=" <=
+   ">=" >=
+   "=" =})
+
+(defn compare-field [bike {:keys [field op value]}]
+  (let [field-key (keyword field)
+        actual-value (get bike field-key)
+        actual-number (parse-number actual-value)
+        target-number (parse-number value)
+        operator (get operators op)]
+    (and operator
+         actual-number
+         target-number
+         (operator actual-number target-number))))
+
+(defn matches? [bike query]
+  (case (:type query)
+    "comparison"
+    (compare-field bike query)
+
+    "and"
+    (every? #(matches? bike %) (:clauses query))
+
+    "or"
+    (boolean
+     (some #(matches? bike %) (:clauses query)))
+
+    "not"
+    (not (matches? bike (:clause query)))
+
+    false))
+
+(defn sort-value [bike field]
+  (parse-number (get bike (keyword field))))
+
+(defn sort-results [results {:keys [field direction]}]
+  (let [sorted (sort-by #(sort-value % field) results)]
+    (if (= direction "desc")
+      (reverse sorted)
+      sorted)))
+
+ (defn query-bikes [bikes {:keys [filter sort limit]}]
+    (let [matches
+          (->> bikes
+               (keep (fn [[bike-id result]]
+                       (when-let [bike (:ok result)]
+                         (when (matches? bike filter)
+                           (assoc bike :id bike-id)))))
+               vec)
+
+          sorted-results
+          (if sort
+            (vec (sort-results matches sort))
+            matches)
+
+          limited-results
+          (if limit
+            (vec (take limit sorted-results))
+            sorted-results)]
+
+      {:ok {:results limited-results
+            :count (count limited-results)
+            :total-matches (count matches)}}))
+
+;; (def rez (get-bikes-map sitemap))
 
 (comment
   (def rez (get-bikes-map sitemap))
   
-  (first rez)
-  (get rez "suzuki-burgman-650-2003")
-  
+ ;; example query
+(-> (query-bikes
+   rez
+   {:filter {:type "comparison"
+             :field "fuel-capacity"
+             :op "<"
+             :value 5}
+    :sort {:field "used-price"
+           :direction "desc"}
+    :limit 10})
+    :ok
+    :results)
+
   )
+;; TODO for query engine:
+;; - Add tests for parse-number, compare-field, matches?, and query- bikes. Lock in the behaviour before expanding the AST.
+;; - Move query code out of src/core.clj into something like src/ query.clj or src/mcn_bike_reviews/query.clj. core.clj is already doing fetching, parsing, async orchestration, and querying.
+;; - Add query validation before evaluation. For example, reject unknown :type, missing :field, unsupported :op, empty :clauses, and malformed not nodes.
+;; - Decide the public response shape for query-bikes, probably {:ok {:results [...] :count n :skipped [...]}}.
+;; - Add sorting and limits after filtering, because the API/ frontend will need them quickly.
+;; - Add data cleanup in parse-bike, separately from query logic. The messy whitespace and embedded Enlive node strings should be fixed at ingestion, not during querying.
 
 ;; TODO:
 ;; KEY: [SKIP] = not necessary for SLC version
 ;; - put name of the bike in the map (test with just one url) [DONE]
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
+;; - retry for any bikes returning :err
 ;; - add bike review url as field in map [DONE]
 ;; - add owners reviews rating as field in map
 ;; - add in-copy scores as a field in map (reliability, looks, suspension, engine, etc) [SKIP]
@@ -237,14 +334,3 @@
 ;;   - basically turn every println into a redirect to logs~
 ;; - add documentation strings to functions
 ;; - *organise functions into different namespaces*
-
-;; TODO (prototyping):
-;; - how to batch async jobs with timeout [DONE]
-;; - how to parse results as they come back asynchronously? [DONE]
-;; - handling for duplicate bikes [DONE?]
-;; - write a sync version of the code to test against? [DONE?]
-;; - integrate rate limiting and global error handling (via an atom) into async pipeline
-
-;; TODO Concurrency Tutorial:
-;; - threads vs go routines?
-;; - generate exercises with dummy json data to internalise the basics (message passing, assigning futures, putting and taking from threads/go routines, watching the speed-up real-time)

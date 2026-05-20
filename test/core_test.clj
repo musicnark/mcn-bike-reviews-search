@@ -15,3 +15,8 @@
     (is (nil? (mcn/clean-bike-name "Not-A-URL")))
     (is (nil? (mcn/clean-bike-name "")))
     (is (nil? (mcn/clean-bike-name nil)))))
+
+(deftest parse-number-test
+  (testing "parses numeric entries in bikes data to extract the raw number, with no units alongside it (e.g., '£', 'mm', 'kg', 'mph', 'out of 17', etc)"
+    ))
+  
