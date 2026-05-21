@@ -3,6 +3,8 @@
   (:require [clj-http.util :as util])
   (:require [clj-http.conn-mgr :as conn])
   (:require [net.cgrand.enlive-html :as html])
+  (:require [clojure.edn :as edn])
+  (:require [clojure.java.io :as io])
   (:require [clojure.string :as string])
   (:require [clojure.data.xml :as xml])
   (:require [clojure.core.async :as async :refer [go <! >! <!! chan close!]]))
@@ -207,6 +209,61 @@
       (<!! bikes)
       bikes)))
 
+;; Storage
+(def default-cache-path "data/bikes.edn")
+
+(defn cache-exists?
+  ([] (cache-exists? default-cache-path))
+  ([path]
+   (.exists (io/file path))))
+
+(defn save-bikes-map!
+  ([bikes]
+   (save-bikes-map! default-cache-path bikes))
+  ([path bikes]
+   (try
+     (let [file (io/file path)
+           parent (.getParentFile file)]
+       (when parent
+         (.mkdirs parent))
+       (spit file (pr-str bikes))
+       {:ok {:path (.getPath file)
+             :count (count bikes)}})
+     (catch Exception e
+       {:err {:type :write-cache
+              :path path
+              :message (.getMessage e)}}))))
+
+(defn load-bikes-map
+  ([] (load-bikes-map default-cache-path))
+  ([path]
+   (try
+     (if (cache-exists? path)
+       {:ok (edn/read-string (slurp path))}
+       {:err {:type :cache-miss
+              :path path
+              :message "Bike cache file does not exist."}})
+     (catch Exception e
+       {:err {:type :read-cache
+              :path path
+              :message (.getMessage e)}}))))
+
+(defn get-or-fetch-bikes-map
+  ([]
+   (get-or-fetch-bikes-map default-cache-path false #(get-bikes-map (fetch-sitemap))))
+  ([path force-refresh?]
+   (get-or-fetch-bikes-map path force-refresh? #(get-bikes-map (fetch-sitemap))))
+  ([path force-refresh? fetch-bikes]
+   (if (and (not force-refresh?) (cache-exists? path))
+     (load-bikes-map path)
+     (let [bikes (fetch-bikes)]
+       (if (err? bikes)
+         bikes
+         (let [saved (save-bikes-map! path bikes)]
+           (if (err? saved)
+             saved
+             {:ok bikes})))))))
+
 ;; TODO similar implementation to elisp version? needs desigining with API + front-end in mind (structured data/JSON-like queries?)
 
 ;; Querying
@@ -292,7 +349,7 @@
 ;; (def rez (get-bikes-map (fetch-sitemap)))
 
 (comment
-  (def rez (get-bikes-map (fetch-sitemap)))
+  (def rez (get-or-fetch-bikes-map))
   
  ;; example query
 (-> (query-bikes
@@ -308,8 +365,12 @@
     :results)
 
   )
+;; TODO for persistent storage:
+;; - allow updating the dataset
+;; - allow retrying on failed entries (maybe on the failure callback in http request, push failed entries to a queue and try them again after fetch/timeout?)
+
 ;; TODO for query engine:
-;; - Add tests for parse-number, compare-field, matches?, and query- bikes. Lock in the behaviour before expanding the AST.
+;; - Add tests for parse-number, compare-field, matches?, and query-bikes. Lock in the behaviour before expanding the AST. [DONE]
 ;; - Move query code out of src/core.clj into something like src/ query.clj or src/mcn_bike_reviews/query.clj. core.clj is already doing fetching, parsing, async orchestration, and querying.
 ;; - Add query validation before evaluation. For example, reject unknown :type, missing :field, unsupported :op, empty :clauses, and malformed not nodes.
 ;; - Decide the public response shape for query-bikes, probably {:ok {:results [...] :count n :skipped [...]}}.

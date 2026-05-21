@@ -104,6 +104,66 @@
    "bike-d" {:err {:type :parse-html
                    :message "labels or values weren't found in HTML response."}}})
 
+(defn temp-cache-path []
+  (let [file (java.io.File/createTempFile "mcn-bike-cache" ".edn")]
+    (.delete file)
+    (.getPath file)))
+
+(deftest persistent-storage-test
+  (testing "saves and loads bike maps as EDN"
+    (let [path (temp-cache-path)]
+      (try
+        (is (false? (mcn/cache-exists? path)))
+        (is (= {:ok {:path path
+                     :count 4}}
+               (mcn/save-bikes-map! path test-bikes)))
+        (is (true? (mcn/cache-exists? path)))
+        (is (= {:ok test-bikes}
+               (mcn/load-bikes-map path)))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "returns a cache miss instead of throwing when the file is absent"
+    (let [path (temp-cache-path)]
+      (is (= :cache-miss
+             (get-in (mcn/load-bikes-map path) [:err :type]))))))
+
+(deftest get-or-fetch-bikes-map-test
+  (testing "loads an existing cache without calling the fetch function"
+    (let [path (temp-cache-path)
+          fetch-called? (atom false)]
+      (try
+        (mcn/save-bikes-map! path test-bikes)
+        (is (= {:ok test-bikes}
+               (mcn/get-or-fetch-bikes-map
+                path
+                false
+                (fn []
+                  (reset! fetch-called? true)
+                  {}))))
+        (is (false? @fetch-called?))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "fetches and saves data when the cache is missing"
+    (let [path (temp-cache-path)]
+      (try
+        (is (= {:ok test-bikes}
+               (mcn/get-or-fetch-bikes-map path false (fn [] test-bikes))))
+        (is (= {:ok test-bikes}
+               (mcn/load-bikes-map path)))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "force refresh ignores an existing cache and replaces it"
+    (let [path (temp-cache-path)
+          refreshed-bikes {"bike-e" {:ok {:bike-name "bike-e"}}}]
+      (try
+        (mcn/save-bikes-map! path test-bikes)
+        (is (= {:ok refreshed-bikes}
+               (mcn/get-or-fetch-bikes-map path true (fn [] refreshed-bikes))))
+        (is (= {:ok refreshed-bikes}
+               (mcn/load-bikes-map path)))
+        (finally
+          (.delete (java.io.File. path)))))))
+
 (deftest query-bikes-test
   (testing "filters, sorts, limits, and returns an API-shaped response from the collated bike specs"
     (let [response (mcn/query-bikes
