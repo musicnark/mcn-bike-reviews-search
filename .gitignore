@@ -13,4 +13,6 @@
 # Editors 
 .vscode/
 .idea/
+
+# Misc
 .codex
