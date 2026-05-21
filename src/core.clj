@@ -199,7 +199,7 @@
         results))))
 
 ;; Main
-(defn get-bikes-map [sitemap]
+(defn fetch-bikes-map [sitemap]
   (let [bikes (-> (bind sitemap parse-sitemap)
                 (bind urls-to-fetch)
                 (bind merge-html-chans)
@@ -250,9 +250,9 @@
 
 (defn get-or-fetch-bikes-map
   ([]
-   (get-or-fetch-bikes-map default-cache-path false #(get-bikes-map (fetch-sitemap))))
+   (get-or-fetch-bikes-map default-cache-path false #(fetch-bikes-map (fetch-sitemap))))
   ([path force-refresh?]
-   (get-or-fetch-bikes-map path force-refresh? #(get-bikes-map (fetch-sitemap))))
+   (get-or-fetch-bikes-map path force-refresh? #(fetch-bikes-map (fetch-sitemap))))
   ([path force-refresh? fetch-bikes]
    (if (and (not force-refresh?) (cache-exists? path))
      (load-bikes-map path)
@@ -263,8 +263,6 @@
            (if (err? saved)
              saved
              {:ok bikes})))))))
-
-;; TODO similar implementation to elisp version? needs desigining with API + front-end in mind (structured data/JSON-like queries?)
 
 ;; Querying
 (defn parse-number [value]
@@ -346,7 +344,7 @@
             :count (count limited-results)
             :total-matches (count matches)}}))
 
-;; (def rez (get-bikes-map (fetch-sitemap)))
+;; (def rez (fetch-bikes-map (fetch-sitemap)))
 
 (comment
   (def rez (get-or-fetch-bikes-map))
@@ -397,7 +395,7 @@
 ;; - implement DSL/query language
 ;;   - function takes map/json and searches based on given parameters
 ;; - implement API + docs
-;; - include tests
+;; - include tests + standardised testing framework
 ;; - add CI/CD pipelines
 ;; - add accumulated logging/log-centric error handling
 ;;   - basically turn every println into a redirect to logs~
