@@ -7,10 +7,11 @@
 - [ ] add custom Vale style
 - [ ] deeper explanations of architectural decisions
 - [ ] consistently acknowledge Clojure version
+- [ ] add 'Quickstart' guide
 
 # Code
 - [ ] **random query button**
-- [ ] include tests
+- [ ] expand test suite
 - [ ] add a GUI web front-end to interact with the tool
 - [ ] add + document an API (/search/?weight=200)
 - [ ] integrate a database (*postgres*)
@@ -26,3 +27,4 @@
   - [ ] make/model
   - [x] MCN star rating
 - [ ] improve overall readability of the main code (refactor/organise)
+- [ ] data quality checks - to target old content to update
