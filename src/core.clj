@@ -72,7 +72,7 @@
     (f (:ok res))
     res))
 
-(def sitemap
+(defn fetch-sitemap []
   (try
     {:ok (http/get "https://www.motorcyclenews.com/sitemap/zip-files/review.xml.gz"
                    {:headers {"User-Agent" "Mozilla/5.0"}
@@ -108,16 +108,22 @@
         parsed-sitemap))]
     {:ok res}))
 
-(def cm (conn/make-reusable-async-conn-manager
-          {:threads 50             ;; max threads for connecting
-           :default-per-route 20   ;; max connections *per host*
-           :timeout 10}))
+(defonce connection-manager
+  (delay
+    (conn/make-reusable-async-conn-manager
+     {:threads 50             ;; max threads for connecting
+      :default-per-route 20   ;; max connections *per host*
+      :timeout 10})))
+
+(defn shutdown-connection-manager! []
+  (when (realized? connection-manager)
+    (conn/shutdown-manager @connection-manager)))
 
 (defn fetch-bikes-async [url]
   (let [ch (chan)]
     (http/get url {:headers {"User-Agent" "Mozilla/5.0"}
                    :async? true
-                   :connection-manager cm}
+                   :connection-manager @connection-manager}
               ;; success callback
               (fn [r]
                 (go
@@ -220,7 +226,7 @@
    ">" >
    "<=" <=
    ">=" >=
-   "=" =})
+   "=" ==})
 
 (defn compare-field [bike {:keys [field op value]}]
   (let [field-key (keyword field)
@@ -228,10 +234,11 @@
         actual-number (parse-number actual-value)
         target-number (parse-number value)
         operator (get operators op)]
-    (and operator
-         actual-number
-         target-number
-         (operator actual-number target-number))))
+    (boolean
+     (and operator
+          actual-number
+          target-number
+          (operator actual-number target-number)))))
 
 (defn matches? [bike query]
   (case (:type query)
@@ -282,10 +289,10 @@
             :count (count limited-results)
             :total-matches (count matches)}}))
 
-;; (def rez (get-bikes-map sitemap))
+;; (def rez (get-bikes-map (fetch-sitemap)))
 
 (comment
-  (def rez (get-bikes-map sitemap))
+  (def rez (get-bikes-map (fetch-sitemap)))
   
  ;; example query
 (-> (query-bikes
@@ -312,6 +319,7 @@
 ;; TODO:
 ;; KEY: [SKIP] = not necessary for SLC version
 ;; - put name of the bike in the map (test with just one url) [DONE]
+;; - function doc strings
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - retry for any bikes returning :err
 ;; - add bike review url as field in map [DONE]
