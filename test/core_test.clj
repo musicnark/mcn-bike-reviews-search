@@ -125,7 +125,23 @@
   (testing "returns a cache miss instead of throwing when the file is absent"
     (let [path (temp-cache-path)]
       (is (= :cache-miss
-             (get-in (mcn/load-bikes-map path) [:err :type]))))))
+             (get-in (mcn/load-bikes-map path) [:err :type])))))
+  (testing "returns invalid cache for empty cache files"
+    (let [path (temp-cache-path)]
+      (try
+        (spit path "")
+        (is (= :invalid-cache
+               (get-in (mcn/load-bikes-map path) [:err :type])))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "returns invalid cache for non-map cache contents"
+    (let [path (temp-cache-path)]
+      (try
+        (spit path (pr-str ["not" "a" "bike" "map"]))
+        (is (= :invalid-cache
+               (get-in (mcn/load-bikes-map path) [:err :type])))
+        (finally
+          (.delete (java.io.File. path)))))))
 
 (deftest get-or-fetch-bikes-map-test
   (testing "loads an existing cache without calling the fetch function"

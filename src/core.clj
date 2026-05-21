@@ -207,7 +207,7 @@
                 (bind collect-results))]
     (if (instance? clojure.core.async.impl.channels.ManyToManyChannel bikes)
       (<!! bikes)
-      bikes)))
+      bikes))) ;; TODO add bind support (return {:ok bikes})
 
 ;; Storage
 (def default-cache-path "data/bikes.edn")
@@ -222,13 +222,10 @@
    (save-bikes-map! default-cache-path bikes))
   ([path bikes]
    (try
-     (let [file (io/file path)
-           parent (.getParentFile file)]
-       (when parent
-         (.mkdirs parent))
-       (spit file (pr-str bikes))
-       {:ok {:path (.getPath file)
-             :count (count bikes)}})
+     (io/make-parents path)
+     (spit path (pr-str bikes))
+     {:ok {:path path
+           :count (count bikes)}}
      (catch Exception e
        {:err {:type :write-cache
               :path path
@@ -238,11 +235,16 @@
   ([] (load-bikes-map default-cache-path))
   ([path]
    (try
-     (if (cache-exists? path)
-       {:ok (edn/read-string (slurp path))}
+     (if-not (cache-exists? path)
        {:err {:type :cache-miss
               :path path
-              :message "Bike cache file does not exist."}})
+              :message "Bike cache file does not exist."}}
+       (let [data (edn/read-string (slurp path))]
+         (if (map? data)
+           {:ok data}
+           {:err {:type :invalid-cache
+                  :path path
+                  :message "Bike cache file doesn't contain a map"}})))
      (catch Exception e
        {:err {:type :read-cache
               :path path
