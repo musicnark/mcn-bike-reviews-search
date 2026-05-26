@@ -362,18 +362,19 @@
   (def rez (get-or-fetch-bikes-map))
   (def rez (get-or-fetch-bikes-map "data/bikes.edn" true))
   
- ;; example query
-(-> (query-bikes
-   (:ok rez) ;; TODO figure out how to use bind in prod
-   {:filter {:type "comparison"
-             :field "fuel-capacity"
-             :op "<"
-             :value 5}
-    :sort {:field "bike-weight"
-           :direction "asc"}
-    :limit 10})
-    :ok
-    :results)
+  ;; example query
+  (-> (bind rez
+            (fn [rez]
+              (query-bikes rez
+                           {:filter {:type "comparison"
+                                     :field "fuel-capacity"
+                                     :op "<"
+                                     :value 5}
+                            :sort {:field "bike-weight"
+                                   :direction "asc"}
+                            :limit 10})))
+      :ok
+      :results)
 
   )
 ;; TODO for persistent storage:
