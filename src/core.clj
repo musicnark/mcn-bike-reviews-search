@@ -16,6 +16,8 @@
       (string/replace #":" "")
       string/lower-case
       (string/replace #" " "-")
+      (string/replace #"1/4" "quarter")
+      (string/replace #"/" "-")
       keyword))
 
 ;; TODO make this more robust
@@ -353,7 +355,7 @@
   
  ;; example query
 (-> (query-bikes
-   rez
+   (:ok rez) ;; use bind in prod
    {:filter {:type "comparison"
              :field "fuel-capacity"
              :op "<"

@@ -5,7 +5,12 @@
 (deftest clean-keyword-test
   (testing "removes colons and converts to kebab-case"
     (is (= :seat-height (mcn/clean-keyword "Seat Height:")))
-    (is (= :mpg (mcn/clean-keyword "MPG:")))))
+    (is (= :mpg (mcn/clean-keyword "MPG:"))))
+  (testing "normalises slash-delimited spec labels to EDN-safe keywords"
+    (is (= :quarter-mile-acceleration
+           (mcn/clean-keyword "1/4 Mile Acceleration:")))
+    (is (= :quarter-mile-acceleration
+           (mcn/clean-keyword "1/4 mile acceleration")))))
 
 (deftest clean-bike-name-test
   (testing "reformats URL string by splitting at 'bike-reviews', taking the second element, and converting to kebab-case"
@@ -94,7 +99,8 @@
 (def test-bikes
   {"bike-a" {:ok {:bike-name "bike-a"
                   :fuel-capacity "17 litres"
-                  :used-price "£3,000"}}
+                  :used-price "£3,000"
+                  :quarter-mile-acceleration "12.4 secs"}}
    "bike-b" {:ok {:bike-name "bike-b"
                   :fuel-capacity "3.8 litres"
                   :used-price "£2,500"}}
@@ -120,6 +126,9 @@
         (is (true? (mcn/cache-exists? path)))
         (is (= {:ok test-bikes}
                (mcn/load-bikes-map path)))
+        (is (= "12.4 secs"
+               (get-in (mcn/load-bikes-map path)
+                       [:ok "bike-a" :ok :quarter-mile-acceleration])))
         (finally
           (.delete (java.io.File. path))))))
   (testing "returns a cache miss instead of throwing when the file is absent"
