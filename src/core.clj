@@ -353,6 +353,9 @@
             :count (count limited-results)
             :total-matches (count matches)}}))
 
+(defn update-bikes-map [bikes]
+  )
+
 ;; (def rez (fetch-bikes-map (fetch-sitemap)))
 
 (comment
@@ -361,7 +364,7 @@
   
  ;; example query
 (-> (query-bikes
-   (:ok rez) ;; use bind in prod
+   (:ok rez) ;; TODO figure out how to use bind in prod
    {:filter {:type "comparison"
              :field "fuel-capacity"
              :op "<"
