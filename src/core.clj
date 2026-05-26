@@ -354,7 +354,7 @@
             :total-matches (count matches)}}))
 
 (defn update-bikes-map [bikes]
-  )
+  (throw (ex-info "Implement me" {:fn 'update-bikes-map})))
 
 ;; (def rez (fetch-bikes-map (fetch-sitemap)))
 
@@ -363,18 +363,17 @@
   (def rez (get-or-fetch-bikes-map "data/bikes.edn" true))
   
   ;; example query
-  (-> (bind rez
-            (fn [rez]
-              (query-bikes rez
+  (->
+   (bind rez #(query-bikes %
                            {:filter {:type "comparison"
                                      :field "fuel-capacity"
                                      :op "<"
                                      :value 5}
                             :sort {:field "bike-weight"
                                    :direction "asc"}
-                            :limit 10})))
-      :ok
-      :results)
+                            :limit 10}))
+   :ok
+   :results)
 
   )
 ;; TODO for persistent storage:
