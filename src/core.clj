@@ -131,20 +131,24 @@
               ;; success callback
               (fn [r]
                 (go
-                  (>! ch {:ok r})
+                  (>! ch {:ok {:url url
+                               :response r}})
                   (close! ch)
                   (println "successfully fetched bike: " (clean-bike-name url))))
               ;; error callback
               (fn [e]
                 (go
                   (>! ch {:err {:type :network-page
+                                :url url
                                 :message (.getMessage e)}})
                   (println "ERR: " e) ;; TODO redirect to logging
                   (close! ch))))
     ch))
 
-(defn parse-bike [response]
-  (let [doc (html/html-snippet (-> response :ok :body))
+(defn parse-bike [result]
+  (let [url (get-in result [:ok :url])
+        response (get-in result [:ok :response])
+        doc (html/html-snippet (:body response))
         ;; select all elements in "Facts & Figures" tables
         facts-figures-labels (map #(clean-keyword (apply str (:content %)))
                                   (html/select doc [:.review__facts-and-figures__item__label]))
@@ -176,6 +180,7 @@
               (concat facts-figures-labels mcn-star-rating-label bike-url-label bike-name-label)   ;; <- these *should* always be equal lengths
               (concat facts-figures-values mcn-star-rating-value bike-url-value bike-name-value))} ;; <-
         {:err {:type :parse-html
+               :url url
                  :message "labels or values weren't found in HTML response."}})))
 
 (defn merge-html-chans [urls-to-fetch]
@@ -352,6 +357,7 @@
 
 (comment
   (def rez (get-or-fetch-bikes-map))
+  (def rez (get-or-fetch-bikes-map "data/bikes.edn" true))
   
  ;; example query
 (-> (query-bikes
