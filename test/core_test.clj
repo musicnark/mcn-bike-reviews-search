@@ -5,7 +5,12 @@
 (deftest clean-keyword-test
   (testing "removes colons and converts to kebab-case"
     (is (= :seat-height (mcn/clean-keyword "Seat Height:")))
-    (is (= :mpg (mcn/clean-keyword "MPG:")))))
+    (is (= :mpg (mcn/clean-keyword "MPG:"))))
+  (testing "normalises slash-delimited spec labels to EDN-safe keywords"
+    (is (= :quarter-mile-acceleration
+           (mcn/clean-keyword "1/4 Mile Acceleration:")))
+    (is (= :quarter-mile-acceleration
+           (mcn/clean-keyword "1/4 mile acceleration")))))
 
 (deftest clean-bike-name-test
   (testing "reformats URL string by splitting at 'bike-reviews', taking the second element, and converting to kebab-case"
@@ -94,7 +99,8 @@
 (def test-bikes
   {"bike-a" {:ok {:bike-name "bike-a"
                   :fuel-capacity "17 litres"
-                  :used-price "£3,000"}}
+                  :used-price "£3,000"
+                  :quarter-mile-acceleration "12.4 secs"}}
    "bike-b" {:ok {:bike-name "bike-b"
                   :fuel-capacity "3.8 litres"
                   :used-price "£2,500"}}
@@ -103,6 +109,144 @@
                   :used-price "£4,000"}}
    "bike-d" {:err {:type :parse-html
                    :message "labels or values weren't found in HTML response."}}})
+
+(defn temp-cache-path []
+  (let [file (java.io.File/createTempFile "mcn-bike-cache" ".edn")]
+    (.delete file)
+    (.getPath file)))
+
+(deftest persistent-storage-test
+  (testing "saves and loads bike maps as EDN"
+    (let [path (temp-cache-path)]
+      (try
+        (is (false? (mcn/cache-exists? path)))
+        (is (= {:ok {:path path
+                     :count 4}}
+               (mcn/save-bikes-map! path test-bikes)))
+        (is (true? (mcn/cache-exists? path)))
+        (is (= {:ok test-bikes}
+               (mcn/load-bikes-map path)))
+        (is (= "12.4 secs"
+               (get-in (mcn/load-bikes-map path)
+                       [:ok "bike-a" :ok :quarter-mile-acceleration])))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "returns a cache miss instead of throwing when the file is absent"
+    (let [path (temp-cache-path)]
+      (is (= :cache-miss
+             (get-in (mcn/load-bikes-map path) [:err :type])))))
+  (testing "returns invalid cache for empty cache files"
+    (let [path (temp-cache-path)]
+      (try
+        (spit path "")
+        (is (= :invalid-cache
+               (get-in (mcn/load-bikes-map path) [:err :type])))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "returns invalid cache for non-map cache contents"
+    (let [path (temp-cache-path)]
+      (try
+        (spit path (pr-str ["not" "a" "bike" "map"]))
+        (is (= :invalid-cache
+               (get-in (mcn/load-bikes-map path) [:err :type])))
+        (finally
+          (.delete (java.io.File. path)))))))
+
+(deftest get-or-fetch-bikes-map-test
+  (testing "loads an existing cache without calling the fetch function"
+    (let [path (temp-cache-path)
+          fetch-called? (atom false)]
+      (try
+        (mcn/save-bikes-map! path test-bikes)
+        (is (= {:ok test-bikes}
+               (mcn/get-or-fetch-bikes-map
+                path
+                false
+                (fn []
+                  (reset! fetch-called? true)
+                  {}))))
+        (is (false? @fetch-called?))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "fetches and saves data when the cache is missing"
+    (let [path (temp-cache-path)]
+      (try
+        (is (= {:ok test-bikes}
+               (mcn/get-or-fetch-bikes-map path false (fn [] test-bikes))))
+        (is (= {:ok test-bikes}
+               (mcn/load-bikes-map path)))
+        (finally
+          (.delete (java.io.File. path))))))
+  (testing "force refresh ignores an existing cache and replaces it"
+    (let [path (temp-cache-path)
+          refreshed-bikes {"bike-e" {:ok {:bike-name "bike-e"}}}]
+      (try
+        (mcn/save-bikes-map! path test-bikes)
+        (is (= {:ok refreshed-bikes}
+               (mcn/get-or-fetch-bikes-map path true (fn [] refreshed-bikes))))
+        (is (= {:ok refreshed-bikes}
+               (mcn/load-bikes-map path)))
+        (finally
+          (.delete (java.io.File. path)))))))
+
+(deftest update-bikes-map-test
+  (testing "retries failed entries and replaces placeholder ids with parsed bike names"
+    (let [bikes {"bike-a" {:ok {:bike-name "bike-a"}}
+                 :bike-1 {:err {:type :parse-html
+                                :url "https://example.com/retry-me"
+                                :message "parse failed"}}}
+          updated (mcn/update-bikes-map
+                   bikes
+                   10
+                   (fn [url]
+                     {:ok {:bike-name "retried-bike"
+                           :url url
+                           :fuel-capacity "17 litres"}}))]
+      (is (= {:ok {:bike-name "bike-a"}}
+             (get updated "bike-a")))
+      (is (nil? (get updated :bike-1)))
+      (is (= {:ok {:bike-name "retried-bike"
+                   :url "https://example.com/retry-me"
+                   :fuel-capacity "17 litres"}}
+             (get updated "retried-bike")))))
+  (testing "keeps failed entries and increments retry count up to the maximum"
+    (let [attempts (atom 0)
+          bikes {:bike-1 {:err {:type :parse-html
+                                :url "https://example.com/still-broken"
+                                :message "parse failed"}}}
+          updated (mcn/update-bikes-map
+                   bikes
+                   3
+                   (fn [_]
+                     (swap! attempts inc)
+                     {:err {:type :parse-html
+                            :message "still failing"}}))]
+      (is (= 3 @attempts))
+      (is (= :parse-html
+             (get-in updated [:bike-1 :err :type])))
+      (is (= "https://example.com/still-broken"
+             (get-in updated [:bike-1 :err :url])))
+      (is (= 3
+             (get-in updated [:bike-1 :err :retry-count])))))
+  (testing "does not retry entries without urls or entries already at max retries"
+    (let [attempts (atom 0)
+          no-url {:err {:type :parse-html
+                        :message "missing url"}}
+          maxed-out {:err {:type :parse-html
+                           :url "https://example.com/maxed-out"
+                           :message "already retried"
+                           :retry-count 10}}
+          bikes {:bike-no-url no-url
+                 :bike-maxed-out maxed-out}
+          updated (mcn/update-bikes-map
+                   bikes
+                   10
+                   (fn [_]
+                     (swap! attempts inc)
+                     {:ok {:bike-name "should-not-run"}}))]
+      (is (= 0 @attempts))
+      (is (= no-url (get updated :bike-no-url)))
+      (is (= maxed-out (get updated :bike-maxed-out))))))
 
 (deftest query-bikes-test
   (testing "filters, sorts, limits, and returns an API-shaped response from the collated bike specs"

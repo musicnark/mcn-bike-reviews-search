@@ -3,6 +3,8 @@
   (:require [clj-http.util :as util])
   (:require [clj-http.conn-mgr :as conn])
   (:require [net.cgrand.enlive-html :as html])
+  (:require [clojure.edn :as edn])
+  (:require [clojure.java.io :as io])
   (:require [clojure.string :as string])
   (:require [clojure.data.xml :as xml])
   (:require [clojure.core.async :as async :refer [go <! >! <!! chan close!]]))
@@ -14,6 +16,8 @@
       (string/replace #":" "")
       string/lower-case
       (string/replace #" " "-")
+      (string/replace #"1/4" "quarter")
+      (string/replace #"/" "-")
       keyword))
 
 ;; TODO make this more robust
@@ -127,20 +131,24 @@
               ;; success callback
               (fn [r]
                 (go
-                  (>! ch {:ok r})
+                  (>! ch {:ok {:url url
+                               :response r}})
                   (close! ch)
                   (println "successfully fetched bike: " (clean-bike-name url))))
               ;; error callback
               (fn [e]
                 (go
                   (>! ch {:err {:type :network-page
+                                :url url
                                 :message (.getMessage e)}})
                   (println "ERR: " e) ;; TODO redirect to logging
                   (close! ch))))
     ch))
 
-(defn parse-bike [response]
-  (let [doc (html/html-snippet (-> response :ok :body))
+(defn parse-bike [result]
+  (let [url (get-in result [:ok :url])
+        response (get-in result [:ok :response])
+        doc (html/html-snippet (:body response))
         ;; select all elements in "Facts & Figures" tables
         facts-figures-labels (map #(clean-keyword (apply str (:content %)))
                                   (html/select doc [:.review__facts-and-figures__item__label]))
@@ -154,7 +162,7 @@
                                        :title
                                        first-token)]
         bike-url-label [:url]
-        bike-url-value [(some-> doc ;; TODO rename as bike-url, get bike name from it
+        bike-url-value [(some-> doc
                                 (html/select [[:link (html/attr= :rel "canonical")]])
                                 first
                                 :attrs
@@ -172,6 +180,7 @@
               (concat facts-figures-labels mcn-star-rating-label bike-url-label bike-name-label)   ;; <- these *should* always be equal lengths
               (concat facts-figures-values mcn-star-rating-value bike-url-value bike-name-value))} ;; <-
         {:err {:type :parse-html
+               :url url
                  :message "labels or values weren't found in HTML response."}})))
 
 (defn merge-html-chans [urls-to-fetch]
@@ -197,7 +206,7 @@
         results))))
 
 ;; Main
-(defn get-bikes-map [sitemap]
+(defn fetch-bikes-map [sitemap]
   (let [bikes (-> (bind sitemap parse-sitemap)
                 (bind urls-to-fetch)
                 (bind merge-html-chans)
@@ -205,9 +214,64 @@
                 (bind collect-results))]
     (if (instance? clojure.core.async.impl.channels.ManyToManyChannel bikes)
       (<!! bikes)
-      bikes)))
+      bikes))) ;; TODO add bind support (return {:ok bikes})
 
-;; TODO similar implementation to elisp version? needs desigining with API + front-end in mind (structured data/JSON-like queries?)
+;; Storage
+(def default-cache-path "data/bikes.edn")
+
+(defn cache-exists?
+  ([] (cache-exists? default-cache-path))
+  ([path]
+   (.exists (io/file path))))
+
+(defn save-bikes-map!
+  ([bikes]
+   (save-bikes-map! default-cache-path bikes))
+  ([path bikes]
+   (try
+     (io/make-parents path)
+     (spit path (pr-str bikes))
+     {:ok {:path path
+           :count (count bikes)}}
+     (catch Exception e
+       {:err {:type :write-cache
+              :path path
+              :message (.getMessage e)}}))))
+
+(defn load-bikes-map
+  ([] (load-bikes-map default-cache-path))
+  ([path]
+   (try
+     (if-not (cache-exists? path)
+       {:err {:type :cache-miss
+              :path path
+              :message "Bike cache file does not exist."}}
+       (let [data (edn/read-string (slurp path))]
+         (if (map? data)
+           {:ok data}
+           {:err {:type :invalid-cache
+                  :path path
+                  :message "Bike cache file doesn't contain a map"}})))
+     (catch Exception e
+       {:err {:type :read-cache
+              :path path
+              :message (.getMessage e)}}))))
+
+(defn get-or-fetch-bikes-map
+  ([]
+   (get-or-fetch-bikes-map default-cache-path false #(fetch-bikes-map (fetch-sitemap))))
+  ([path force-refresh?]
+   (get-or-fetch-bikes-map path force-refresh? #(fetch-bikes-map (fetch-sitemap))))
+  ([path force-refresh? fetch-bikes]
+   (if (and (not force-refresh?) (cache-exists? path))
+     (load-bikes-map path)
+     (let [bikes (fetch-bikes)]
+       (if (err? bikes)
+         bikes
+         (let [saved (save-bikes-map! path bikes)]
+           (if (err? saved)
+             saved
+             {:ok bikes})))))))
 
 ;; Querying
 (defn parse-number [value]
@@ -289,27 +353,77 @@
             :count (count limited-results)
             :total-matches (count matches)}}))
 
-;; (def rez (get-bikes-map (fetch-sitemap)))
+(def default-max-retries 3)
+
+(defn fetch-and-parse-bike [url]
+  (let [fetch-result (<!! (fetch-bikes-async url))]
+    (if (err? fetch-result)
+      fetch-result
+      (parse-bike fetch-result))))
+
+(defn retry-count [result]
+  (or (get-in result [:err :retry-count]) 0))
+
+(defn retryable-error? [result max-retries]
+  (and (err? result)
+       (some? (get-in result [:err :url]))
+       (< (retry-count result) max-retries)))
+
+(defn add-retry-metadata [result url retry-count]
+  (if (err? result)
+    {:err (assoc (:err result)
+                 :url (or (get-in result [:err :url]) url)
+                 :retry-count retry-count)}
+    result))
+
+(defn retry-bike-entry [id result max-retries retry-bike]
+  (let [url (get-in result [:err :url])
+        starting-retry-count (retry-count result)]
+    (loop [current-retry-count starting-retry-count]
+      (let [retried (retry-bike url)
+            next-retry-count (inc current-retry-count)]
+        (if (or (ok? retried) (>= next-retry-count max-retries))
+          (let [result-with-metadata (add-retry-metadata retried url next-retry-count)
+                new-id (or (get-in result-with-metadata [:ok :bike-name]) id)]
+            [new-id result-with-metadata])
+          (recur next-retry-count))))))
+
+(defn update-bikes-map
+  ([bikes]
+   (update-bikes-map bikes default-max-retries fetch-and-parse-bike))
+  ([bikes max-retries]
+   (update-bikes-map bikes max-retries fetch-and-parse-bike))
+  ([bikes max-retries retry-bike]
+   (reduce-kv
+    (fn [updated id result]
+      (if (retryable-error? result max-retries)
+        (let [[new-id new-result] (retry-bike-entry id result max-retries retry-bike)]
+          (assoc updated new-id new-result))
+        (assoc updated id result)))
+    {}
+    bikes)))
+
+;; (def rez (fetch-bikes-map (fetch-sitemap)))
 
 (comment
-  (def rez (get-bikes-map (fetch-sitemap)))
+  (def rez (get-or-fetch-bikes-map))
+  (def rez (get-or-fetch-bikes-map "data/bikes.edn" true))
   
- ;; example query
-(-> (query-bikes
-   rez
-   {:filter {:type "comparison"
-             :field "fuel-capacity"
-             :op "<"
-             :value 5}
-    :sort {:field "bike-weight"
-           :direction "asc"}
-    :limit 10})
-    :ok
-    :results)
+  ;; example query
+  (->
+   (bind rez #(query-bikes %
+                           {:filter {:type "comparison"
+                                     :field "fuel-capacity"
+                                     :op "<"
+                                     :value 5}
+                            :sort {:field "bike-weight"
+                                   :direction "asc"}
+                            :limit 10}))
+   :ok
+   :results)
 
   )
 ;; TODO for query engine:
-;; - Add tests for parse-number, compare-field, matches?, and query- bikes. Lock in the behaviour before expanding the AST.
 ;; - Move query code out of src/core.clj into something like src/ query.clj or src/mcn_bike_reviews/query.clj. core.clj is already doing fetching, parsing, async orchestration, and querying.
 ;; - Add query validation before evaluation. For example, reject unknown :type, missing :field, unsupported :op, empty :clauses, and malformed not nodes.
 ;; - Decide the public response shape for query-bikes, probably {:ok {:results [...] :count n :skipped [...]}}.
@@ -319,6 +433,7 @@
 ;; TODO:
 ;; KEY: [SKIP] = not necessary for SLC version
 ;; - put name of the bike in the map (test with just one url) [DONE]
+;; - organise code into different files/namespaces~
 ;; - function doc strings
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - retry for any bikes returning :err
@@ -336,7 +451,7 @@
 ;; - implement DSL/query language
 ;;   - function takes map/json and searches based on given parameters
 ;; - implement API + docs
-;; - include tests
+;; - include tests + standardised testing framework
 ;; - add CI/CD pipelines
 ;; - add accumulated logging/log-centric error handling
 ;;   - basically turn every println into a redirect to logs~
