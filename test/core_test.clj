@@ -189,6 +189,65 @@
         (finally
           (.delete (java.io.File. path)))))))
 
+(deftest update-bikes-map-test
+  (testing "retries failed entries and replaces placeholder ids with parsed bike names"
+    (let [bikes {"bike-a" {:ok {:bike-name "bike-a"}}
+                 :bike-1 {:err {:type :parse-html
+                                :url "https://example.com/retry-me"
+                                :message "parse failed"}}}
+          updated (mcn/update-bikes-map
+                   bikes
+                   10
+                   (fn [url]
+                     {:ok {:bike-name "retried-bike"
+                           :url url
+                           :fuel-capacity "17 litres"}}))]
+      (is (= {:ok {:bike-name "bike-a"}}
+             (get updated "bike-a")))
+      (is (nil? (get updated :bike-1)))
+      (is (= {:ok {:bike-name "retried-bike"
+                   :url "https://example.com/retry-me"
+                   :fuel-capacity "17 litres"}}
+             (get updated "retried-bike")))))
+  (testing "keeps failed entries and increments retry count up to the maximum"
+    (let [attempts (atom 0)
+          bikes {:bike-1 {:err {:type :parse-html
+                                :url "https://example.com/still-broken"
+                                :message "parse failed"}}}
+          updated (mcn/update-bikes-map
+                   bikes
+                   3
+                   (fn [_]
+                     (swap! attempts inc)
+                     {:err {:type :parse-html
+                            :message "still failing"}}))]
+      (is (= 3 @attempts))
+      (is (= :parse-html
+             (get-in updated [:bike-1 :err :type])))
+      (is (= "https://example.com/still-broken"
+             (get-in updated [:bike-1 :err :url])))
+      (is (= 3
+             (get-in updated [:bike-1 :err :retry-count])))))
+  (testing "does not retry entries without urls or entries already at max retries"
+    (let [attempts (atom 0)
+          no-url {:err {:type :parse-html
+                        :message "missing url"}}
+          maxed-out {:err {:type :parse-html
+                           :url "https://example.com/maxed-out"
+                           :message "already retried"
+                           :retry-count 10}}
+          bikes {:bike-no-url no-url
+                 :bike-maxed-out maxed-out}
+          updated (mcn/update-bikes-map
+                   bikes
+                   10
+                   (fn [_]
+                     (swap! attempts inc)
+                     {:ok {:bike-name "should-not-run"}}))]
+      (is (= 0 @attempts))
+      (is (= no-url (get updated :bike-no-url)))
+      (is (= maxed-out (get updated :bike-maxed-out))))))
+
 (deftest query-bikes-test
   (testing "filters, sorts, limits, and returns an API-shaped response from the collated bike specs"
     (let [response (mcn/query-bikes

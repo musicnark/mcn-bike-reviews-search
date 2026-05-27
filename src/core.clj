@@ -162,7 +162,7 @@
                                        :title
                                        first-token)]
         bike-url-label [:url]
-        bike-url-value [(some-> doc ;; TODO rename as bike-url, get bike name from it
+        bike-url-value [(some-> doc
                                 (html/select [[:link (html/attr= :rel "canonical")]])
                                 first
                                 :attrs
@@ -353,8 +353,55 @@
             :count (count limited-results)
             :total-matches (count matches)}}))
 
-(defn update-bikes-map [bikes]
-  (throw (ex-info "Implement me" {:fn 'update-bikes-map})))
+(def default-max-retries 3)
+
+(defn fetch-and-parse-bike [url]
+  (let [fetch-result (<!! (fetch-bikes-async url))]
+    (if (err? fetch-result)
+      fetch-result
+      (parse-bike fetch-result))))
+
+(defn retry-count [result]
+  (or (get-in result [:err :retry-count]) 0))
+
+(defn retryable-error? [result max-retries]
+  (and (err? result)
+       (some? (get-in result [:err :url]))
+       (< (retry-count result) max-retries)))
+
+(defn add-retry-metadata [result url retry-count]
+  (if (err? result)
+    {:err (assoc (:err result)
+                 :url (or (get-in result [:err :url]) url)
+                 :retry-count retry-count)}
+    result))
+
+(defn retry-bike-entry [id result max-retries retry-bike]
+  (let [url (get-in result [:err :url])
+        starting-retry-count (retry-count result)]
+    (loop [current-retry-count starting-retry-count]
+      (let [retried (retry-bike url)
+            next-retry-count (inc current-retry-count)]
+        (if (or (ok? retried) (>= next-retry-count max-retries))
+          (let [result-with-metadata (add-retry-metadata retried url next-retry-count)
+                new-id (or (get-in result-with-metadata [:ok :bike-name]) id)]
+            [new-id result-with-metadata])
+          (recur next-retry-count))))))
+
+(defn update-bikes-map
+  ([bikes]
+   (update-bikes-map bikes default-max-retries fetch-and-parse-bike))
+  ([bikes max-retries]
+   (update-bikes-map bikes max-retries fetch-and-parse-bike))
+  ([bikes max-retries retry-bike]
+   (reduce-kv
+    (fn [updated id result]
+      (if (retryable-error? result max-retries)
+        (let [[new-id new-result] (retry-bike-entry id result max-retries retry-bike)]
+          (assoc updated new-id new-result))
+        (assoc updated id result)))
+    {}
+    bikes)))
 
 ;; (def rez (fetch-bikes-map (fetch-sitemap)))
 
@@ -376,12 +423,7 @@
    :results)
 
   )
-;; TODO for persistent storage:
-;; - allow updating the dataset
-;; - allow retrying on failed entries (maybe on the failure callback in http request, push failed entries to a queue and try them again after fetch/timeout?)
-
 ;; TODO for query engine:
-;; - Add tests for parse-number, compare-field, matches?, and query-bikes. Lock in the behaviour before expanding the AST. [DONE]
 ;; - Move query code out of src/core.clj into something like src/ query.clj or src/mcn_bike_reviews/query.clj. core.clj is already doing fetching, parsing, async orchestration, and querying.
 ;; - Add query validation before evaluation. For example, reject unknown :type, missing :field, unsupported :op, empty :clauses, and malformed not nodes.
 ;; - Decide the public response shape for query-bikes, probably {:ok {:results [...] :count n :skipped [...]}}.
@@ -391,6 +433,7 @@
 ;; TODO:
 ;; KEY: [SKIP] = not necessary for SLC version
 ;; - put name of the bike in the map (test with just one url) [DONE]
+;; - organise code into different files/namespaces~
 ;; - function doc strings
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
 ;; - retry for any bikes returning :err
