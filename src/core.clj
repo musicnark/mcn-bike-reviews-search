@@ -433,6 +433,7 @@
 ;; TODO:
 ;; KEY: [SKIP] = not necessary for SLC version
 ;; - put name of the bike in the map (test with just one url) [DONE]
+;; - add header image url to bike specs? for front-end?
 ;; - organise code into different files/namespaces~
 ;; - function doc strings
 ;; - rewrite parse-bikes to ensure pair mismatch is not possible (see example in dev.clj)
