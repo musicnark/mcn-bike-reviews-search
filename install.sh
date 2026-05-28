@@ -10,8 +10,9 @@ cd mcn-bike-reviews-search"
 		}
 
 	# extract program files to .emacs.d/lisp/
-	mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
-		cp el/*.el src/*.csv ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
+	mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/generated/ &&
+		cp el/*.el ~/.emacs.d/lisp/mcn-bike-reviews-search/ &&
+		cp el/generated/*.el ~/.emacs.d/lisp/mcn-bike-reviews-search/generated/ &&
 		cd ~/.emacs.d/lisp/mcn-bike-reviews-search/
 
 	# (optional) byte compile program files for faster loading time
@@ -33,7 +34,7 @@ You can now launch emacs, which is installed in:
 $emacs_dir
 
 When emacs is loaded, load this tool via:
-M-x bike-search-initialise
+M-x mcn/bike-search-initialise
 
 See the README for usage.
 

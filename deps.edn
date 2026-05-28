@@ -1,4 +1,4 @@
-{:paths ["src" "test"]
+{:paths ["src"]
  :deps
  {org.clojure/clojure {:mvn/version "1.12.0"}
   org.clojure/core.async {:mvn/version "1.8.741"}
@@ -10,13 +10,16 @@
   cheshire/cheshire {:mvn/version "6.1.0"}}
  
  :aliases
- {:test
-  {:extra-paths ["test"]
-   :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
+ {:dev
+  {:extra-paths ["dev"]}
 
-  :run-tests
-  {:exec-fn kaocha.runner/exec-fn}
+  :test
+  {:extra-paths ["test"]
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+   :exec-fn kaocha.runner/exec-fn}
 
   :watch
-  {:exec-fn kaocha.runner/exec-fn
+  {:extra-paths ["test"]
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+   :exec-fn kaocha.runner/exec-fn
    :exec-args {:watch? true}}}}

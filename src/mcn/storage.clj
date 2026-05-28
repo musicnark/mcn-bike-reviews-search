@@ -2,7 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]))
 
-(def default-cache-path "data/bikes.edn")
+(def default-cache-path "resources/mcn/bikes.edn")
 
 (defn cache-exists?
   ([] (cache-exists? default-cache-path))
