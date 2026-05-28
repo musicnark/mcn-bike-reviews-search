@@ -1,2 +1,3 @@
-el/generated/bike-reviews-hashtable.el linguist-generated=true
+el/** linguist-vendored=true
+el/generated/** linguist-generated=true
 cache/mcn/bikes.edn linguist-generated=true
