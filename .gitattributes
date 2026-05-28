@@ -1,3 +1,2 @@
-archive/el/** linguist-vendored=true
-archive/el/generated/** linguist-generated=true
+archive/el/** linguist-generated=true
 cache/mcn/bikes.edn linguist-generated=true
