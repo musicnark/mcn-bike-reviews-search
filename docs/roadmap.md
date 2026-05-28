@@ -3,6 +3,7 @@
   - [ ] popups in gui
   - [ ] video demonstrations
   - [ ] evaluatable code snippets?
+- [ ] add project structure
 - [ ] add editorial case studies
 - [ ] add custom Vale style
 - [ ] deeper explanations of architectural decisions
