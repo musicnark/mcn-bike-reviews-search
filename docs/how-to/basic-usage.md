@@ -36,6 +36,6 @@ See [Query Language](../reference/query-language.md) to reference:
 - the list of [bike specs](../reference/query-language.md#bike-specs) each bike can be filtered by
 - the supported [operators and combinators](../reference/query-language.md#operators--combinators)
 
-See the original [CSV file](../../Bike_Reviews.csv) to find each bike's name.
+Use `(hash-table-keys bike-review-hashmap)` to inspect the available bike names.
 
 To learn more about basic Elisp syntax, reference [Introduction to Programming in Emacs Lisp](https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html).

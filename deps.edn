@@ -1,4 +1,4 @@
-{:paths ["src" "test"]
+{:paths ["src"]
  :deps
  {org.clojure/clojure {:mvn/version "1.12.0"}
   org.clojure/core.async {:mvn/version "1.8.741"}
@@ -7,4 +7,19 @@
   enlive/enlive {:mvn/version "1.1.6"}
   clj-http/clj-http {:mvn/version "3.13.1"}
   com.github.seancorfield/next.jdbc {:mvn/version "1.3.1093"}
-  cheshire/cheshire {:mvn/version "6.1.0"}}}
+  cheshire/cheshire {:mvn/version "6.1.0"}}
+ 
+ :aliases
+ {:dev
+  {:extra-paths ["dev"]}
+
+  :test
+  {:extra-paths ["test"]
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+   :exec-fn kaocha.runner/exec-fn}
+
+  :watch
+  {:extra-paths ["test"]
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+   :exec-fn kaocha.runner/exec-fn
+   :exec-args {:watch? true}}}}

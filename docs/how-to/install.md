@@ -7,7 +7,7 @@ cd mcn-bike-reviews-search &&
 chmod +x install.sh &&
 ./install.sh
 ```
-Once installed, launch or restart Emacs and run `M-x bike-search-initialise` to load the bike reviews data.
+Once installed, launch or restart Emacs and run `M-x mcn/bike-search-initialise` to load the bike reviews data.
 
 Then, you can get started with some [basic usage](./basic-usage.md).
 
@@ -28,10 +28,12 @@ If installing manually, open a terminal and follow the below instructions:
 git clone https://github.com/musicnark/mcn-bike-reviews-search
 ```
 
-- Copy the elisp files and CSV to your Emacs config folder:
+- Copy the Elisp files and generated bike data to your Emacs config folder:
 
 ```bash
-mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/ && cp *.el *.csv ~/.emacs.d/elisp/mcn-bike-reviews-search/
+mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/generated/
+cp el/*.el ~/.emacs.d/lisp/mcn-bike-reviews-search/
+cp el/generated/*.el ~/.emacs.d/lisp/mcn-bike-reviews-search/generated/
 ```
 
 - Optionally, you can byte compile the elisp files for quicker loading:

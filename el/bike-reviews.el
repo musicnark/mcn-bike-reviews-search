@@ -4,6 +4,12 @@
   "If non-nil, fetch bike reviews from the live site.
 Otherwise, load the local cached hashmap.")
 
+(defvar mcn/bike-reviews-data-file
+  (expand-file-name
+   "generated/bike-reviews-hashtable.el"
+   (file-name-directory (or load-file-name buffer-file-name)))
+  "Path to the generated local bike review hash table.")
+
 (setq bike-review-urls (make-hash-table :test 'equal))
 (setq bike-review-table (make-hash-table :test 'equal))
 (setq bike-review-hashmap (make-hash-table :test 'equal))
@@ -199,15 +205,12 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
 
 (defun mcn/bike-search-initialise ()
   (interactive)
-  ;; convert CSV to hash table
-  (setq br (pc-csv-parse-file "~/.emacs.d/lisp/mcn-bike-reviews-search/Bike_Reviews.csv"))
-  
-  (mapcar #'pc-insert-hash-table br)
-  
   ;; iterate over keys in the hash table:
   ;; Note: Initial load of all bike reviews uses ~1.3GB memory.
   (if mcn/download-from-live-site
 	  (progn
+		(mapcar #'pc-insert-hash-table
+				(pc-csv-parse-file "~/.emacs.d/lisp/mcn-bike-reviews-search/Bike_Reviews.csv"))
 		(maphash
 		 (lambda (name url)
 		   (let ((page (parse-html (fetch-html url))))
@@ -228,7 +231,7 @@ See also `pc-eval-query' and `pc-extract-specs-from-table'."
 	(progn
 	  (setq bike-review-hashmap
 			(with-temp-buffer
-			  (insert-file-contents-literally "~/.emacs.d/lisp/mcn-bike-reviews-search/bike-reviews-hashtable.el")
+			  (insert-file-contents-literally mcn/bike-reviews-data-file)
 			  (read (current-buffer)))))))
 
 ;; MVP TODO:
