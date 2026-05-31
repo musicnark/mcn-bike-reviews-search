@@ -2,8 +2,7 @@
   (:require [cheshire.core :as json]
             [clojure.string :as string]
             [ring.middleware.params :refer [wrap-params]]
-            [mcn.query :as query]
-            [mcn.util :as util]))
+            [mcn.query :as query]))
 
 (def default-headers
   {"Access-Control-Allow-Headers" "Content-Type"
@@ -108,12 +107,18 @@
     (catch Exception _
       {:err "Request body must be valid JSON."})))
 
-(defn index-handler [_state _request]
-  (json-response {:name "MCN Bike Reviews Search API"
-                  :description "API for searching MCN's bike reviews by the specs of each bike. See API documentation for usage."
-                  :endpoints ["/health"  "/api/fields"  "/api/bikes"  "/api/bikes/random" "/api/search"]}))
+(defn index-handler [state]
+  (when-let [bikes (:bikes state)]
+    (let [bike-count (->> bikes
+                          vals
+                          (keep :ok)
+                          count)]
+      (json-response {:name "MCN Bike Reviews Search API"
+                      :description "API for searching MCN's bike reviews by the specs of each bike. See API documentation for usage."
+                      :bike-count bike-count
+                      :endpoints ["/health"  "/api/fields"  "/api/bikes"  "/api/bikes/random" "/api/search"]}))))
 
-(defn health-handler [state _request]
+(defn health-handler [state]
   (if (:bikes state)
     (json-response {:status "ok"
                     :cache-loaded true})
@@ -131,7 +136,7 @@
        (map name)
        vec))
 
-(defn fields-handler [state _request]
+(defn fields-handler [state]
   ;; return searchable fields
   (if-let [bikes (:bikes state)]
     (json-response {:fields (bike-fields bikes)})
@@ -328,22 +333,22 @@
          (options-handler request)
          
          (= [method uri] [:get "/api"])
-         (index-handler state request)
+         (index-handler state)
          
          (= [method uri] [:get "/api/health"])
-         (health-handler state request)
+         (health-handler state)
          
          (= [method uri] [:get "/api/fields"])
-         (fields-handler state request)
+         (fields-handler state)
          
          (= [method uri] [:get "/api/bikes"])
          (bikes-handler state request)
          
-         (= [method uri] [:post "/api/search"])
-         (search-handler state request)
-         
          (= [method uri] [:get "/api/bikes/random"])
          (random-bike-handler state)
+
+         (= [method uri] [:post "/api/search"])
+         (search-handler state request)
          
          (and (= method :get) (bike-id-from-uri uri))
          (bike-detail-handler state (bike-id-from-uri uri))
