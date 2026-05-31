@@ -81,6 +81,7 @@
           :total-matches (count matches)}}))
 
 ;; TODO
+;; - place results with no value (nil) at the end, regardless of sort order
 ;; - Add query validation before evaluation. For example, reject unknown :type, missing :field, unsupported :op, empty :clauses, and malformed not nodes.
 ;; - Decide the public response shape for query-bikes, probably {:ok {:results [...] :count n :skipped [...]}}.
 ;; - Add sorting and limits after filtering, because the API/ frontend will need them quickly.
