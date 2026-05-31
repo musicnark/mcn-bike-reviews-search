@@ -2,7 +2,8 @@
   (:require [cheshire.core :as json]
             [clojure.string :as string]
             [ring.middleware.params :refer [wrap-params]]
-            [mcn.query :as query]))
+            [mcn.query :as query]
+            [mcn.util :as util]))
 
 (def default-headers
   {"Access-Control-Allow-Headers" "Content-Type"
@@ -42,13 +43,13 @@
                  [(if (keyword? k) (camel-case-keyword k) k)
                   (format-response-keys v)]))
           value)
-
+    
     (vector? value)
     (mapv format-response-keys value)
-
+    
     (seq? value)
     (map format-response-keys value)
-
+    
     :else value))
 
 (defn json-response
@@ -86,10 +87,10 @@
                  [(get known-json-keys k k)
                   (normalize-request-keys v)]))
           value)
-
+    
     (vector? value)
     (mapv normalize-request-keys value)
-
+    
     :else value))
 
 (defn parse-json-body [request]
@@ -110,7 +111,7 @@
 (defn index-handler [_state _request]
   (json-response {:name "MCN Bike Reviews Search API"
                   :description "API for searching MCN's bike reviews by the specs of each bike. See API documentation for usage."
-                  :endpoints ["/health"  "/api/fields"  "/api/bikes"  "/api/search"]}))
+                  :endpoints ["/health"  "/api/fields"  "/api/bikes"  "/api/bikes/random" "/api/search"]}))
 
 (defn health-handler [state _request]
   (if (:bikes state)
@@ -192,16 +193,16 @@
   (cond
     (not (string? field))
     "Comparison query requires a string field."
-
+    
     (not (contains? valid-fields field))
     (str "Unknown field: " field)
-
+    
     (not (contains? supported-operators op))
     (str "Unsupported operator: " op)
-
+    
     (nil? value)
     "Comparison query requires a value."
-
+    
     :else nil))
 
 (declare validate-filter)
@@ -231,10 +232,10 @@
    (cond
      (> depth max-query-depth)
      (str "Query nesting supports at most " max-query-depth " levels.")
-
+     
      (not (map? filter))
-    "Filter must be an object."
-
+     "Filter must be an object."
+     
      :else
      (case (:type filter)
        "comparison" (validate-comparison filter valid-fields)
@@ -247,14 +248,14 @@
   (cond
     (not (string? field))
     "Sort requires a string field."
-
+    
     (not (contains? valid-fields field))
     (str "Unknown sort field: " field)
-
+    
     (and direction
          (not (contains? supported-sort-directions direction)))
     (str "Unsupported sort direction: " direction)
-
+    
     :else nil))
 
 (defn validate-search-request [{:keys [filter sort limit]} valid-fields]
@@ -282,16 +283,27 @@
     (cond
       (nil? bikes)
       (error-response 503 "cache-not-loaded" "Bike cache has not been loaded.")
-
+      
       (:err parsed-body)
       (if (= :body-too-large (:type parsed-body))
         (error-response 413 "body-too-large" (:err parsed-body))
         (error-response 400 "invalid-json" (:err parsed-body)))
-
+      
       :else
       (if-let [validation-error (validate-search-request query-request valid-fields)]
         (error-response 400 "invalid-query" validation-error)
         (json-response (:ok (query/query-bikes bikes (apply-search-defaults query-request))))))))
+
+(defn random-bike-handler [state]
+  (if-let [bikes (:bikes state)]
+    (let [ok-bikes (->> bikes
+                        vals
+                        (keep :ok)
+                        vec)]
+      (if (seq ok-bikes)
+        (json-response (rand-nth ok-bikes))
+        (error-response 404 "bike-not-found" "No bikes are available")))
+    (error-response 503 "cache-not-loaded" "Bike cache has not been loaded")))
 
 (defn not-found-handler [_request]
   (error-response 404 "not-found" "Route not found."))
@@ -314,24 +326,27 @@
        (cond
          (= method :options)
          (options-handler request)
-
-         (= [method uri] [:get "/"])
+         
+         (= [method uri] [:get "/api"])
          (index-handler state request)
-
-         (= [method uri] [:get "/health"])
+         
+         (= [method uri] [:get "/api/health"])
          (health-handler state request)
-
+         
          (= [method uri] [:get "/api/fields"])
          (fields-handler state request)
-
+         
          (= [method uri] [:get "/api/bikes"])
          (bikes-handler state request)
-
+         
          (= [method uri] [:post "/api/search"])
          (search-handler state request)
-
+         
+         (= [method uri] [:get "/api/bikes/random"])
+         (random-bike-handler state)
+         
          (and (= method :get) (bike-id-from-uri uri))
          (bike-detail-handler state (bike-id-from-uri uri))
-
+         
          :else
          (not-found-handler request))))))
