@@ -10,6 +10,24 @@
    "Access-Control-Allow-Origin" "*"
    "Content-Type" "application/json; charset=utf-8"})
 
+(def known-json-keys
+  {"clause" :clause
+   "clauses" :clauses
+   "direction" :direction
+   "field" :field
+   "filter" :filter
+   "limit" :limit
+   "op" :op
+   "sort" :sort
+   "type" :type
+   "value" :value})
+
+(def max-json-body-chars 65536)
+(def default-search-limit 25)
+(def max-search-limit 100)
+(def max-query-depth 10)
+(def max-query-clauses 25)
+
 (defn camel-case-keyword [k]
   (let [[head & tail] (string/split (name k) #"-")]
     (keyword
@@ -46,15 +64,50 @@
                  {:error {:type type
                           :message message}}))
 
+(defn read-limited-body [body]
+  (let [reader (clojure.java.io/reader body)
+        buffer (char-array 4096)]
+    (loop [chunks []
+           total 0]
+      (let [read-count (.read reader buffer)]
+        (if (= -1 read-count)
+          (apply str chunks)
+          (let [new-total (+ total read-count)]
+            (if (> new-total max-json-body-chars)
+              (throw (ex-info "Request body is too large." {:type :body-too-large}))
+              (recur (conj chunks (String. buffer 0 read-count))
+                     new-total))))))))
+
+(defn normalize-request-keys [value]
+  (cond
+    (map? value)
+    (into {}
+          (map (fn [[k v]]
+                 [(get known-json-keys k k)
+                  (normalize-request-keys v)]))
+          value)
+
+    (vector? value)
+    (mapv normalize-request-keys value)
+
+    :else value))
+
 (defn parse-json-body [request]
   (try
     (if-let [body (:body request)]
-      {:ok (json/parse-stream (clojure.java.io/reader body) keyword)}
+      {:ok (-> body
+               read-limited-body
+               json/parse-string
+               normalize-request-keys)}
       {:err "Request body must be valid JSON."})
+    (catch clojure.lang.ExceptionInfo e
+      (if (= :body-too-large (-> e ex-data :type))
+        {:err "Request body is too large." :type :body-too-large}
+        {:err "Request body must be valid JSON."}))
     (catch Exception _
       {:err "Request body must be valid JSON."})))
 
-(defn index-handler [state _request]
+(defn index-handler [_state _request]
   (json-response {:name "MCN Bike Reviews Search API"
                   :description "API for searching MCN's bike reviews by the specs of each bike. See API documentation for usage."
                   :endpoints ["/health"  "/api/fields"  "/api/bikes"  "/api/search"]}))
@@ -65,8 +118,7 @@
                     :cache-loaded true})
     (json-response 503
                    {:status "degraded"
-                    :cache-loaded false
-                    :error (:startup-error state)})))
+                    :cache-loaded false})))
 
 (defn bike-fields [bikes]
   (->> bikes
@@ -154,29 +206,42 @@
 
 (declare validate-filter)
 
-(defn validate-compound-filter [{:keys [type clauses]} valid-fields]
+(defn validate-compound-filter [{:keys [type clauses]} valid-fields depth]
   (or
    (when-not (contains? supported-query-types type)
      (str "Unsupported query type: " type))
+   (when-not (vector? clauses)
+     (str type " query requires clauses to be an array."))
    (when-not (seq clauses)
      (str type " query requires a non-empty clauses array."))
-   (some #(validate-filter % valid-fields) clauses)))
+   (when (> (count clauses) max-query-clauses)
+     (str type " query supports at most " max-query-clauses " clauses."))
+   (some #(validate-filter % valid-fields (inc depth)) clauses)))
 
-(defn validate-not-filter [{:keys [clause]} valid-fields]
+(defn validate-not-filter [{:keys [clause]} valid-fields depth]
   (or
    (when-not clause
      "Not query requires a clause.")
-   (validate-filter clause valid-fields)))
+   (validate-filter clause valid-fields (inc depth))))
 
-(defn validate-filter [filter valid-fields]
-  (if-not (map? filter)
+(defn validate-filter
+  ([filter valid-fields]
+   (validate-filter filter valid-fields 1))
+  ([filter valid-fields depth]
+   (cond
+     (> depth max-query-depth)
+     (str "Query nesting supports at most " max-query-depth " levels.")
+
+     (not (map? filter))
     "Filter must be an object."
-    (case (:type filter)
-      "comparison" (validate-comparison filter valid-fields)
-      "and" (validate-compound-filter filter valid-fields)
-      "or" (validate-compound-filter filter valid-fields)
-      "not" (validate-not-filter filter valid-fields)
-      "Query filter requires type: comparison, and, or, or not.")))
+
+     :else
+     (case (:type filter)
+       "comparison" (validate-comparison filter valid-fields)
+       "and" (validate-compound-filter filter valid-fields depth)
+       "or" (validate-compound-filter filter valid-fields depth)
+       "not" (validate-not-filter filter valid-fields depth)
+       "Query filter requires type: comparison, and, or, or not."))))
 
 (defn validate-sort [{:keys [field direction]} valid-fields]
   (cond
@@ -205,6 +270,10 @@
               (not (pos-int? limit)))
      "Limit must be a positive integer.")))
 
+(defn apply-search-defaults [{:keys [limit] :as request}]
+  (assoc request :limit (min (or limit default-search-limit)
+                             max-search-limit)))
+
 (defn search-handler [state request]
   (let [parsed-body (parse-json-body request)
         query-request (:ok parsed-body)
@@ -215,12 +284,14 @@
       (error-response 503 "cache-not-loaded" "Bike cache has not been loaded.")
 
       (:err parsed-body)
-      (error-response 400 "invalid-json" (:err parsed-body))
+      (if (= :body-too-large (:type parsed-body))
+        (error-response 413 "body-too-large" (:err parsed-body))
+        (error-response 400 "invalid-json" (:err parsed-body)))
 
       :else
       (if-let [validation-error (validate-search-request query-request valid-fields)]
         (error-response 400 "invalid-query" validation-error)
-        (json-response (:ok (query/query-bikes bikes query-request)))))))
+        (json-response (:ok (query/query-bikes bikes (apply-search-defaults query-request))))))))
 
 (defn not-found-handler [_request]
   (error-response 404 "not-found" "Route not found."))

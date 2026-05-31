@@ -41,7 +41,8 @@
                      :uri "/health"})]
       (is (= 503 (:status response)))
       (is (= "degraded" (:status (parse-body response))))
-      (is (false? (:cacheLoaded (parse-body response)))))))
+      (is (false? (:cacheLoaded (parse-body response))))
+      (is (nil? (:error (parse-body response)))))))
 
 (deftest fields-handler-test
   (let [response ((app) {:request-method :get
@@ -99,6 +100,47 @@
       (is (= 1 (:count body)))
       (is (= "bike-a" (-> body :results first :bikeName)))))
 
+  (testing "applies default limit when omitted"
+    (let [many-bikes (into {}
+                           (for [n (range 30)]
+                             [(str "bike-" n)
+                              {:ok {:bike-name (str "bike-" n)
+                                    :seat-height "780mm"
+                                    :url (str "https://example.com/bike-" n)}}]))
+          response ((app {:bikes many-bikes})
+                    {:request-method :post
+                     :uri "/api/search"
+                     :body (json-input-stream
+                            {:filter {:type "comparison"
+                                      :field "seat-height"
+                                      :op "<"
+                                      :value 800}})})
+          body (parse-body response)]
+      (is (= 200 (:status response)))
+      (is (= 25 (:count body)))
+      (is (= 30 (:totalMatches body)))))
+
+  (testing "caps large limits"
+    (let [many-bikes (into {}
+                           (for [n (range 120)]
+                             [(str "bike-" n)
+                              {:ok {:bike-name (str "bike-" n)
+                                    :seat-height "780mm"
+                                    :url (str "https://example.com/bike-" n)}}]))
+          response ((app {:bikes many-bikes})
+                    {:request-method :post
+                     :uri "/api/search"
+                     :body (json-input-stream
+                            {:filter {:type "comparison"
+                                      :field "seat-height"
+                                      :op "<"
+                                      :value 800}
+                             :limit 1000})})
+          body (parse-body response)]
+      (is (= 200 (:status response)))
+      (is (= 100 (:count body)))
+      (is (= 120 (:totalMatches body)))))
+
   (testing "rejects invalid JSON"
     (let [response ((app) {:request-method :post
                            :uri "/api/search"
@@ -106,6 +148,14 @@
                                   (.getBytes "not-json" "UTF-8"))})]
       (is (= 400 (:status response)))
       (is (= "invalid-json" (get-in (parse-body response) [:error :type])))))
+
+  (testing "rejects oversized JSON bodies"
+    (let [response ((app) {:request-method :post
+                           :uri "/api/search"
+                           :body (java.io.ByteArrayInputStream.
+                                  (.getBytes (apply str (repeat 70000 "x")) "UTF-8"))})]
+      (is (= 413 (:status response)))
+      (is (= "body-too-large" (get-in (parse-body response) [:error :type])))))
 
   (testing "rejects unknown fields"
     (let [response ((app) {:request-method :post
@@ -115,6 +165,36 @@
                                             :field "not-a-field"
                                             :op "<"
                                             :value 800}})})]
+      (is (= 400 (:status response)))
+      (is (= "invalid-query" (get-in (parse-body response) [:error :type])))))
+
+  (testing "rejects too many compound clauses"
+    (let [response ((app) {:request-method :post
+                           :uri "/api/search"
+                           :body (json-input-stream
+                                  {:filter {:type "and"
+                                            :clauses (vec
+                                                      (repeat 26
+                                                              {:type "comparison"
+                                                               :field "seat-height"
+                                                               :op "<"
+                                                               :value 800}))}})})]
+      (is (= 400 (:status response)))
+      (is (= "invalid-query" (get-in (parse-body response) [:error :type])))))
+
+  (testing "rejects overly nested queries"
+    (let [nested-filter (reduce
+                         (fn [filter _]
+                           {:type "not"
+                            :clause filter})
+                         {:type "comparison"
+                          :field "seat-height"
+                          :op "<"
+                          :value 800}
+                         (range 11))
+          response ((app) {:request-method :post
+                           :uri "/api/search"
+                           :body (json-input-stream {:filter nested-filter})})]
       (is (= 400 (:status response)))
       (is (= "invalid-query" (get-in (parse-body response) [:error :type])))))
 
