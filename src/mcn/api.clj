@@ -308,7 +308,7 @@
   (let [parsed-body (parse-json-body request)
         query-request (:ok parsed-body)
         bikes (:bikes state)
-        valid-fields (some-> bikes bike-fields set)]
+        valid-fields (set (keys field-metadata))]
     (cond
       (nil? bikes)
       (error-response 503 "cache-not-loaded" "Bike cache has not been loaded.")

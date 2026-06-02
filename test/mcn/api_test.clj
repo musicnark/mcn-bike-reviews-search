@@ -29,7 +29,7 @@
 (deftest health-handler-test
   (testing "reports healthy when cache is loaded"
     (let [response ((app) {:request-method :get
-                           :uri "/health"})]
+                           :uri "/api/health"})]
       (is (= 200 (:status response)))
       (is (= {:status "ok"
               :cacheLoaded true}
@@ -38,7 +38,7 @@
   (testing "reports degraded when cache failed to load"
     (let [response ((app {:startup-error {:type :cache-miss}})
                     {:request-method :get
-                     :uri "/health"})]
+                     :uri "/api/health"})]
       (is (= 503 (:status response)))
       (is (= "degraded" (:status (parse-body response))))
       (is (false? (:cacheLoaded (parse-body response))))
@@ -49,8 +49,14 @@
                          :uri "/api/fields"})
         body (parse-body response)]
     (is (= 200 (:status response)))
-    (is (= ["bike-name" "mcn-rating" "seat-height" "url" "used-price"]
-           (:fields body)))))
+    (is (= {:name "annual-road-tax"
+            :type "num"
+            :unit "GBP"}
+           (first (:fields body))))
+    (is (= {:name "seat-height"
+            :type "num"
+            :unit "mm"}
+           (some #(when (= "seat-height" (:name %)) %) (:fields body))))))
 
 (deftest bikes-handler-test
   (testing "returns paginated bike summaries"
@@ -64,19 +70,17 @@
               :count 1
               :total 2}
              (select-keys body [:page :perPage :count :total])))
-      (is (= [{:id "bike-a"
-               :bikeName "bike-a"
-               :mcnRating "4"
+      (is (= [{:bikeName "bike-a"
                :url "https://example.com/bike-a"}]
              (:results body))))))
 
 (deftest bike-detail-handler-test
   (testing "returns full details for one bike"
-    (let [response ((app) {:request-method :get
+      (let [response ((app) {:request-method :get
                            :uri "/api/bikes/bike-a"})
           body (parse-body response)]
       (is (= 200 (:status response)))
-      (is (= "bike-a" (:id body)))
+      (is (= "bike-a" (:bikeName body)))
       (is (= "780mm" (:seatHeight body)))))
 
   (testing "returns 404 for an unknown bike"
@@ -88,7 +92,7 @@
 (deftest search-handler-test
   (testing "returns query results for a valid search"
     (let [response ((app) {:request-method :post
-                           :uri "/api/search"
+                           :uri "/api/bikes/search"
                            :body (json-input-stream
                                   {:filter {:type "comparison"
                                             :field "seat-height"
@@ -109,7 +113,7 @@
                                     :url (str "https://example.com/bike-" n)}}]))
           response ((app {:bikes many-bikes})
                     {:request-method :post
-                     :uri "/api/search"
+                     :uri "/api/bikes/search"
                      :body (json-input-stream
                             {:filter {:type "comparison"
                                       :field "seat-height"
@@ -129,7 +133,7 @@
                                     :url (str "https://example.com/bike-" n)}}]))
           response ((app {:bikes many-bikes})
                     {:request-method :post
-                     :uri "/api/search"
+                     :uri "/api/bikes/search"
                      :body (json-input-stream
                             {:filter {:type "comparison"
                                       :field "seat-height"
@@ -143,7 +147,7 @@
 
   (testing "rejects invalid JSON"
     (let [response ((app) {:request-method :post
-                           :uri "/api/search"
+                           :uri "/api/bikes/search"
                            :body (java.io.ByteArrayInputStream.
                                   (.getBytes "not-json" "UTF-8"))})]
       (is (= 400 (:status response)))
@@ -151,7 +155,7 @@
 
   (testing "rejects oversized JSON bodies"
     (let [response ((app) {:request-method :post
-                           :uri "/api/search"
+                           :uri "/api/bikes/search"
                            :body (java.io.ByteArrayInputStream.
                                   (.getBytes (apply str (repeat 70000 "x")) "UTF-8"))})]
       (is (= 413 (:status response)))
@@ -159,7 +163,7 @@
 
   (testing "rejects unknown fields"
     (let [response ((app) {:request-method :post
-                           :uri "/api/search"
+                           :uri "/api/bikes/search"
                            :body (json-input-stream
                                   {:filter {:type "comparison"
                                             :field "not-a-field"
@@ -170,7 +174,7 @@
 
   (testing "rejects too many compound clauses"
     (let [response ((app) {:request-method :post
-                           :uri "/api/search"
+                           :uri "/api/bikes/search"
                            :body (json-input-stream
                                   {:filter {:type "and"
                                             :clauses (vec
@@ -193,14 +197,14 @@
                           :value 800}
                          (range 11))
           response ((app) {:request-method :post
-                           :uri "/api/search"
+                           :uri "/api/bikes/search"
                            :body (json-input-stream {:filter nested-filter})})]
       (is (= 400 (:status response)))
       (is (= "invalid-query" (get-in (parse-body response) [:error :type])))))
 
   (testing "rejects unsupported operators"
     (let [response ((app) {:request-method :post
-                           :uri "/api/search"
+                           :uri "/api/bikes/search"
                            :body (json-input-stream
                                   {:filter {:type "comparison"
                                             :field "seat-height"
@@ -211,6 +215,6 @@
 
 (deftest cors-test
   (let [response ((app) {:request-method :options
-                         :uri "/api/search"})]
+                         :uri "/api/bikes/search"})]
     (is (= 204 (:status response)))
     (is (= "*" (get-in response [:headers "Access-Control-Allow-Origin"])))))
