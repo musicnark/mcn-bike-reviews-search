@@ -42,13 +42,13 @@
                  [(if (keyword? k) (camel-case-keyword k) k)
                   (format-response-keys v)]))
           value)
-    
+
     (vector? value)
     (mapv format-response-keys value)
-    
+
     (seq? value)
     (map format-response-keys value)
-    
+
     :else value))
 
 (defn json-response
@@ -86,10 +86,10 @@
                  [(get known-json-keys k k)
                   (normalize-request-keys v)]))
           value)
-    
+
     (vector? value)
     (mapv normalize-request-keys value)
-    
+
     :else value))
 
 (defn parse-json-body [request]
@@ -116,7 +116,11 @@
       (json-response {:name "MCN Bike Reviews Search API"
                       :description "API for searching MCN's bike reviews by the specs of each bike. See API documentation for usage."
                       :bike-count bike-count
-                      :endpoints ["/health"  "/api/fields"  "/api/bikes"  "/api/bikes/random" "/api/search"]}))))
+                      :endpoints {:health "/api/health"
+                                  :fields "/api/fields"
+                                  :bikes "/api/bikes"
+                                  :random-bike "/api/bikes/random"
+                                  :bike-search "/api/bikes/search"}}))))
 
 (defn health-handler [state]
   (if (:bikes state)
@@ -126,27 +130,47 @@
                    {:status "degraded"
                     :cache-loaded false})))
 
-(defn bike-fields [bikes]
-  (->> bikes
-       vals
-       (keep :ok)
-       (mapcat keys)
-       set
-       sort
-       (map name)
-       vec))
+(def field-metadata
+    {"annual-road-tax" {:type "num" :unit "GBP"}
+     "annual-service-cost" {:type "num" :unit "GBP"}
+     "average-fuel-consumption" {:type "num" :unit "mpg"}
+     "bike-weight" {:type "num" :unit "kg"}
+     "engine-size" {:type "num" :unit "cc"}
+     "engine-type" {:type "string" :unit nil}
+     "frame-type" {:type "string" :unit nil}
+     "front-brake" {:type "string" :unit nil}
+     "front-suspension" {:type "string" :unit nil}
+     "front-tyre-size" {:type "string" :unit nil}
+     "fuel-capacity" {:type "num" :unit "litres"}
+     "insurance-group" {:type "num" :unit "0 of 17"}
+     "max-power" {:type "num" :unit "bhp"}
+     "max-torque" {:type "num" :unit "ft-lb"}
+     "new-price" {:type "num" :unit "GBP"}
+     "quarter-mile-acceleration" {:type "num" :unit "secs"}
+     "rear-brake" {:type "string" :unit nil}
+     "rear-suspension" {:type "string" :unit nil}
+     "rear-tyre-size" {:type "string" :unit nil}
+     "seat-height" {:type "num" :unit "mm"}
+     "tank-range" {:type "num" :unit "miles"}
+     "top-speed" {:type "num" :unit "mph"}
+     "used-price" {:type "num" :unit "GBP"}
+     "warranty-term" {:type "num" :unit "years"}})
 
-(defn fields-handler [state]
+(defn fields-response [metadata]
   ;; return searchable fields
-  (if-let [bikes (:bikes state)]
-    (json-response {:fields (bike-fields bikes)})
-    (error-response 503 "cache-not-loaded" "Bike cache has not been loaded.")))
+  {:fields
+   (->> metadata
+        (map (fn [[name meta]]
+               (merge {:name name} meta)))
+        (sort-by :name)
+        vec)})
 
-(defn bike-summary [[id result]]
+(defn fields-handler []
+  (json-response (fields-response field-metadata)))
+
+(defn bike-summary [[_ result]]
   (when-let [bike (:ok result)]
-    {:id id
-     :bike-name (:bike-name bike)
-     :mcn-rating (:mcn-rating bike)
+    {:bike-name (:bike-name bike)
      :url (:url bike)}))
 
 (defn bike-summaries [bikes]
@@ -186,7 +210,7 @@
 (defn bike-detail-handler [state id]
   (if-let [bikes (:bikes state)]
     (if-let [bike (get-in bikes [id :ok])]
-      (json-response (assoc bike :id id))
+      (json-response bike)
       (error-response 404 "bike-not-found" (str "Bike not found: " id)))
     (error-response 503 "cache-not-loaded" "Bike cache has not been loaded.")))
 
@@ -198,16 +222,16 @@
   (cond
     (not (string? field))
     "Comparison query requires a string field."
-    
+
     (not (contains? valid-fields field))
     (str "Unknown field: " field)
-    
+
     (not (contains? supported-operators op))
     (str "Unsupported operator: " op)
-    
+
     (nil? value)
     "Comparison query requires a value."
-    
+
     :else nil))
 
 (declare validate-filter)
@@ -237,10 +261,10 @@
    (cond
      (> depth max-query-depth)
      (str "Query nesting supports at most " max-query-depth " levels.")
-     
+
      (not (map? filter))
      "Filter must be an object."
-     
+
      :else
      (case (:type filter)
        "comparison" (validate-comparison filter valid-fields)
@@ -253,14 +277,14 @@
   (cond
     (not (string? field))
     "Sort requires a string field."
-    
+
     (not (contains? valid-fields field))
     (str "Unknown sort field: " field)
-    
+
     (and direction
          (not (contains? supported-sort-directions direction)))
     (str "Unsupported sort direction: " direction)
-    
+
     :else nil))
 
 (defn validate-search-request [{:keys [filter sort limit]} valid-fields]
@@ -288,12 +312,12 @@
     (cond
       (nil? bikes)
       (error-response 503 "cache-not-loaded" "Bike cache has not been loaded.")
-      
+
       (:err parsed-body)
       (if (= :body-too-large (:type parsed-body))
         (error-response 413 "body-too-large" (:err parsed-body))
         (error-response 400 "invalid-json" (:err parsed-body)))
-      
+
       :else
       (if-let [validation-error (validate-search-request query-request valid-fields)]
         (error-response 400 "invalid-query" validation-error)
@@ -331,27 +355,27 @@
        (cond
          (= method :options)
          (options-handler request)
-         
+
          (= [method uri] [:get "/api"])
          (index-handler state)
-         
+
          (= [method uri] [:get "/api/health"])
          (health-handler state)
-         
+
          (= [method uri] [:get "/api/fields"])
-         (fields-handler state)
-         
+         (fields-handler)
+
          (= [method uri] [:get "/api/bikes"])
          (bikes-handler state request)
-         
+
          (= [method uri] [:get "/api/bikes/random"])
          (random-bike-handler state)
 
-         (= [method uri] [:post "/api/search"])
+         (= [method uri] [:post "/api/bikes/search"])
          (search-handler state request)
-         
+
          (and (= method :get) (bike-id-from-uri uri))
          (bike-detail-handler state (bike-id-from-uri uri))
-         
+
          :else
          (not-found-handler request))))))
