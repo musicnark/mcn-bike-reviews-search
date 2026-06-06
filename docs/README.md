@@ -7,14 +7,12 @@ For a short project overview and quickstart, begin with the [root README](../REA
 ## Start Here
 
 - [API reference](reference/api.md): run and interact with the JSON API.
-- [Editorial workflows](how-to/editorial-workflows.md): examples of the business problems the tool supports.
 - [Architecture overview](concepts/architecture.md): understand the current Clojure service.
 - [Business pitch](business-pitch.md): see how the project was presented to stakeholders.
 
 ## Explanation
 
 - [Problem space](concepts/problem-space.md)
-- [Constraints](concepts/constraints.md)
 - [Design decisions](concepts/design-decisions.md)
 - [Audience](audience.md)
 
@@ -38,3 +36,5 @@ The project began as an Elisp prototype for rapid development inside my editoria
 - [Archived Elisp API reference](reference/elisp-api.md)
 - [Archived install guidance](how-to/install.md)
 - [Archived editorial workflow guidance](how-to/editorial-workflows.md)
+- [Archived constraints](concepts/constraints.md)
+

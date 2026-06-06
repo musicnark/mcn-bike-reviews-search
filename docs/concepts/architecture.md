@@ -52,9 +52,11 @@ evaluation, API responses, pagination, and validation. Run it with:
 clojure -X:test
 ```
 
-## Key Considerations
+## Key Considerations Overview
 
 - **In-memory EDN rather than a database:** appropriate for a local, read-focused application; less suitable for concurrent or incremental writes.
 - **REST rather than GraphQL:** keeps the current single-purpose API small and predictable.
 - **core.async pipeline:** fits the producer-consumer shape of fetching and parsing many review pages.
 - **Clojure rewrite after an Elisp prototype:** preserves rapid validation of the original idea while making the service easier to run independently.
+
+See [Design Decisions](./design-decisions.md) for more detail on these.

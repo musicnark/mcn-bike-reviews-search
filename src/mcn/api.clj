@@ -114,7 +114,7 @@
                           (keep :ok)
                           count)]
       (json-response {:name "MCN Bike Reviews Search API"
-                      :description "API for searching MCN's bike reviews by the specs of each bike"
+                      :description "Backend API for searching the Motorcycle News bike review archive by bike specs"
                       :api-docs-link "https://github.com/musicnark/mcn-bike-reviews-search/blob/main/docs/reference/api.md"
                       :bike-count bike-count
                       :endpoints {:health "/api/health"

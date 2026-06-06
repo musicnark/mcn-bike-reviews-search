@@ -1,24 +1,16 @@
 # MCN Bike Reviews Search
 
-A backend API and editorial workflow tool for searching MCN's bike review
-archive by technical specifications.
+A backend API and editorial workflow tool for searching MCN's bike review archive by technical specifications.
 
-MCN writers previously had no fast way to find bikes matching criteria such as
-seat height, power, price, fuel economy, or running costs. This project turns
-1,489 published bike reviews into a searchable dataset, reducing recurring
-editorial research from hours to minutes.
+MCN writers previously had no fast way to find bikes matching criteria such as seat height, power, price, fuel economy, or running costs. This project turns 1,489 published bike reviews into a searchable dataset, reducing recurring editorial research from hours to minutes.
 
 ## At A Glance
 
 - Built around a real editorial need identified while working at MCN.
-- Provides a JSON API for filtered search, sorting, pagination, metadata,
-  individual bike lookup, and random bike discovery.
-- Validates nested filters, operators, fields, sort direction, clause limits,
-  malformed JSON, and oversized request bodies.
-- Includes automated tests and documentation for users, developers, and
-  business stakeholders.
-- Started as an Elisp prototype built in 24 hours, then developed into a
-  standalone Clojure backend service with editorial and IT backing.
+- Provides a JSON API for filtered search, sorting, pagination, metadata, individual bike lookup, and random bike discovery.
+- Validates nested filters, operators, fields, sort direction, clause limits, malformed JSON, and oversized request bodies.
+- Includes automated tests and documentation for users, developers, and business stakeholders.
+- Started as an Elisp prototype built in 24 hours, then developed into a standalone Clojure backend service with editorial and IT backing.
 
 ![The running API index, showing 1,489 searchable bike reviews and the available endpoints](docs/assets/api-index.png)
 
