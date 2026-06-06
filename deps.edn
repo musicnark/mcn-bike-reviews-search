@@ -17,6 +17,9 @@
   :api
   {:main-opts ["-m" "mcn.server"]}
 
+  :refresh
+  {:main-opts ["-m" "mcn.refresh"]}
+
   :test
   {:extra-paths ["test"]
    :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}

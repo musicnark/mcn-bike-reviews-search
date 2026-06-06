@@ -3,6 +3,8 @@
 .cpcache
 .lsp
 .nrepl-port
+target/
+.kaocha/
 
 # Vale
 .vale_styles
@@ -16,3 +18,4 @@
 
 # Misc
 .codex
+.DS_Store

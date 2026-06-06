@@ -1,4 +1,8 @@
-# Usage overview
+# Archived Prototype Usage
+
+> This guide documents the original Elisp prototype. For the current Clojure
+> API, see the [API reference](../reference/api.md).
+
 This tool does not (yet) feature a graphical interface. Before continuing, be sure to channel your inner hacker.
 
 Run Emacs, and when you get to the home screen, type `M-x eshell` or `M-x ielm`, and hit enter. Once loaded, you can start typing out a query.

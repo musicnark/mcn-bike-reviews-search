@@ -1,27 +1,37 @@
-# Documentation structure
-This documentation follows the Diátaxis standard, in order to meet the needs of many different potential users from one set of code docs. The current documentation practice equally serves non-technical editorial teams using this tool to save time, as much as IT departments who might wish to re-implement its functionality.
+# Documentation Structure
 
-# Platform
-To create this tool, I decided to use the software tools I'm most fluent with, which led me to basing it on Emacs. This was to prioritise prototyping speed, as Emacs is the tool I use most in my day-to-day role as a writer.
+This documentation follows the Diátaxis standard to meet the needs of
+different readers. It includes practical workflows for editorial users,
+reference material for developers, and explanations of the business problem
+and technical decisions.
 
-This tool has also been designed such that, should the need arise, an expanded and more user-friendly version can be made quickly and distributed within the wider team. This is because I anticipated the business would take a long time to implement the tool in their way, but the value this tool adds is still worth having today. Emacs has a functional graphics library that's easy enough to work with, so a custom mode that loads this tool with a simple GUI would be serviceable for small-scale distribution within my team. 
+# Platform Evolution
 
-Emacs was also chosen as it's a cross-platform tool with an existing open-source ecosystem of tools for editorial teams. Emacs gives easy access to common system needs, like the system clipboard, and integrates well with conversion tools to output to any format desired. Being cross platform, it also avoids doubling up on work to distribute across Windows and MacOS.
+The project began as an Elisp prototype because Emacs was already part of the
+author's daily editorial workflow. That choice prioritised prototyping speed
+and made it possible to demonstrate a useful version within 24 hours.
 
-Knowing that a full rewrite would have to take place to scale to business needs, the underlying logic was kept as portable as possible. In its MVP state, there's no functionality in this tool unique to Emacs that couldn't be easily transferred to any other general purpose programming language. For example, PHP for a WordPress plugin, a Python script leveraging Pandas for data retrieval, JavaScript for a web browser plugin, etc.
+The current implementation is a standalone Clojure service. Moving beyond the
+editor removed the main barrier to wider use and created space for a documented
+JSON API, stronger validation, automated tests, and a future browser-based
+interface.
 
-# Algorithms & data structures
-At a high level, this tool works by:
+The original prototype is retained in [`archive/`](../../archive/) to show how
+the project evolved after validating the business need.
 
-1. **Fetching, decompressing, & parsing** the motorcyclenews.com sitemap, to find URLs for all bike reviews
-2. Asynchronously **fetching web pages** for each bike review from the live site
-3. **Parsing the spec tables** within the HTML body to extract bike specs
-4. **Storing each bike's specs in a map** keyed by bike name, containing a map of all attributes.
-5. Giving the user a **query language to search and filter the map's contents**.
+# Algorithms And Data Structures
 
-For a more granular look at the design, see the [main code](../../el/bike-reviews.el).
+At a high level, the current service:
 
-Most Elisp functions operate at C-like speed, and the language lends itself naturally to recursive tree algorithms - which were the most challenging part of this tool to implement. Elisp also has highly ergonomic string handling with the use of buffers and editor commands, which made parsing the input file quick and easy to implement.
+1. Fetches and parses the MCN sitemap to discover bike review URLs.
+2. Fetches review pages asynchronously.
+3. Parses specification tables into structured bike records.
+4. Stores successful and failed results explicitly in a map keyed by bike ID.
+5. Saves the dataset to a local EDN cache.
+6. Exposes query and lookup operations through a JSON API.
+
+For a more detailed view, see the
+[architecture overview](./architecture.md).
 
 # Async
 Although new async patterns offered by libraries like Manifold/Aleph are popular within the Clojure community, I decided to stick with core.async for this project. The flow of data from HTTP request to HTML parsing maps well to a producer-consumer pipeline, which core.async handles well. Manifold is best when you need a single abstraction to interface between multiple async implementations (e.g., service aggregation, Java interop), which wasn't necessary for this project.
