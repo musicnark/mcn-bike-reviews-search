@@ -15,6 +15,11 @@ target/
 # Editors 
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+.dir-locals.el
+.projectile
 
 # Misc
 .codex
