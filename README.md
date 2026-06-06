@@ -118,7 +118,6 @@ This project pushed me beyond small-scale workflow automation tools into larger 
 
 - [Documentation index](docs/README.md)
 - [API reference](docs/reference/api.md)
-- [Editorial workflows](docs/how-to/editorial-workflows.md)
 - [Business pitch](docs/business-pitch.md)
 - [Problem space](docs/concepts/problem-space.md)
 - [Roadmap](docs/roadmap.md)
