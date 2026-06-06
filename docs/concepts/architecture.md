@@ -35,18 +35,13 @@ The collected review data is stored as structured data (EDN), and loaded into me
 
 ## API Layer
 
-`mcn.api` exposes health, metadata, listing, lookup, random selection, and
-search endpoints through Ring. It validates request shape, allowed fields,
-operators, nesting depth, clause counts, sort options, limits, and request
-body size before evaluating a query.
+`mcn.api` exposes health, metadata, listing, lookup, random selection, and search endpoints through Ring. It validates request shape, allowed fields, operators, nesting depth, clause counts, sort options, limits, and request body size before evaluating a query.
 
-`mcn.server` loads the cached data and serves the application through embedded
-Jetty.
+`mcn.server` loads the cached data and serves the application through embedded Jetty.
 
 ## Testing
 
-The test suite covers the core pipeline, storage, retry behaviour, query
-evaluation, API responses, pagination, and validation. Run it with:
+The test suite covers the core pipeline, storage, retry behaviour, query evaluation, API responses, pagination, and validation. Run it with:
 
 ```sh
 clojure -X:test
