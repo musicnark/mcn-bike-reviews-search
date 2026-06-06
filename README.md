@@ -106,20 +106,13 @@ See the [architecture overview](docs/concepts/architecture.md) and
 
 ## Project Status
 
-The backend API is functional and tested. It supports the core editorial
-search workflow and is suitable for local use and demonstration.
+The backend API is functional and tested. It supports the core editorial search workflow and is suitable for local use and demonstration.
 
-Current work focuses on deployment polish, improving data quality, and
-developing a browser-based interface. The original Elisp prototype is retained
-under [`archive/`](archive/) to show the project's evolution.
+Current work focuses on deployment polish, improving data quality, and developing a browser-based interface. The original Elisp prototype is retained under [`archive/`](archive/) to show the project's evolution.
 
 ## What I Learned
 
-This project pushed me beyond workflow scripting into backend service design.
-It required me to turn a loosely defined business need into a usable tool,
-design a public API, validate complex user input, handle imperfect source data,
-write automated tests, and document decisions for technical and non-technical
-readers.
+This project pushed me beyond small-scale workflow automation tools into larger backend service design. It required me to turn a loosely defined business need into a usable tool, design a public API, validate complex user input, handle messy real-world source data, write automated tests, and document decisions for technical and non-technical readers.
 
 ## Documentation
 
