@@ -15,6 +15,8 @@ Some code examples in this documentation use `// ...` comments to keep long resp
 
 # Running The API
 
+To run the API locally, you will need to have `clojure` and Java/JDK (version 11+) installed and available in your `PATH`.
+
 Start the API locally with the built-in alias:
 
 ```sh
@@ -31,7 +33,7 @@ You can optionally add a custom port via an environment variable:
 PORT=9999 clojure -M:api
 ```
 
-You can also refresh the data set before running the API with:
+You can also refresh the data set via the internet before running the API with:
 
 ```sh
 clojure -M:refresh

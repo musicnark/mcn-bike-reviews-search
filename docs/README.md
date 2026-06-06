@@ -36,3 +36,5 @@ The project began as an Elisp prototype for rapid development inside my editoria
 
 - [Archived basic usage](how-to/basic-usage.md)
 - [Archived Elisp API reference](reference/elisp-api.md)
+- [Archived install guidance](how-to/install.md)
+- [Archived editorial workflow guidance](how-to/editorial-workflows.md)
