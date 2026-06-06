@@ -3,7 +3,7 @@
 Some code examples in this documentation use `// ...` comments to keep long responses readable. These comments are illustrative only; make sure to remove them before copying a JSON body into a request.
 
 # Jump to:
-- [Running the API](#running the api)
+- [Running the API](#running-the-api)
 - [Response Format](#response-format)
 - [Endpoints](#endpoints)
 - [Search Filters](#search-filters)
