@@ -2,6 +2,16 @@
 
 Some code examples in this documentation use `// ...` comments to keep long responses readable. These comments are illustrative only; make sure to remove them before copying a JSON body into a request.
 
+# Jump to:
+- [Running the API](#running the api)
+- [Response Format](#response-format)
+- [Endpoints](#endpoints)
+- [Search Filters](#search-filters)
+- [Sorting](#sorting)
+- [Limits](#limits)
+- [Examples](#examples)
+- [Error Types](#error-types)
+- [Notes](#notes)
 
 # Running The API
 
@@ -19,6 +29,12 @@ You can optionally add a custom port via an environment variable:
 
 ```sh
 PORT=9999 clojure -M:api
+```
+
+You can also refresh the data set before running the API with:
+
+```sh
+clojure -M:refresh
 ```
 
 # Response Format
