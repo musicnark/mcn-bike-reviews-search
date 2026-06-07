@@ -23,9 +23,7 @@ Start the API locally with the built-in alias:
 clojure -M:api
 ```
 
-This will start the server at:
-
-http://localhost:3000
+This will load the default cache, and start the server at http://localhost:3000
 
 You can optionally add a custom port via an environment variable:
 
@@ -33,11 +31,19 @@ You can optionally add a custom port via an environment variable:
 PORT=9999 clojure -M:api
 ```
 
-You can also refresh the data set via the internet before running the API with:
+You can also refresh the data set before running the API with:
 
 ```sh
 clojure -M:refresh
 ```
+
+Refreshing overwrites the default cache, unless a custom path is specified:
+
+```sh
+clojure -M:refresh /tmp/bikes.edn
+```
+
+Refreshing requires internet access, and may take some time.
 
 # Response Format
 

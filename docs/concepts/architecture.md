@@ -21,6 +21,23 @@ Query engine with filter, sort, and limit operations (`mcn.query`)
 API layer with validation and JSON endpoints (`mcn.api`, `mcn.server`)
 ```
 
+The internal data model once complete looks like this:
+
+```clojure
+{"bike-id"
+   {:ok {:bike-name "bike-id"
+         :engine-size "500cc"
+         :url "https://..."}}}
+```
+
+Individual page failures remain represented in the final dataset like this:
+
+```clojure
+{"bike-id"
+   {:err {:type :foo
+          :message "bar"}}}
+```
+
 ## Data Collection
 
 `mcn.sitemap` parses bike review URLs from MCN's sitemap. The fetch and parse pipeline downloads review pages concurrently, extracts their specification tables, and returns the results as structured data. Failures remain explicit so they can be inspected or retried, rather than silently discarded.
