@@ -21,23 +21,6 @@ Query engine with filter, sort, and limit operations (`mcn.query`)
 API layer with validation and JSON endpoints (`mcn.api`, `mcn.server`)
 ```
 
-The internal data model once complete looks like this:
-
-```clojure
-{"bike-id"
-   {:ok {:bike-name "bike-id"
-         :engine-size "500cc"
-         :url "https://..."}}}
-```
-
-Individual page failures remain represented in the final dataset like this:
-
-```clojure
-{"bike-id"
-   {:err {:type :foo
-          :message "bar"}}}
-```
-
 ## Data Collection
 
 `mcn.sitemap` parses bike review URLs from MCN's sitemap. The fetch and parse pipeline downloads review pages concurrently, extracts their specification tables, and returns the results as structured data. Failures remain explicit so they can be inspected or retried, rather than silently discarded.
@@ -62,6 +45,48 @@ The test suite covers the core pipeline, storage, retry behaviour, query evaluat
 
 ```sh
 clojure -X:test
+```
+
+## Bind
+
+This pipeline utilises the `bind` pattern for explicit, composable error propagation. Each function returns a wrapped result value:
+
+```clojure
+{:ok value}
+;; or
+{:err {:type :network-sitemap
+       :message "..."}}
+```
+
+Calling `bind` then runs a given function with the unwrapped value in `{:ok value}`, or propagates the error:
+
+```clojure
+(util/bind {:ok 5} inc)
+  ;; => 6
+
+(util/bind {:err {:type :failure}} inc)
+  ;; => {:err {:type :failure}}
+```
+
+The philosophy here is to catch errors early and propagate them as data, so they can be acted on programmatically.
+
+## Internal Data Model
+
+Once the pipeline is complete, the internal data model once complete looks like this:
+
+```clojure
+{"bike-id"
+   {:ok {:bike-name "bike-id"
+         :engine-size "500cc"
+         :url "https://..."}}}
+```
+
+Individual page failures remain represented in the final dataset like this:
+
+```clojure
+{"bike-id"
+   {:err {:type :parse-error
+          :message "..."}}}
 ```
 
 ## Key Considerations Overview
