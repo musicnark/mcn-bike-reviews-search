@@ -22,12 +22,19 @@ jobs:
         with:
           distribution: temurin
           java-version: "11"
-          cache: maven
 
       - name: Install Clojure CLI
         uses: DeLaGuardo/setup-clojure@13.2
         with:
           cli: latest
+
+      - name: Cache Clojure dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-clojure-${{ hashFiles('deps.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-clojure-
 
       - name: Run tests
         run: clojure -X:test
