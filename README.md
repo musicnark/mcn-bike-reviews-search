@@ -19,7 +19,7 @@ MCN writers previously had no fast way to find bikes matching criteria such as s
 Find bikes with a seat height below 800mm, sorted from lightest to heaviest:
 
 ```sh
-curl --request POST http://localhost:3000/api/bikes/search \
+curl --request POST https://labs.musicnark.com/mcn/api/bikes/search \
   --header "Content-Type: application/json" \
   --data '{
     "filter": {

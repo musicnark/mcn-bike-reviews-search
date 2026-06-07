@@ -8,7 +8,7 @@ The core backend API, nested query handling, input validation, local cache, auto
 - [ ] Improve data-quality checks and reporting
 - [ ] Support incremental updates when new reviews appear
 - [ ] Add structured application logging
-- [ ] Add continuous integration for the test suite
+- [X] Add continuous integration for the test suite
 
 ## Product Development
 
@@ -23,7 +23,7 @@ The core backend API, nested query handling, input validation, local cache, auto
 - [x] Document the current architecture
 - [x] Document the JSON API
 - [ ] Add an end-to-end editorial case study
-- [ ] Add deployment documentation (when a hosted version is available)
+- [X] Add deployment documentation (when a hosted version is available)
 
 ## Foundations
 

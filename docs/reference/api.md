@@ -15,6 +15,27 @@ Some code examples in this documentation use `// ...` comments to keep long resp
 
 # Running The API
 
+## Live Demo
+
+The API is available to access as a live demo at https://labs.musicnark.com/mcn/api.
+
+E.g:
+
+```sh
+curl https://labs.musicnark.com/mcn/api
+```
+
+This uses `/mcn` as its base path. Therefore, the endpoint paths documented below should be requested as `/mcn/endpoint` on the live demo.
+
+E.g:
+```sh
+curl https://labs.musicnark.com/mcn/api/bikes/random
+```
+
+The live demo is rate limited, so run the API locally for unrestricted testing or development.
+
+## Local
+
 To run the API locally, you will need to have `clojure` and Java/JDK (version 11+) installed and available in your `PATH`.
 
 Start the API locally with the built-in alias:
