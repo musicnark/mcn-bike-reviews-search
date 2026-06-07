@@ -7,7 +7,7 @@ To run the archived prototype, use the supplied
 [install script](../../archive/install.sh), which automates installation for
 the tool and Emacs on macOS, Debian, and Ubuntu:
 
-``` bash
+```bash
 git clone https://github.com/musicnark/mcn-bike-reviews-search &&
 cd mcn-bike-reviews-search &&
 chmod +x archive/install.sh &&
@@ -23,7 +23,8 @@ If unfamiliar with Emacs, now's a good time to [familiarise yourself with the ba
 
 ---
 
-# Manual Install
+## Manual Install
+
 If installing manually, open a terminal and follow the below instructions:
 
 - Install Emacs and add it to your PATH (check online for specific instructions on your operating system)

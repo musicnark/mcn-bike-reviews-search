@@ -7,6 +7,7 @@ For a short project overview and quickstart, begin with the [root README](../REA
 ## Start Here
 
 - [API reference](reference/api.md): run and interact with the JSON API.
+- [Deployment guide](how-to/deploy.md): deploy the API using systemd, Nginx, and Certbot.
 - [Architecture overview](concepts/architecture.md): understand the current Clojure service.
 - [Business pitch](business-pitch.md): see how the project was presented to stakeholders.
 
@@ -26,6 +27,7 @@ For a short project overview and quickstart, begin with the [root README](../REA
 
 - [Roadmap](roadmap.md)
 - [Contributing](CONTRIBUTING.md)
+- [Deployment guide](how-to/deploy.md)
 - [Documentation style](style.md)
 
 ## Archived Prototype
@@ -37,4 +39,3 @@ The project began as an Elisp prototype for rapid development inside my editoria
 - [Archived install guidance](how-to/install.md)
 - [Archived editorial workflow guidance](how-to/editorial-workflows.md)
 - [Archived constraints](concepts/constraints.md)
-

@@ -7,7 +7,8 @@ This tool does not (yet) feature a graphical interface. Before continuing, be su
 
 Run Emacs, and when you get to the home screen, type `M-x eshell` or `M-x ielm`, and hit enter. Once loaded, you can start typing out a query.
 
-# Queries
+## Queries
+
 The basic syntax of a query looks like this:
 
 ```elisp
@@ -15,12 +16,12 @@ The basic syntax of a query looks like this:
  '(and                                  ;; (optional) combine filters
 	 (:average-fuel-consumption > 150)  ;; filter a specific spec
 	 (:top-speed >= 60)))               ;; ^^^
- ```
+```
 
 _Don't forget to put the single quote `'` before your filter!_
 
 For the sake of ease of use, you don't need to put the unit of a spec (bhp/break horsepower, mm/millimetres, cc/cubic centimetres, etc), just the number.
- 
+
 Running the above will produce an output similar to this:
 
 ```elisp
@@ -36,7 +37,9 @@ To see all the available specs for a certain bike, you can search for it by name
 (gethash "honda msx125-grom 2014" bike-review-hashmap)
 ;; => (:engine-size "125cc" :engine-type "Air-cooled..." :seat-height "765mm" ...)
 ```
+
 See [Query Language](../reference/query-language.md) to reference:
+
 - the list of [bike specs](../reference/query-language.md#bike-specs) each bike can be filtered by
 - the supported [operators and combinators](../reference/query-language.md#operators--combinators)
 

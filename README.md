@@ -106,7 +106,7 @@ See the [architecture overview](docs/concepts/architecture.md) and
 
 ## Project Status
 
-The backend API is functional and tested. It supports the core editorial search workflow and is suitable for local use and demonstration.
+The backend API is functional, tested, and available as a live hosted demo. It supports the core editorial search workflow and can also be run locally.
 
 Current work focuses on deployment polish, improving data quality, and developing a browser-based interface. The original Elisp prototype is retained under [`archive/`](archive/) to show the project's evolution.
 
