@@ -3,6 +3,8 @@
 .cpcache
 .lsp
 .nrepl-port
+target/
+.kaocha/
 
 # Vale
 .vale_styles
@@ -13,6 +15,12 @@
 # Editors 
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+.dir-locals.el
+.projectile
 
 # Misc
 .codex
+.DS_Store

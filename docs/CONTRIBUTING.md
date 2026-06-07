@@ -6,8 +6,7 @@ If you're not a developer, you can still contribute by posting issues when you r
 Some encouraged contributions include:
 - documentation improvements (run `vale docs/` for some easy wins)
 - reporting bugs and unexpected behaviour
-- adding support for more systems in [install.sh](../install.sh)
-- adding unit tests (for completeness)
+- improving unit tests (for completeness)
 
 # Setting up the project
 To get started, clone the repository:
@@ -21,3 +20,5 @@ Setting up `Vale` is recommended for prose linting. Install `Vale` for your oper
 ```sh
 vale sync
 ```
+
+Refer to [API Documentation](./reference/api.md) for usage.

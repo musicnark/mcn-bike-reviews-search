@@ -1,11 +1,17 @@
-# Recommended install
-To follow the recommended install method, run the supplied [install script](../../install.sh), which automates install for this tool and Emacs on MacOS, Debian, and Ubuntu. Copy and paste the following into a terminal and hit enter:
+# Archived Prototype Installation
+
+> This guide documents the original Elisp prototype. For the current Clojure
+> API, follow the [root README quickstart](../../README.md#run-locally).
+
+To run the archived prototype, use the supplied
+[install script](../../archive/install.sh), which automates installation for
+the tool and Emacs on macOS, Debian, and Ubuntu:
 
 ``` bash
 git clone https://github.com/musicnark/mcn-bike-reviews-search &&
 cd mcn-bike-reviews-search &&
-chmod +x install.sh &&
-./install.sh
+chmod +x archive/install.sh &&
+./archive/install.sh
 ```
 Once installed, launch or restart Emacs and run `M-x mcn/bike-search-initialise` to load the bike reviews data.
 
@@ -17,7 +23,7 @@ If unfamiliar with Emacs, now's a good time to [familiarise yourself with the ba
 
 ---
 
-# Manual install
+# Manual Install
 If installing manually, open a terminal and follow the below instructions:
 
 - Install Emacs and add it to your PATH (check online for specific instructions on your operating system)
@@ -28,12 +34,12 @@ If installing manually, open a terminal and follow the below instructions:
 git clone https://github.com/musicnark/mcn-bike-reviews-search
 ```
 
-- Copy the Elisp files and generated bike data to your Emacs config folder:
+- Copy the archived Elisp file and cached bike data to your Emacs config
+  folder:
 
 ```bash
 mkdir -p ~/.emacs.d/lisp/mcn-bike-reviews-search/generated/
-cp el/*.el ~/.emacs.d/lisp/mcn-bike-reviews-search/
-cp el/generated/*.el ~/.emacs.d/lisp/mcn-bike-reviews-search/generated/
+cp archive/el/*.el ~/.emacs.d/lisp/mcn-bike-reviews-search/
 ```
 
 - Optionally, you can byte compile the elisp files for quicker loading:

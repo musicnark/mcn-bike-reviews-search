@@ -1,3 +1,6 @@
+# Preface
+This pitch was sent along with the proof of concept Elisp version of this tool to internal stakeholders.
+
 # The Business Pitch
 The Bike Reviews section is one of MCN’s highest-value digital assets, driving significant evergreen traffic and long-tail search demand, yet editorial teams still spend a significant amount of time manually searching bike reviews for the purpose of content creation. As each bike review already has a number of specs associated with them, being able to search and filter by spec would speed up the content creation process for a number of different types of content across the Bike Reviews section.
 
@@ -13,4 +16,4 @@ With small additions, the tool could also search for any data in the bike review
 
 We also see strong potential for an integration with a LLM (ChatGPT, Gemini, etc). By combining an AI agent with this consistent searching and filtering capability, it can generate consistent bike selections, and produce a first-draft for multiple types of content in seconds. This would accelerate content creation even further, while ensuring bike choice isn't subject to a LLM's tendency for hallucination or short-cutting.
 
-The current implementation is written in Elisp, chosen for fast prototyping within my existing workflow. The underlying logic is portable to any general-purpose programming language.
+The prototype implementation is written in Elisp, chosen for fast prototyping within my existing workflow. The underlying logic is portable to any general-purpose programming language.

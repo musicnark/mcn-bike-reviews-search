@@ -7,7 +7,9 @@
             [mcn.retry :as retry]
             [mcn.query :as query]))
 
-(defn fetch-bikes-map [sitemap]
+(defn fetch-bikes-map
+  "Pipeline that takes the bike specs from web page to local cache, from start to finish."
+  [sitemap]
   (let [bikes (-> (util/bind sitemap sitemap/parse-sitemap)
                   (util/bind sitemap/urls-to-fetch)
                   (util/bind pipeline/merge-html-chans)
@@ -18,6 +20,9 @@
       bikes))) ;; TODO add bind support (return {:ok bikes})
 
 (defn get-or-fetch-bikes-map
+  "Loads the local cache of bike specs into memory.
+
+  Optionally set the `path` to load from or save to, and whether it should re-fetch the data as `bool`."
   ([]
    (get-or-fetch-bikes-map storage/default-cache-path false #(fetch-bikes-map (sitemap/fetch-sitemap))))
   ([path force-refresh?]

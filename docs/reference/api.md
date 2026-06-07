@@ -2,8 +2,20 @@
 
 Some code examples in this documentation use `// ...` comments to keep long responses readable. These comments are illustrative only; make sure to remove them before copying a JSON body into a request.
 
+# Jump to:
+- [Running the API](#running-the-api)
+- [Response Format](#response-format)
+- [Endpoints](#endpoints)
+- [Search Filters](#search-filters)
+- [Sorting](#sorting)
+- [Limits](#limits)
+- [Examples](#examples)
+- [Error Types](#error-types)
+- [Notes](#notes)
 
 # Running The API
+
+To run the API locally, you will need to have `clojure` and Java/JDK (version 11+) installed and available in your `PATH`.
 
 Start the API locally with the built-in alias:
 
@@ -11,15 +23,27 @@ Start the API locally with the built-in alias:
 clojure -M:api
 ```
 
-This will start the server at:
-
-http://localhost:3000
+This will load the default cache, and start the server at http://localhost:3000
 
 You can optionally add a custom port via an environment variable:
 
 ```sh
 PORT=9999 clojure -M:api
 ```
+
+You can also refresh the data set before running the API with:
+
+```sh
+clojure -M:refresh
+```
+
+Refreshing overwrites the default cache, unless a custom path is specified:
+
+```sh
+clojure -M:refresh /tmp/bikes.edn
+```
+
+Refreshing requires internet access, and may take some time.
 
 # Response Format
 
@@ -45,7 +69,8 @@ This endpoint serves as the API index. The expected response should give some ba
 ```json
 {
   "name": "MCN Bike Reviews Search API",
-  "description": "API for searching MCN's bike reviews by the specs of each bike. See API documentation for usage.",
+  "description": "Backend API for searching the Motorcycle News bike review archive by bike specs",
+  "apiDocsLink": "https://github.com/musicnark/mcn-bike-reviews-search/blob/main/docs/reference/api.md",
   "bikeCount": 1489,
   "endpoints": {
     "health": "/api/health",

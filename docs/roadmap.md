@@ -1,31 +1,36 @@
-# Documentation
-- [ ] add interactive tutorials 
-  - [ ] popups in gui
-  - [ ] video demonstrations
-  - [ ] evaluatable code snippets?
-- [ ] add project structure
-- [ ] add editorial case studies
-- [ ] add custom Vale style
-- [ ] deeper explanations of architectural decisions
-- [ ] consistently acknowledge Clojure version
-- [ ] add 'Quickstart' guide
+# Roadmap
 
-# Code
-- [ ] **random query button**
-- [ ] expand test suite
-- [ ] add a GUI web front-end to interact with the tool
-- [ ] add + document an API (/search/?weight=200)
-- [ ] integrate a database (*postgres*)
-- [ ] containerised hosting (docker)
-- [ ] add more supported operating systems to install.sh
-- [-] enhance URL fetch capabilities with:
-  - [x] asynchronous fetching
-  - [ ] ability to automatically add only new URLs to an existing hash map
-  - [ ] improved error handling
-- [x] rewrite the extraction of <table> specs for modularity and fault tolerance
-- [ ] add partial string match predicate support for filtering with custom strings (or pre-filter each string during html parsing)
-- [ ] add more filterable properties to each bike:
-  - [ ] make/model
-  - [x] MCN star rating
-- [ ] improve overall readability of the main code (refactor/organise)
-- [ ] data quality checks - to target old content to update
+The core backend API, nested query handling, input validation, local cache, automated test suite, and API documentation are feature-complete.
+
+## Near-Term
+
+- [ ] Add partial string matching for text fields
+- [ ] Improve data-quality checks and reporting
+- [ ] Support incremental updates when new reviews appear
+- [ ] Add structured application logging
+- [ ] Add continuous integration for the test suite
+
+## Product Development
+
+- [ ] Build a browser-based interface for editorial users
+- [ ] Add saved or shareable searches for recurring editorial workflows
+- [ ] Evaluate PostgreSQL for incremental updates and hosted deployments
+- [ ] Containerise the service for repeatable deployment
+
+## Documentation
+
+- [x] Add a root quickstart and portfolio overview
+- [x] Document the current architecture
+- [x] Document the JSON API
+- [ ] Add an end-to-end editorial case study
+- [ ] Add deployment documentation (when a hosted version is available)
+
+## Foundations
+
+- [x] Discover review URLs from the MCN sitemap
+- [x] Fetch and parse review pages asynchronously
+- [x] Store and load the structured bike dataset
+- [x] Implement comparison, nested boolean filters, sorting, and limits
+- [x] Expose health, metadata, listing, lookup, random, and search endpoints
+- [x] Validate public API input and return consistent errors
+- [x] Cover core behaviour with automated tests

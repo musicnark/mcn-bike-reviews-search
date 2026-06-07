@@ -4,3 +4,4 @@
 **LLM** - Large Language Model
 **MCN** - Motor Cycle News
 **MVP** - Minimum Viable Product
+**SLC** - Simple, Likeable, & Complete

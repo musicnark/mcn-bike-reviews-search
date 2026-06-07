@@ -44,7 +44,9 @@
 (defn err? [res] (contains? res :err))
 
 (defn bind
-  "Binds the :ok value of `res` to the function `f`, or propagates the error :err."
+  "Binds the the value inside `{:ok value}` to the function `f`, or propagates an error of this shape:
+  `{:err {:type :foo
+          :message \"bar\"}}`"
   [res f]
   (if (ok? res)
     (f (:ok res))
