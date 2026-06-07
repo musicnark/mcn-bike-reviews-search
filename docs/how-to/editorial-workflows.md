@@ -1,4 +1,5 @@
-# Accelerating content creation
+# Accelerating Content Creation
+
 Utilising a programmatic mindset, this tool promises to accelerate content creation for editorial teams at MCN. Instead of relying on deep expert knowledge, or spending countless hours manually searching for each bike worth featuring in a piece of content, this tool can find them all with a single well-constructed query.
 
 If we have an idea for a buying guide or newsletter, let's say:
@@ -19,7 +20,8 @@ A query can be used to find all the relevant bikes. In this case:
 ;;    ...
 ```
 
-# Accelerating content ideation
+## Accelerating Content Ideation
+
 You can also use this tool to help with inspiration for content ideas, as playing around with the different filters can yield interesting results. For example, think about what would these queries might output:
 
 ```elisp
@@ -32,7 +34,7 @@ You can also use this tool to help with inspiration for content ideas, as playin
 > "Best fuel-efficient but motorway-capable A1 bikes"?
 
 ```elisp
-(mcn/query-bikes 
+(mcn/query-bikes
 	'(and
 		(:annual-service-cost <= 100)
 		(:insurance-group < 7)
@@ -84,5 +86,6 @@ You can also use this tool to help with inspiration for content ideas, as playin
 ```
 > "Most reliable bikes under £5,000"
 
-# Integration with LLMs
+## Integration With LLMs
+
 To further accelerate content creation, an integration with ChatGPT is currently in development. In the meantime, you can copy and paste the output from this tool directly into your choice of LLM, and ask it to draft a piece of content with those bikes. This gives the LLM less work to do searching for the bikes, which it does far less reliably than this tool, and generates a first-draft for content rapidly.

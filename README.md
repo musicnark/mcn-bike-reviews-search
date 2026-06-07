@@ -19,7 +19,7 @@ MCN writers previously had no fast way to find bikes matching criteria such as s
 Find bikes with a seat height below 800mm, sorted from lightest to heaviest:
 
 ```sh
-curl --request POST http://localhost:3000/api/bikes/search \
+curl --request POST https://labs.musicnark.com/mcn/api/bikes/search \
   --header "Content-Type: application/json" \
   --data '{
     "filter": {
@@ -106,7 +106,7 @@ See the [architecture overview](docs/concepts/architecture.md) and
 
 ## Project Status
 
-The backend API is functional and tested. It supports the core editorial search workflow and is suitable for local use and demonstration.
+The backend API is functional, tested, and available as a live hosted demo. It supports the core editorial search workflow and can also be run locally.
 
 Current work focuses on deployment polish, improving data quality, and developing a browser-based interface. The original Elisp prototype is retained under [`archive/`](archive/) to show the project's evolution.
 

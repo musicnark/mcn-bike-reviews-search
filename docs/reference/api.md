@@ -1,8 +1,11 @@
-# Preface
+# API Reference
+
+## Preface
 
 Some code examples in this documentation use `// ...` comments to keep long responses readable. These comments are illustrative only; make sure to remove them before copying a JSON body into a request.
 
-# Jump to:
+## Jump To
+
 - [Running the API](#running-the-api)
 - [Response Format](#response-format)
 - [Endpoints](#endpoints)
@@ -13,7 +16,29 @@ Some code examples in this documentation use `// ...` comments to keep long resp
 - [Error Types](#error-types)
 - [Notes](#notes)
 
-# Running The API
+## Running The API
+
+### Live Demo
+
+The API is available to access as a live demo at https://labs.musicnark.com/mcn/api.
+
+For example:
+
+```sh
+curl https://labs.musicnark.com/mcn/api
+```
+
+This uses `/mcn` as its base path. Therefore, the endpoint paths documented below should be requested as `/mcn/endpoint` on the live demo.
+
+For example:
+
+```sh
+curl https://labs.musicnark.com/mcn/api/bikes/random
+```
+
+The live demo is rate limited, so run the API locally for unrestricted testing or development.
+
+### Local
 
 To run the API locally, you will need to have `clojure` and Java/JDK (version 11+) installed and available in your `PATH`.
 
@@ -23,7 +48,7 @@ Start the API locally with the built-in alias:
 clojure -M:api
 ```
 
-This will load the default cache, and start the server at http://localhost:3000
+This will load the default cache, and start the server at http://localhost:3000.
 
 You can optionally add a custom port via an environment variable:
 
@@ -45,7 +70,7 @@ clojure -M:refresh /tmp/bikes.edn
 
 Refreshing requires internet access, and may take some time.
 
-# Response Format
+## Response Format
 
 The response is formatted in JSON, with camelCase response keys. See [Endpoints](#endpoints) for example output per-endpoint.
 
@@ -60,9 +85,9 @@ The standard error shape follows this convention:
 }
 ```
 
-# Endpoints
+## Endpoints
 
-## GET /api
+### GET /api
 
 This endpoint serves as the API index. The expected response should give some basic information about the API:
 
@@ -82,7 +107,7 @@ This endpoint serves as the API index. The expected response should give some ba
 }
 ```
 
-## GET /api/health
+### GET /api/health
 
 Check the status of the bike reviews cache and server health:
 
@@ -104,7 +129,7 @@ Otherwise:
 }
 ```
 
-## GET /api/fields
+### GET /api/fields
 
 Generates a list of all valid fields for constructing filters within a query.
 
@@ -139,9 +164,9 @@ The type denotes which filter type is supported on that field:
 
 Note that field names are returned kebab-case, as this is the expected input format for a filter within a query. Response keys from a processed query are returned camelCase.
 
-## GET /api/bikes
+### GET /api/bikes
 
-Returns a paginated list of bike summaries. 
+Returns a paginated list of bike summaries.
 
 Two parameters are supported in the HTML query string:
 
@@ -174,7 +199,7 @@ The expected response shape would be:
 }
 ```
 
-## GET /api/bikes/:id
+### GET /api/bikes/:id
 
 Get full bike details for a specific bike by adding its `:id` at the `bikes` endpoint.
 
@@ -209,17 +234,17 @@ On failure, like this:
 }
 ```
 
-## GET /api/bikes/random
+### GET /api/bikes/random
 
-Get full bike details for a random bike in the dataset. Returns the same response shape as searching for a bike by it's `:id`.
+Get full bike details for a random bike in the dataset. Returns the same response shape as searching for a bike by its `:id`.
 
-E.g:
+For example:
 
 ```sh
 curl "http://localhost:3000/api/bikes/random"
 ```
 
-## POST /api/bikes/search
+### POST /api/bikes/search
 
 Submit a query to search the bike cache, returning all bikes that match the query.
 
@@ -233,11 +258,11 @@ The request body shape looks like this:
 
 ```json
 {
-  "filter": { 
-  // ... 
+  "filter": {
+  // ...
   },
-  "sort": { 
-  // ... 
+  "sort": {
+  // ...
   },
   "limit": 25
 }
@@ -255,9 +280,10 @@ See [Limits](#limits) for more info on the limit option.
 
 See [Examples](#examples) for some example queries.
 
-# Search Filters
+## Search Filters
 
-## Comparison
+### Comparison
+
 The comparison filter compares between `num` fields:
 
 ```json
@@ -282,10 +308,12 @@ The supported operators are:
 
 `<` `>` `<=` `>=` `=`
 
-## Contains
+### Contains
+
 **Not yet implemented**
 
-## And
+### And
+
 Chain filters together by wrapping them in `and`:
 
 ```json
@@ -295,7 +323,8 @@ Chain filters together by wrapping them in `and`:
 }
 ```
 
-## Or
+### Or
+
 Return a bike if one `or` more of its clauses match:
 
 ```json
@@ -305,7 +334,8 @@ Return a bike if one `or` more of its clauses match:
 }
 ```
 
-## Not
+### Not
+
 Exclude bikes that match a filter with `not`:
 
 ```json
@@ -315,7 +345,7 @@ Exclude bikes that match a filter with `not`:
 }
 ```
 
-# Sorting
+## Sorting
 
 Sorting must be done by field:
 
@@ -335,7 +365,7 @@ Sort direction can be either `asc` or `desc`:
 }
 ```
 
-# Limits
+## Limits
 
 The API applies a small set of limits to keep requests predictable and cheap to process:
 
@@ -363,9 +393,9 @@ For example, this request asks for 1000 results:
 
 The API will process it as though `limit` were `100`.
 
-# Examples
+## Examples
 
-## "Budget A2 Bikes For Shorter Riders"
+### "Budget A2 Bikes For Shorter Riders"
 
 Find bikes under £2,500, within the A2 license category, and a seat height below 800mm:
 
@@ -408,7 +438,7 @@ Find bikes under £2,500, within the A2 license category, and a seat height belo
 }
 ```
 
-## "Fuel-Efficient But Motorway-Capable A1 Bikes"
+### "Fuel-Efficient But Motorway-Capable A1 Bikes"
 
 Find bikes with very high fuel economy that can still reach at least 60mph:
 
@@ -439,7 +469,7 @@ Find bikes with very high fuel economy that can still reach at least 60mph:
 }
 ```
 
-## "Cheap Runners"
+### "Cheap Runners"
 
 Find bikes with low service costs, low insurance group, low road tax, and a used price under £2,500:
 
@@ -482,7 +512,7 @@ Find bikes with low service costs, low insurance group, low road tax, and a used
 }
 ```
 
-## "Best Mid-Capacity Mile-Munchers"
+### "Best Mid-Capacity Mile-Munchers"
 
 Find bikes with an engine size between 600-900cc, and a tank range over 200 miles:
 
@@ -519,7 +549,7 @@ Find bikes with an engine size between 600-900cc, and a tank range over 200 mile
 }
 ```
 
-## "MCN's Favourite A-Class Bikes"
+### "MCN's Favourite A-Class Bikes"
 
 Find bikes with over 47bhp and a 5-star MCN rating:
 
@@ -550,7 +580,7 @@ Find bikes with over 47bhp and a 5-star MCN rating:
 }
 ```
 
-## "Bargain Bikes For Speed Demons"
+### "Bargain Bikes For Speed Demons"
 
 Find bikes under £5,000 that can reach at least 180mph:
 
@@ -587,7 +617,7 @@ Find bikes under £5,000 that can reach at least 180mph:
 }
 ```
 
-# Error Types
+## Error Types
 
 | Type               | Status | Meaning                                                  |
 |--------------------|--------|----------------------------------------------------------|
@@ -598,5 +628,6 @@ Find bikes under £5,000 that can reach at least 180mph:
 | `bike-not-found`   | 404    | Unknown bike ID                                          |
 | `cache-not-loaded` | 503    | Bike cache failed to load                                |
 
-# Notes
+## Notes
+
 This API is read-only. Data comes from a local cached hash-map of bike review data.

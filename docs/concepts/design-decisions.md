@@ -1,8 +1,10 @@
-# Documentation Structure
+# Design Decisions
+
+## Documentation Structure
 
 This documentation follows the Diátaxis standard to meet the needs of different readers. It includes practical workflows for editorial users, reference material for developers, and explanations of the business problem and technical decisions.
 
-# Platform Evolution
+## Platform Evolution
 
 The project began as an Elisp prototype because Emacs was already part of the author's daily editorial workflow. That choice prioritised prototyping speed and made it possible to demonstrate a useful version within 24 hours.
 
@@ -10,7 +12,7 @@ The current implementation is a standalone Clojure service. Moving beyond the ed
 
 The original prototype is retained in [`archive/`](../../archive/) to show how the project evolved after validating the business need.
 
-# Algorithms And Data Structures
+## Algorithms And Data Structures
 
 At a high level, the current service:
 
@@ -24,11 +26,14 @@ At a high level, the current service:
 For a more detailed view, see the
 [architecture overview](./architecture.md).
 
-# Async
+## Async
+
 Although new async patterns offered by libraries like Manifold/Aleph are popular within the Clojure community, I decided to stick with core.async for this project. The flow of data from HTTP request to HTML parsing maps well to a producer-consumer pipeline, which core.async handles well. Manifold is best when you need a single abstraction to interface between multiple async implementations (e.g., service aggregation, Java interop), which wasn't necessary for this project.
 
-# API
+## API
+
 I decided to use a REST API for this project, instead of newer technologies like GraphQL. GraphQL works best when you have multiple consumers with different data needs from the same API, and that's outside the scope of this project. The existing DSL implementation allows querying for exact sub-sets of data, and can be used effectively by both developers and users.
 
-# Persistent Storage
+## Persistent Storage
+
 This tool saves all its data in a local cache of structured data (EDN). This was ultimately chosen because the features of a database weren't needed for the scale of this project, and it enabled a faster pace of development. A local cache of structured data is less suitable for concurrent or incremental writes, large datasets, and cannot represent complex relationships between data without significant architectural overhead. But, this tool will most likely never exceed 5,000 total entries, and the data won't benefit massively from a custom schema that can create complex relationships between entries.
