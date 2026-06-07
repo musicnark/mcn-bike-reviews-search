@@ -63,7 +63,8 @@ This endpoint serves as the API index. The expected response should give some ba
 ```json
 {
   "name": "MCN Bike Reviews Search API",
-  "description": "API for searching MCN's bike reviews by the specs of each bike. See API documentation for usage.",
+  "description": "Backend API for searching the Motorcycle News bike review archive by bike specs",
+  "apiDocsLink": "https://github.com/musicnark/mcn-bike-reviews-search/blob/main/docs/reference/api.md",
   "bikeCount": 1489,
   "endpoints": {
     "health": "/api/health",
