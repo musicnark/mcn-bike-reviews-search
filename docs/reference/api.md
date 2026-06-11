@@ -85,13 +85,13 @@ The standard error shape follows this convention:
 }
 ```
 
-[!NOTE]
-Some display values reflect inconsistencies in the source dataset. While [a fix is tracked](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), in the meantime users should:
-- treat `"-"` as unavailable data
-- trim leading and trailing whitespace from `usedPrice`
-- treat malformed `insuranceGroup` values as unavailable
+> [!NOTE]
+> Some display values reflect inconsistencies in the source dataset. While [a fix is tracked](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), in the meantime users should:
+> - treat `"-"` as unavailable data
+> - trim leading and trailing whitespace from `usedPrice`
+> - treat malformed `insuranceGroup` values as unavailable
 
-These inconsistencies primarily affect the response format, but also affect [sorting](#sorting) and [filtering](#search-filters).
+> These inconsistencies primarily affect the response format, but also affect [sorting](#sorting) and [filtering](#search-filters).
 
 ## Endpoints
 
@@ -170,8 +170,8 @@ The type denotes which filter type is supported on that field:
 - `num` values are filterable using the `comparison` type in a filter. You can use either an `int` or `float`.
 - `string` values are filterable using the `contains` type in a filter. _(not yet implemented)_
 
-[!NOTE]
-Field names are returned kebab-case, as this is the expected input format for a filter within a query. Response keys from a processed query are returned camelCase.
+> [!NOTE]
+> Field names are returned kebab-case, as this is the expected input format for a filter within a query. Response keys from a processed query are returned camelCase.
 
 ### GET /api/bikes
 
@@ -317,8 +317,8 @@ The supported operators are:
 
 `<` `>` `<=` `>=` `=`
 
-[!NOTE]
-Due to a bug tracked in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), filtering is accurate for all numeric fields except `insuranceGroup`, where unavailable values are parsed as 'group 1'.
+> [!NOTE]
+> Due to a bug tracked in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), filtering is accurate for all numeric fields except `insuranceGroup`, where unavailable values are parsed as 'group 1'.
 
 ### Contains
 
@@ -377,8 +377,8 @@ Sort direction can be either `asc` or `desc`:
 }
 ```
 
-[!NOTE]
-As mentioned in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), `"-"` values are placed first when sorting in `asc` order, so they currently need to be skipped manually. 
+> [!NOTE]
+> As mentioned in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), `"-"` values are placed first when sorting in `asc` order, so they currently need to be skipped manually. 
 
 ## Limits
 
