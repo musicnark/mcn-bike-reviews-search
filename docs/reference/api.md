@@ -90,7 +90,7 @@ Note that some display values reflect inconsistencies in the source dataset. Whi
 - trim leading and trailing whitespace from `usedPrice`
 - treat malformed `insuranceGroup` values as unavailable
 
-These inconsistencies primarily affect the response format, but also affect [sorting](#sorting) and [filtering](#search-filters)
+These inconsistencies primarily affect the response format, but also affect [sorting](#sorting) and [filtering](#search-filters).
 
 ## Endpoints
 
