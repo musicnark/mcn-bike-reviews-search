@@ -90,7 +90,7 @@ Note that some display values reflect inconsistencies in the source dataset. Whi
 - trim leading and trailing whitespace from `usedPrice`
 - treat malformed `insuranceGroup` values as unavailable
 
-These inconsistencies primarily affect the response format, but it does not affect the accuracy of filtering, as these values are normalised internally.
+These inconsistencies primarily affect the response format, but also affect [sorting](#sorting) and [filtering](#search-filters)
 
 ## Endpoints
 
@@ -314,6 +314,8 @@ The comparison filter compares between `num` fields:
 The supported operators are:
 
 `<` `>` `<=` `>=` `=`
+
+Note that due to a bug tracked in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), filtering is accurate for all numeric fields except `insuranceGroup`, where unavailable values are parsed as 'group 1'.
 
 ### Contains
 
