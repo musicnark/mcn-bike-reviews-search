@@ -378,7 +378,7 @@ Sort direction can be either `asc` or `desc`:
 ```
 
 > [!NOTE]
-> As mentioned in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), `"-"` values are placed first when sorting in `asc` order, so they currently need to be skipped manually. 
+> As mentioned in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), unavailable `"-"` values are placed first when sorting in `asc` order, so they currently need to be skipped manually. 
 
 ## Limits
 
