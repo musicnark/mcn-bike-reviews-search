@@ -12,8 +12,6 @@ MCN writers previously had no fast way to find bikes matching criteria such as s
 - Includes automated tests and documentation for users, developers, and business stakeholders.
 - Started as an Elisp prototype built in 24 hours, then developed into a standalone Clojure backend service with editorial and IT backing.
 
-![The running API index, showing 1,489 searchable bike reviews and the available endpoints](docs/assets/api-index.png)
-
 ## Example Search
 
 Find bikes with a seat height below 800mm, sorted from lightest to heaviest:
