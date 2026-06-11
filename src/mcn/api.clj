@@ -156,7 +156,7 @@
      "tank-range" {:type "num" :unit "miles"}
      "top-speed" {:type "num" :unit "mph"}
      "used-price" {:type "num" :unit "GBP"}
-     "warranty-term" {:type "num" :unit "years"}})
+     "warranty-term" {:type "string" :unit "years"}})
 
 (defn fields-response [metadata]
   ;; return searchable fields
