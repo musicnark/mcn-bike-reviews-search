@@ -90,7 +90,7 @@ Note that some display values reflect inconsistencies in the source dataset. Whi
 - trim leading and trailing whitespace from `usedPrice`
 - treat malformed `insuranceGroup` values as unavailable
 
-The response format is affected by this, but it does not affect the accuracy of filtering, as these values are normalised internally.
+These inconsistencies primarily affect the response format, but it does not affect the accuracy of filtering, as these values are normalised internally.
 
 ## Endpoints
 
@@ -158,7 +158,7 @@ Prints in alphabetical order:
 	// ...
     {
       "name": "warranty-term",
-      "type": "num",
+      "type": "string",
       "unit": "years"
     }
   ]
