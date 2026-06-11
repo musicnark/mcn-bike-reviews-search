@@ -90,7 +90,7 @@ Note that some display values reflect inconsistencies in the source dataset. Whi
 - trim leading and trailing whitespace from `usedPrice`
 - treat malformed `insuranceGroup` values as unavailable
 
-`"-"` values are placed first when sorting in `asc` order, so they currently need to be skipped manually. The output format is also affected, but it does not affect the accuracy of filtering, as these values are normalised internally.
+The output format is also affected, but it does not affect the accuracy of filtering, as these values are normalised internally.
 
 ## Endpoints
 
@@ -371,6 +371,8 @@ Sort direction can be either `asc` or `desc`:
   "direction": "desc"
 }
 ```
+
+Note that as mentioned in [issue #12](https://github.com/musicnark/mcn-bike-reviews-search/issues/12),`"-"` values are placed first when sorting in `asc` order, so they currently need to be skipped manually. 
 
 ## Limits
 
