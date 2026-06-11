@@ -85,6 +85,13 @@ The standard error shape follows this convention:
 }
 ```
 
+Note that some display values reflect inconsistencies in the source dataset. While [a fix is tracked](https://github.com/musicnark/mcn-bike-reviews-search/issues/12), in the meantime users should:
+- treat `"-"` as `null`
+- trim leading and trailing whitespace from values in `usedPrice`
+- treat malformed `insuranceGroup` values as unavailable, or parse them manually
+
+This does not affect the accuracy of the results while querying, just the output format.
+
 ## Endpoints
 
 ### GET /api
