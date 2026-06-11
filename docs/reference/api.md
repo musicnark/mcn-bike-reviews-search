@@ -90,7 +90,7 @@ Note that some display values reflect inconsistencies in the source dataset. Whi
 - trim leading and trailing whitespace from `usedPrice`
 - treat malformed `insuranceGroup` values as unavailable
 
-This only affects the output format, and does not affect the accuracy of filtering or sorting, as these values are normalised internally.
+`"-"` values are placed first when sorting in `asc` order, so they currently need to be skipped manually. The output format is also affected, but it does not affect the accuracy of filtering, as these values are normalised internally.
 
 ## Endpoints
 
