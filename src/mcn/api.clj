@@ -146,6 +146,7 @@
      "insurance-group" {:type "num" :unit "0 of 17"}
      "max-power" {:type "num" :unit "bhp"}
      "max-torque" {:type "num" :unit "ft-lb"}
+     "mcn-rating" {:type "num" :unit "n/5 stars"}
      "new-price" {:type "num" :unit "GBP"}
      "quarter-mile-acceleration" {:type "num" :unit "secs"}
      "rear-brake" {:type "string" :unit nil}
