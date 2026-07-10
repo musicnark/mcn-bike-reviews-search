@@ -23,6 +23,8 @@ For a short project overview and quickstart, begin with the [root README](../REA
 - [Data sources](reference/data-sources.md)
 - [Definitions](definitions.md)
 
+Small OpenAPI/Postman artefact prepared to demonstrate API documentation structure; not yet exhaustive.
+
 ## Project Information
 
 - [Roadmap](roadmap.md)
