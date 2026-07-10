@@ -1,0 +1,1124 @@
+{
+    "item": [
+        {
+            "name": "api",
+            "description": "",
+            "item": [
+                {
+                    "name": "health",
+                    "description": "",
+                    "item": [
+                        {
+                            "id": "b00bc040-92ee-4809-a5a6-e30def00a42e",
+                            "name": "Check API health",
+                            "request": {
+                                "name": "Check API health",
+                                "description": {},
+                                "url": {
+                                    "path": [
+                                        "api",
+                                        "health"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "method": "GET",
+                                "body": {},
+                                "auth": null
+                            },
+                            "response": [
+                                {
+                                    "id": "0c21c5ba-a59d-46c7-92b0-1e3214fa54f8",
+                                    "name": "API is in good health and the bikes cache successfully loaded.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "health"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"status\": \"<string>\",\n  \"cacheLoaded\": \"<boolean>\"\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "63422801-195d-45ee-87df-6fc90efc6d31",
+                                    "name": "Route was not found.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "health"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Not Found",
+                                    "code": 404,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "7730e770-32ef-488c-8d9e-bcb2644713e9",
+                                    "name": "API is reachable but the bikes cache is not loaded.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "health"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Service Unavailable",
+                                    "code": 503,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"status\": \"<string>\",\n  \"cacheLoaded\": \"<boolean>\"\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                }
+                            ],
+                            "event": [],
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "fields",
+                    "description": "",
+                    "item": [
+                        {
+                            "id": "05888f4e-07f4-4e2c-9cb9-21da69a0770a",
+                            "name": "List searchable field metadata",
+                            "request": {
+                                "name": "List searchable field metadata",
+                                "description": {},
+                                "url": {
+                                    "path": [
+                                        "api",
+                                        "fields"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "method": "GET",
+                                "body": {},
+                                "auth": null
+                            },
+                            "response": [
+                                {
+                                    "id": "bab9e17f-bac9-4a1f-bd47-ab41b92363ee",
+                                    "name": "Searchable fields and their filter metadata.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "fields"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"string\",\n      \"unit\": \"<string,null>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"num\",\n      \"unit\": \"<string,null>\"\n    }\n  ]\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "1f7b25d8-758d-42f8-889f-3378e8e9c953",
+                                    "name": "Route was not found.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "fields"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Not Found",
+                                    "code": 404,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                }
+                            ],
+                            "event": [],
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "bikes",
+                    "description": "",
+                    "item": [
+                        {
+                            "id": "4cdbc427-8cad-4f3a-9da4-cefd8e43addd",
+                            "name": "List bike review summaries",
+                            "request": {
+                                "name": "List bike review summaries",
+                                "description": {},
+                                "url": {
+                                    "path": [
+                                        "api",
+                                        "bikes"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [
+                                        {
+                                            "disabled": false,
+                                            "description": {
+                                                "content": "Page number. Defaults to 1.",
+                                                "type": "text/plain"
+                                            },
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "disabled": false,
+                                            "description": {
+                                                "content": "Results per page. Defaults to 25, and capped at 100.",
+                                                "type": "text/plain"
+                                            },
+                                            "key": "per-page",
+                                            "value": "25"
+                                        }
+                                    ],
+                                    "variable": []
+                                },
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "method": "GET",
+                                "body": {},
+                                "auth": null
+                            },
+                            "response": [
+                                {
+                                    "id": "5c9ddaf8-f9b5-4deb-b73e-d2c07a3d3380",
+                                    "name": "Paginated list of bike review summaries.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "bikes"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Page number. Defaults to 1.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "page",
+                                                    "value": "1"
+                                                },
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Results per page. Defaults to 25, and capped at 100.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "per-page",
+                                                    "value": "25"
+                                                }
+                                            ],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"results\": [\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\"\n    },\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\"\n    }\n  ],\n  \"page\": \"<integer>\",\n  \"perPage\": \"<integer>\",\n  \"count\": \"<integer>\",\n  \"total\": \"<integer>\"\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "10235f50-9ff8-4518-8e83-2c3585d85fc6",
+                                    "name": "Route was not found.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "bikes"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Page number. Defaults to 1.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "page",
+                                                    "value": "1"
+                                                },
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Results per page. Defaults to 25, and capped at 100.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "per-page",
+                                                    "value": "25"
+                                                }
+                                            ],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Not Found",
+                                    "code": 404,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "0f9236cc-f124-402c-9ba3-4e10b40edb06",
+                                    "name": "Bike cache is not loaded.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "bikes"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Page number. Defaults to 1.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "page",
+                                                    "value": "1"
+                                                },
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Results per page. Defaults to 25, and capped at 100.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "per-page",
+                                                    "value": "25"
+                                                }
+                                            ],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Service Unavailable",
+                                    "code": 503,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                }
+                            ],
+                            "event": [],
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            }
+                        },
+                        {
+                            "name": "{id}",
+                            "description": "",
+                            "item": [
+                                {
+                                    "id": "c38db975-f0cd-4a49-9d52-4ccc076e795f",
+                                    "name": "Get a bike review by ID",
+                                    "request": {
+                                        "name": "Get a bike review by ID",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "bikes",
+                                                ":id"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": [
+                                                {
+                                                    "type": "any",
+                                                    "value": "<string>",
+                                                    "key": "id",
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "(Required) Bike review identifier.",
+                                                        "type": "text/plain"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {},
+                                        "auth": null
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "5be477e1-bb1c-468e-80cf-3452aa8b7b4f",
+                                            "name": "Full bike review details.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        ":id"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": [
+                                                        {
+                                                            "disabled": false,
+                                                            "description": {
+                                                                "content": "(Required) Bike review identifier.",
+                                                                "type": "text/plain"
+                                                            },
+                                                            "type": "any",
+                                                            "value": "<string>",
+                                                            "key": "id"
+                                                        }
+                                                    ]
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "GET",
+                                                "body": {}
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"bikeName\": \"<string>\",\n  \"url\": \"<uri>\",\n  \"id\": \"<string>\",\n  \"seatHeight\": \"<string>\",\n  \"maxPower\": \"<string>\",\n  \"maxTorque\": \"<string>\",\n  \"newPrice\": \"<string>\",\n  \"usedPrice\": \"<string>\",\n  \"engineSize\": \"<string>\",\n  \"engineType\": \"<string>\",\n  \"bikeWeight\": \"<string>\",\n  \"frontTyreSize\": \"<string>\",\n  \"frontBrake\": \"<string>\",\n  \"topSpeed\": \"<string>\",\n  \"mcnRating\": \"<string>\",\n  \"tankRange\": \"<string>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        },
+                                        {
+                                            "id": "5105153a-2051-46ac-9c15-6f375b8cb39b",
+                                            "name": "Bike review was not found.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        ":id"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": [
+                                                        {
+                                                            "disabled": false,
+                                                            "description": {
+                                                                "content": "(Required) Bike review identifier.",
+                                                                "type": "text/plain"
+                                                            },
+                                                            "type": "any",
+                                                            "value": "<string>",
+                                                            "key": "id"
+                                                        }
+                                                    ]
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "GET",
+                                                "body": {}
+                                            },
+                                            "status": "Not Found",
+                                            "code": 404,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        },
+                                        {
+                                            "id": "492edc8a-9c39-4ef5-9bb0-69f235396eb9",
+                                            "name": "Bike cache is not loaded.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        ":id"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": [
+                                                        {
+                                                            "disabled": false,
+                                                            "description": {
+                                                                "content": "(Required) Bike review identifier.",
+                                                                "type": "text/plain"
+                                                            },
+                                                            "type": "any",
+                                                            "value": "<string>",
+                                                            "key": "id"
+                                                        }
+                                                    ]
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "GET",
+                                                "body": {}
+                                            },
+                                            "status": "Service Unavailable",
+                                            "code": 503,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "random",
+                            "description": "",
+                            "item": [
+                                {
+                                    "id": "39788b0d-2a79-4332-a992-d4392a999b4e",
+                                    "name": "Get a random bike review",
+                                    "request": {
+                                        "name": "Get a random bike review",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "bikes",
+                                                "random"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {},
+                                        "auth": null
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "53e3c834-48aa-456c-9025-1cf7eea31c89",
+                                            "name": "Full details for a randomly selected bike review.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        "random"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "GET",
+                                                "body": {}
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"bikeName\": \"<string>\",\n  \"url\": \"<uri>\",\n  \"id\": \"<string>\",\n  \"seatHeight\": \"<string>\",\n  \"maxPower\": \"<string>\",\n  \"maxTorque\": \"<string>\",\n  \"newPrice\": \"<string>\",\n  \"usedPrice\": \"<string>\",\n  \"engineSize\": \"<string>\",\n  \"engineType\": \"<string>\",\n  \"bikeWeight\": \"<string>\",\n  \"frontTyreSize\": \"<string>\",\n  \"frontBrake\": \"<string>\",\n  \"topSpeed\": \"<string>\",\n  \"mcnRating\": \"<string>\",\n  \"tankRange\": \"<string>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        },
+                                        {
+                                            "id": "06be1c2f-ec5e-4d92-89aa-d896271ce443",
+                                            "name": "No bikes are available.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        "random"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "GET",
+                                                "body": {}
+                                            },
+                                            "status": "Not Found",
+                                            "code": 404,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        },
+                                        {
+                                            "id": "8a3ba5af-46a6-45a5-82b1-d358be1fe334",
+                                            "name": "Bike cache is not loaded.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        "random"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "GET",
+                                                "body": {}
+                                            },
+                                            "status": "Service Unavailable",
+                                            "code": 503,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "search",
+                            "description": "",
+                            "item": [
+                                {
+                                    "id": "c94b25a2-6c36-4b1e-b535-0daca1b87879",
+                                    "name": "Search bike reviews by technical specifications",
+                                    "request": {
+                                        "name": "Search bike reviews by technical specifications",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "bikes",
+                                                "search"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                            },
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "POST",
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "headerFamily": "json",
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "auth": null
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "23e84729-ad01-47b0-bdcb-9347c3f5f499",
+                                            "name": "Bike reviews matching the search query.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        "search"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "POST",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"results\": [\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\",\n      \"id\": \"<string>\",\n      \"seatHeight\": \"<string>\",\n      \"maxPower\": \"<string>\",\n      \"maxTorque\": \"<string>\",\n      \"newPrice\": \"<string>\",\n      \"usedPrice\": \"<string>\",\n      \"engineSize\": \"<string>\",\n      \"engineType\": \"<string>\",\n      \"bikeWeight\": \"<string>\",\n      \"frontTyreSize\": \"<string>\",\n      \"frontBrake\": \"<string>\",\n      \"topSpeed\": \"<string>\",\n      \"mcnRating\": \"<string>\",\n      \"tankRange\": \"<string>\"\n    },\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\",\n      \"id\": \"<string>\",\n      \"seatHeight\": \"<string>\",\n      \"maxPower\": \"<string>\",\n      \"maxTorque\": \"<string>\",\n      \"newPrice\": \"<string>\",\n      \"usedPrice\": \"<string>\",\n      \"engineSize\": \"<string>\",\n      \"engineType\": \"<string>\",\n      \"bikeWeight\": \"<string>\",\n      \"frontTyreSize\": \"<string>\",\n      \"frontBrake\": \"<string>\",\n      \"topSpeed\": \"<string>\",\n      \"mcnRating\": \"<string>\",\n      \"tankRange\": \"<string>\"\n    }\n  ],\n  \"count\": \"<integer>\",\n  \"totalMatches\": \"<integer>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        },
+                                        {
+                                            "id": "a9725798-5b98-4e3f-beeb-89ae3774b5db",
+                                            "name": "Search request was invalid.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        "search"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "POST",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "Bad Request",
+                                            "code": 400,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        },
+                                        {
+                                            "id": "0bd17df8-8278-4f36-97d0-65142c338977",
+                                            "name": "Search request body is too large.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        "search"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "POST",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "Request Entity Too Large",
+                                            "code": 413,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        },
+                                        {
+                                            "id": "76b02691-b96a-4abe-9f80-86e769b78694",
+                                            "name": "Bike cache is not loaded.",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "bikes",
+                                                        "search"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    }
+                                                ],
+                                                "method": "POST",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "Service Unavailable",
+                                            "code": 503,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "pm.test(\"status is successful\", function () {",
+                    "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                    "});"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "https://labs.musicnark.com/mcn"
+        }
+    ],
+    "info": {
+        "_postman_id": "71d87b0c-684d-4790-9360-34374c1a5f1f",
+        "name": "MCN Bike Reviews Search API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": {
+            "content": "Public API documentation for the MCN Bike Reviews Search service.\n",
+            "type": "text/plain"
+        }
+    }
+}
