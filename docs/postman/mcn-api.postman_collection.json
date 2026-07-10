@@ -145,7 +145,24 @@
                                     "_postman_previewlanguage": "json"
                                 }
                             ],
-                            "event": [],
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "pm.test(\"status is 200\", function () {",
+                                            "  pm.response.to.have.status(200);",
+                                            "});",
+                                            "",
+                                            "pm.test(\"response is JSON\", function () {",
+                                            "  pm.response.to.have.header(\"Content-Type\");",
+                                            "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                                            "});"
+                                        ]
+                                    }
+                                }
+                            ],
                             "protocolProfileBehavior": {
                                 "disableBodyPruning": true
                             }
@@ -257,7 +274,24 @@
                                     "_postman_previewlanguage": "json"
                                 }
                             ],
-                            "event": [],
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "pm.test(\"status is 200\", function () {",
+                                            "  pm.response.to.have.status(200);",
+                                            "});",
+                                            "",
+                                            "pm.test(\"response is JSON\", function () {",
+                                            "  pm.response.to.have.header(\"Content-Type\");",
+                                            "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                                            "});"
+                                        ]
+                                    }
+                                }
+                            ],
                             "protocolProfileBehavior": {
                                 "disableBodyPruning": true
                             }
@@ -481,7 +515,24 @@
                                     "_postman_previewlanguage": "json"
                                 }
                             ],
-                            "event": [],
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "pm.test(\"status is 200\", function () {",
+                                            "  pm.response.to.have.status(200);",
+                                            "});",
+                                            "",
+                                            "pm.test(\"response is JSON\", function () {",
+                                            "  pm.response.to.have.header(\"Content-Type\");",
+                                            "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                                            "});"
+                                        ]
+                                    }
+                                }
+                            ],
                             "protocolProfileBehavior": {
                                 "disableBodyPruning": true
                             }
@@ -675,7 +726,24 @@
                                             "_postman_previewlanguage": "json"
                                         }
                                     ],
-                                    "event": [],
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "type": "text/javascript",
+                                                "exec": [
+                                                    "pm.test(\"status is 200\", function () {",
+                                                    "  pm.response.to.have.status(200);",
+                                                    "});",
+                                                    "",
+                                                    "pm.test(\"response is JSON\", function () {",
+                                                    "  pm.response.to.have.header(\"Content-Type\");",
+                                                    "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                                                    "});"
+                                                ]
+                                            }
+                                        }
+                                    ],
                                     "protocolProfileBehavior": {
                                         "disableBodyPruning": true
                                     }
@@ -827,7 +895,24 @@
                                             "_postman_previewlanguage": "json"
                                         }
                                     ],
-                                    "event": [],
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "type": "text/javascript",
+                                                "exec": [
+                                                    "pm.test(\"status is 200\", function () {",
+                                                    "  pm.response.to.have.status(200);",
+                                                    "});",
+                                                    "",
+                                                    "pm.test(\"response is JSON\", function () {",
+                                                    "  pm.response.to.have.header(\"Content-Type\");",
+                                                    "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                                                    "});"
+                                                ]
+                                            }
+                                        }
+                                    ],
                                     "protocolProfileBehavior": {
                                         "disableBodyPruning": true
                                     }
@@ -869,7 +954,7 @@
                                         "method": "POST",
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                            "raw": "{\n  \"filter\": {\n    \"type\": \"and\",\n    \"clauses\": [\n      {\n        \"type\": \"comparison\",\n        \"field\": \"seat-height\",\n        \"op\": \"<=\",\n        \"value\": 800\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"max-power\",\n        \"op\": \">=\",\n        \"value\": 70\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"used-price\",\n        \"op\": \"<=\",\n        \"value\": 6000\n      }\n    ]\n  },\n  \"sort\": {\n    \"field\": \"mcn-rating\",\n    \"direction\": \"desc\"\n  },\n  \"limit\": 10\n}",
                                             "options": {
                                                 "raw": {
                                                     "headerFamily": "json",
@@ -909,7 +994,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"and\",\n    \"clauses\": [\n      {\n        \"type\": \"comparison\",\n        \"field\": \"seat-height\",\n        \"op\": \"<=\",\n        \"value\": 800\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"max-power\",\n        \"op\": \">=\",\n        \"value\": 70\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"used-price\",\n        \"op\": \"<=\",\n        \"value\": 6000\n      }\n    ]\n  },\n  \"sort\": {\n    \"field\": \"mcn-rating\",\n    \"direction\": \"desc\"\n  },\n  \"limit\": 10\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -959,7 +1044,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"and\",\n    \"clauses\": [\n      {\n        \"type\": \"comparison\",\n        \"field\": \"seat-height\",\n        \"op\": \"<=\",\n        \"value\": 800\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"max-power\",\n        \"op\": \">=\",\n        \"value\": 70\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"used-price\",\n        \"op\": \"<=\",\n        \"value\": 6000\n      }\n    ]\n  },\n  \"sort\": {\n    \"field\": \"mcn-rating\",\n    \"direction\": \"desc\"\n  },\n  \"limit\": 10\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -1009,7 +1094,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"and\",\n    \"clauses\": [\n      {\n        \"type\": \"comparison\",\n        \"field\": \"seat-height\",\n        \"op\": \"<=\",\n        \"value\": 800\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"max-power\",\n        \"op\": \">=\",\n        \"value\": 70\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"used-price\",\n        \"op\": \"<=\",\n        \"value\": 6000\n      }\n    ]\n  },\n  \"sort\": {\n    \"field\": \"mcn-rating\",\n    \"direction\": \"desc\"\n  },\n  \"limit\": 10\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -1059,7 +1144,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"and\",\n    \"clauses\": [\n      {\n        \"type\": \"comparison\",\n        \"field\": \"seat-height\",\n        \"op\": \"<=\",\n        \"value\": 800\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"max-power\",\n        \"op\": \">=\",\n        \"value\": 70\n      },\n      {\n        \"type\": \"comparison\",\n        \"field\": \"used-price\",\n        \"op\": \"<=\",\n        \"value\": 6000\n      }\n    ]\n  },\n  \"sort\": {\n    \"field\": \"mcn-rating\",\n    \"direction\": \"desc\"\n  },\n  \"limit\": 10\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -1081,7 +1166,31 @@
                                             "_postman_previewlanguage": "json"
                                         }
                                     ],
-                                    "event": [],
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "type": "text/javascript",
+                                                "exec": [
+                                                    "pm.test(\"status is 200\", function () {",
+                                                    "  pm.response.to.have.status(200);",
+                                                    "});",
+                                                    "",
+                                                    "pm.test(\"response is JSON\", function () {",
+                                                    "  pm.response.to.have.header(\"Content-Type\");",
+                                                    "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                                                    "});",
+                                                    "",
+                                                    "pm.test(\"search response includes result counts\", function () {",
+                                                    "  const json = pm.response.json();",
+                                                    "  pm.expect(json).to.have.property(\"results\").that.is.an(\"array\");",
+                                                    "  pm.expect(json).to.have.property(\"count\").that.is.a(\"number\");",
+                                                    "  pm.expect(json).to.have.property(\"totalMatches\").that.is.a(\"number\");",
+                                                    "});"
+                                                ]
+                                            }
+                                        }
+                                    ],
                                     "protocolProfileBehavior": {
                                         "disableBodyPruning": true
                                     }
@@ -1099,8 +1208,13 @@
             "script": {
                 "type": "text/javascript",
                 "exec": [
-                    "pm.test(\"status is successful\", function () {",
-                    "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                    "pm.test(\"status is 200\", function () {",
+                    "  pm.response.to.have.status(200);",
+                    "});",
+                    "",
+                    "pm.test(\"response is JSON\", function () {",
+                    "  pm.response.to.have.header(\"Content-Type\");",
+                    "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
                     "});"
                 ]
             }
@@ -1109,7 +1223,8 @@
     "variable": [
         {
             "key": "baseUrl",
-            "value": "https://labs.musicnark.com/mcn"
+            "value": "https://labs.musicnark.com/mcn",
+            "type": "string"
         }
     ],
     "info": {
@@ -1117,7 +1232,7 @@
         "name": "MCN Bike Reviews Search API",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": {
-            "content": "Public API documentation for the MCN Bike Reviews Search service.\n",
+            "content": "Public API documentation for the MCN Bike Reviews Search service.\n\nGenerated from OpenAPI, then manually reviewed/adjusted.\n",
             "type": "text/plain"
         }
     }
