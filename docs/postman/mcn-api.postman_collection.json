@@ -9,7 +9,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "0ed13c64-4b7d-400c-9fe8-262099757ca6",
+                            "id": "b00bc040-92ee-4809-a5a6-e30def00a42e",
                             "name": "Check API health",
                             "request": {
                                 "name": "Check API health",
@@ -37,7 +37,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "527228f6-90e6-4d35-b14b-9a9506d9c020",
+                                    "id": "0c21c5ba-a59d-46c7-92b0-1e3214fa54f8",
                                     "name": "API is in good health and the bikes cache successfully loaded.",
                                     "originalRequest": {
                                         "url": {
@@ -73,7 +73,43 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "219ec406-8ea4-465f-92bd-220f76bdbd2b",
+                                    "id": "63422801-195d-45ee-87df-6fc90efc6d31",
+                                    "name": "Route was not found.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "health"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Not Found",
+                                    "code": 404,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "7730e770-32ef-488c-8d9e-bcb2644713e9",
                                     "name": "API is reachable but the bikes cache is not loaded.",
                                     "originalRequest": {
                                         "url": {
@@ -121,7 +157,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "06dfcad4-dd16-4b73-91eb-21525010753c",
+                            "id": "05888f4e-07f4-4e2c-9cb9-21da69a0770a",
                             "name": "List searchable field metadata",
                             "request": {
                                 "name": "List searchable field metadata",
@@ -149,7 +185,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "5f65055b-1b69-48a7-b122-148e63aacdd1",
+                                    "id": "bab9e17f-bac9-4a1f-bd47-ab41b92363ee",
                                     "name": "Searchable fields and their filter metadata.",
                                     "originalRequest": {
                                         "url": {
@@ -180,7 +216,43 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"num\",\n      \"unit\": \"<string,null>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"string\",\n      \"unit\": \"<string,null>\"\n    }\n  ]\n}",
+                                    "body": "{\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"string\",\n      \"unit\": \"<string,null>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"num\",\n      \"unit\": \"<string,null>\"\n    }\n  ]\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "1f7b25d8-758d-42f8-889f-3378e8e9c953",
+                                    "name": "Route was not found.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "fields"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Not Found",
+                                    "code": 404,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 }
@@ -197,7 +269,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "44e5427c-abb1-4e3c-8a3d-a0b2f74ac7b4",
+                            "id": "4cdbc427-8cad-4f3a-9da4-cefd8e43addd",
                             "name": "List bike review summaries",
                             "request": {
                                 "name": "List bike review summaries",
@@ -244,7 +316,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "ec651c8a-4530-4a0f-85a6-5755f1254fdf",
+                                    "id": "5c9ddaf8-f9b5-4deb-b73e-d2c07a3d3380",
                                     "name": "Paginated list of bike review summaries.",
                                     "originalRequest": {
                                         "url": {
@@ -299,7 +371,62 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "a83eed6c-9f4d-465e-9a8c-ecae0a987f0a",
+                                    "id": "10235f50-9ff8-4518-8e83-2c3585d85fc6",
+                                    "name": "Route was not found.",
+                                    "originalRequest": {
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "bikes"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Page number. Defaults to 1.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "page",
+                                                    "value": "1"
+                                                },
+                                                {
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "Results per page. Defaults to 25, and capped at 100.",
+                                                        "type": "text/plain"
+                                                    },
+                                                    "key": "per-page",
+                                                    "value": "25"
+                                                }
+                                            ],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {}
+                                    },
+                                    "status": "Not Found",
+                                    "code": 404,
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"error\": {\n    \"type\": \"<string>\",\n    \"message\": \"<string>\"\n  }\n}",
+                                    "cookie": [],
+                                    "_postman_previewlanguage": "json"
+                                },
+                                {
+                                    "id": "0f9236cc-f124-402c-9ba3-4e10b40edb06",
                                     "name": "Bike cache is not loaded.",
                                     "originalRequest": {
                                         "url": {
@@ -364,7 +491,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "a37ce83d-f446-4735-bac0-8e74e911fd7f",
+                                    "id": "c38db975-f0cd-4a49-9d52-4ccc076e795f",
                                     "name": "Get a bike review by ID",
                                     "request": {
                                         "name": "Get a bike review by ID",
@@ -404,7 +531,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "ed1883a2-82f0-4711-8eca-3b0ef891b158",
+                                            "id": "5be477e1-bb1c-468e-80cf-3452aa8b7b4f",
                                             "name": "Full bike review details.",
                                             "originalRequest": {
                                                 "url": {
@@ -447,12 +574,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"bikeName\": \"<string>\",\n  \"url\": \"<uri>\",\n  \"id\": \"<string>\",\n  \"seatHeight\": \"<string>\",\n  \"maxPower\": \"<string>\",\n  \"maxTorque\": \"<string>\",\n  \"newPrice\": \"<string>\",\n  \"usedPrice\": \"<string>\",\n  \"engineSize\": \"<string>\",\n  \"engineType\": \"<string>\",\n  \"bikeWeight\": \"<string>\",\n  \"mcnRating\": \"<string>\",\n  \"tankRange\": \"<string>\"\n}",
+                                            "body": "{\n  \"bikeName\": \"<string>\",\n  \"url\": \"<uri>\",\n  \"id\": \"<string>\",\n  \"seatHeight\": \"<string>\",\n  \"maxPower\": \"<string>\",\n  \"maxTorque\": \"<string>\",\n  \"newPrice\": \"<string>\",\n  \"usedPrice\": \"<string>\",\n  \"engineSize\": \"<string>\",\n  \"engineType\": \"<string>\",\n  \"bikeWeight\": \"<string>\",\n  \"frontTyreSize\": \"<string>\",\n  \"frontBrake\": \"<string>\",\n  \"topSpeed\": \"<string>\",\n  \"mcnRating\": \"<string>\",\n  \"tankRange\": \"<string>\"\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "f6cd42da-2526-4a07-9850-291cf6deb9d4",
+                                            "id": "5105153a-2051-46ac-9c15-6f375b8cb39b",
                                             "name": "Bike review was not found.",
                                             "originalRequest": {
                                                 "url": {
@@ -500,7 +627,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "326ff8cd-352e-4634-8a25-2cccdda860e5",
+                                            "id": "492edc8a-9c39-4ef5-9bb0-69f235396eb9",
                                             "name": "Bike cache is not loaded.",
                                             "originalRequest": {
                                                 "url": {
@@ -560,7 +687,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "444832ff-9eec-4274-9c09-b982e0a24581",
+                                    "id": "39788b0d-2a79-4332-a992-d4392a999b4e",
                                     "name": "Get a random bike review",
                                     "request": {
                                         "name": "Get a random bike review",
@@ -589,7 +716,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "c631bdf5-3809-4aa0-ba96-483b679a5b01",
+                                            "id": "53e3c834-48aa-456c-9025-1cf7eea31c89",
                                             "name": "Full details for a randomly selected bike review.",
                                             "originalRequest": {
                                                 "url": {
@@ -621,12 +748,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"bikeName\": \"<string>\",\n  \"url\": \"<uri>\",\n  \"id\": \"<string>\",\n  \"seatHeight\": \"<string>\",\n  \"maxPower\": \"<string>\",\n  \"maxTorque\": \"<string>\",\n  \"newPrice\": \"<string>\",\n  \"usedPrice\": \"<string>\",\n  \"engineSize\": \"<string>\",\n  \"engineType\": \"<string>\",\n  \"bikeWeight\": \"<string>\",\n  \"mcnRating\": \"<string>\",\n  \"tankRange\": \"<string>\"\n}",
+                                            "body": "{\n  \"bikeName\": \"<string>\",\n  \"url\": \"<uri>\",\n  \"id\": \"<string>\",\n  \"seatHeight\": \"<string>\",\n  \"maxPower\": \"<string>\",\n  \"maxTorque\": \"<string>\",\n  \"newPrice\": \"<string>\",\n  \"usedPrice\": \"<string>\",\n  \"engineSize\": \"<string>\",\n  \"engineType\": \"<string>\",\n  \"bikeWeight\": \"<string>\",\n  \"frontTyreSize\": \"<string>\",\n  \"frontBrake\": \"<string>\",\n  \"topSpeed\": \"<string>\",\n  \"mcnRating\": \"<string>\",\n  \"tankRange\": \"<string>\"\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "104fa58b-3f6d-46a9-b20f-54ad9330ad82",
+                                            "id": "06be1c2f-ec5e-4d92-89aa-d896271ce443",
                                             "name": "No bikes are available.",
                                             "originalRequest": {
                                                 "url": {
@@ -663,7 +790,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "22fb704b-1b68-4885-9e88-0387f495d4b6",
+                                            "id": "8a3ba5af-46a6-45a5-82b1-d358be1fe334",
                                             "name": "Bike cache is not loaded.",
                                             "originalRequest": {
                                                 "url": {
@@ -712,7 +839,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "d80b1a08-f319-49e4-9603-e4d344fa9126",
+                                    "id": "c94b25a2-6c36-4b1e-b535-0daca1b87879",
                                     "name": "Search bike reviews by technical specifications",
                                     "request": {
                                         "name": "Search bike reviews by technical specifications",
@@ -742,7 +869,7 @@
                                         "method": "POST",
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \"<\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                            "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
                                             "options": {
                                                 "raw": {
                                                     "headerFamily": "json",
@@ -754,7 +881,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "b8e6b4ef-59a9-481b-a93d-32814a4cc7c5",
+                                            "id": "23e84729-ad01-47b0-bdcb-9347c3f5f499",
                                             "name": "Bike reviews matching the search query.",
                                             "originalRequest": {
                                                 "url": {
@@ -782,7 +909,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \"<\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -799,12 +926,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"results\": [\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\",\n      \"id\": \"<string>\",\n      \"seatHeight\": \"<string>\",\n      \"maxPower\": \"<string>\",\n      \"maxTorque\": \"<string>\",\n      \"newPrice\": \"<string>\",\n      \"usedPrice\": \"<string>\",\n      \"engineSize\": \"<string>\",\n      \"engineType\": \"<string>\",\n      \"bikeWeight\": \"<string>\",\n      \"mcnRating\": \"<string>\",\n      \"tankRange\": \"<string>\"\n    },\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\",\n      \"id\": \"<string>\",\n      \"seatHeight\": \"<string>\",\n      \"maxPower\": \"<string>\",\n      \"maxTorque\": \"<string>\",\n      \"newPrice\": \"<string>\",\n      \"usedPrice\": \"<string>\",\n      \"engineSize\": \"<string>\",\n      \"engineType\": \"<string>\",\n      \"bikeWeight\": \"<string>\",\n      \"mcnRating\": \"<string>\",\n      \"tankRange\": \"<string>\"\n    }\n  ],\n  \"count\": \"<integer>\",\n  \"totalMatches\": \"<integer>\"\n}",
+                                            "body": "{\n  \"results\": [\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\",\n      \"id\": \"<string>\",\n      \"seatHeight\": \"<string>\",\n      \"maxPower\": \"<string>\",\n      \"maxTorque\": \"<string>\",\n      \"newPrice\": \"<string>\",\n      \"usedPrice\": \"<string>\",\n      \"engineSize\": \"<string>\",\n      \"engineType\": \"<string>\",\n      \"bikeWeight\": \"<string>\",\n      \"frontTyreSize\": \"<string>\",\n      \"frontBrake\": \"<string>\",\n      \"topSpeed\": \"<string>\",\n      \"mcnRating\": \"<string>\",\n      \"tankRange\": \"<string>\"\n    },\n    {\n      \"bikeName\": \"<string>\",\n      \"url\": \"<uri>\",\n      \"id\": \"<string>\",\n      \"seatHeight\": \"<string>\",\n      \"maxPower\": \"<string>\",\n      \"maxTorque\": \"<string>\",\n      \"newPrice\": \"<string>\",\n      \"usedPrice\": \"<string>\",\n      \"engineSize\": \"<string>\",\n      \"engineType\": \"<string>\",\n      \"bikeWeight\": \"<string>\",\n      \"frontTyreSize\": \"<string>\",\n      \"frontBrake\": \"<string>\",\n      \"topSpeed\": \"<string>\",\n      \"mcnRating\": \"<string>\",\n      \"tankRange\": \"<string>\"\n    }\n  ],\n  \"count\": \"<integer>\",\n  \"totalMatches\": \"<integer>\"\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "2101e109-c109-41e7-8596-ce259ca59ed1",
+                                            "id": "a9725798-5b98-4e3f-beeb-89ae3774b5db",
                                             "name": "Search request was invalid.",
                                             "originalRequest": {
                                                 "url": {
@@ -832,7 +959,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \"<\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -854,7 +981,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "cec6ae40-a4f9-4131-b9d6-34e9481d4fa7",
+                                            "id": "0bd17df8-8278-4f36-97d0-65142c338977",
                                             "name": "Search request body is too large.",
                                             "originalRequest": {
                                                 "url": {
@@ -882,7 +1009,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \"<\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -904,7 +1031,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "6858e566-2f0a-4e86-8f34-68d3d73b5539",
+                                            "id": "76b02691-b96a-4abe-9f80-86e769b78694",
                                             "name": "Bike cache is not loaded.",
                                             "originalRequest": {
                                                 "url": {
@@ -932,7 +1059,7 @@
                                                 "method": "POST",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \"<\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
+                                                    "raw": "{\n  \"filter\": {\n    \"type\": \"<string>\",\n    \"field\": \"<string>\",\n    \"op\": \">\",\n    \"value\": \"<number>\"\n  },\n  \"sort\": {\n    \"field\": \"<string>\",\n    \"direction\": \"asc\"\n  },\n  \"limit\": 25\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -986,7 +1113,7 @@
         }
     ],
     "info": {
-        "_postman_id": "87f9832e-da3c-4196-b711-0c50c7312350",
+        "_postman_id": "71d87b0c-684d-4790-9360-34374c1a5f1f",
         "name": "MCN Bike Reviews Search API",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": {
