@@ -1,0 +1,591 @@
+openapi: 3.1.2
+info:
+  title: MCN Bike Reviews Search API
+  version: 0.1.0
+  description: >
+    Public API documentation for the MCN Bike Reviews Search service.
+
+servers:
+  - url: https://labs.musicnark.com/mcn
+    description: Live demo
+
+paths:
+  /api/health:
+    get:
+      summary: Check API health
+      operationId: getHealth
+      tags:
+        - System
+      responses:
+        "200":
+          description: API is in good health and the bikes cache successfully loaded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - cacheLoaded
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  cacheLoaded:
+                    type: boolean
+                    example: true
+              examples:
+                healthy:
+                  summary: Healthy response
+                  value:
+                    status: ok
+                    cacheLoaded: true
+        "503":
+          description: API is reachable but the bikes cache is not loaded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - cacheLoaded
+                properties:
+                  status:
+                    type: string
+                    example: degraded
+                  cacheLoaded:
+                    type: boolean
+                    example: false
+              examples:
+                degraded:
+                  summary: Degraded response
+                  value:
+                    status: degraded
+                    cacheLoaded: false
+
+  /api/fields:
+    get:
+      summary: List searchable field metadata
+      operationId: getFields
+      tags:
+        - Metadata
+      responses:
+        "200":
+          description: Searchable fields and their filter metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - fields
+                properties:
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - type
+                      properties:
+                        name:
+                          type: string
+                          example: seat-height
+                        type:
+                          type: string
+                          enum:
+                            - num
+                            - string
+                          example: num
+                        unit:
+                          type:
+                            - string
+                            - "null"
+                          example: mm
+              examples:
+                fieldMetadata:
+                  summary: Field metadata response
+                  value:
+                    fields:
+                      - name: annual-road-tax
+                        type: num
+                        unit: GBP
+                      - name: max-power
+                        type: num
+                        unit: bhp
+                      - name: seat-height
+                        type: num
+                        unit: mm
+                      - name: engine-type
+                        type: string
+                        unit: null
+
+  /api/bikes:
+    get:
+      summary: List bike review summaries
+      operationId: listBikes
+      tags:
+        - Reviews
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: Page number. Defaults to 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: per-page
+          in: query
+          required: false
+          description: Results per page. Defaults to 25, and capped at 100.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+            example: 25
+      responses:
+        "200":
+          description: Paginated list of bike review summaries.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pagination"
+              examples:
+                simpleReviewList:
+                  summary: Simple review list
+                  value:
+                    results:
+                      - bikeName: yamaha-mt-09-2014
+                        url: https://www.motorcyclenews.com/bike-reviews/yamaha/mt-09/2014/
+                      - bikeName: triumph-tiger-sport-800-2025
+                        url: https://www.motorcyclenews.com/bike-reviews/triumph/tiger-sport-800/2025/
+                    page: 1
+                    perPage: 25
+                    count: 2
+                    total: 1489
+        "503":
+          description: Bike cache is not loaded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/bikes/{id}:
+    get:
+      summary: Get a bike review by ID
+      operationId: getBikeById
+      tags:
+        - Reviews
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bike review identifier.
+          schema:
+            type: string
+            example: suzuki-rv125-van-van-2003
+      responses:
+        "200":
+          description: Full bike review details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BikeDetail"
+              examples:
+                bikeDetail:
+                  summary: Bike detail response
+                  value:
+                    bikeName: suzuki-rv125-van-van-2003
+                    engineSize: 124cc
+                    frontTyreSize: 130/80 x 18
+                    frontBrake: 220mm disc
+                    tankRange: 150 miles
+                    seatHeight: 770mm
+                    maxPower: 12 bhp
+                    mcnRating: "4"
+                    url: https://www.motorcyclenews.com/bike-reviews/suzuki/rv125-van-van/2003/
+        "404":
+          description: Bike review was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                bikeNotFound:
+                  summary: Bike not found
+                  value:
+                    error:
+                      type: bike-not-found
+                      message: "Bike not found: missing-bike"
+        "503":
+          description: Bike cache is not loaded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/bikes/random:
+    get:
+      summary: Get a random bike review
+      operationId: getRandomBike
+      tags:
+        - Reviews
+      responses:
+        "200":
+          description: Full details for a randomly selected bike review.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BikeDetail"
+              examples:
+                randomBike:
+                  summary: Random bike detail response
+                  value:
+                    bikeName: honda-cbr900rr-fireblade-2002
+                    engineSize: 954cc
+                    seatHeight: 815mm
+                    maxPower: 149 bhp
+                    maxTorque: 78 ft-lb
+                    topSpeed: 170 mph
+                    mcnRating: "5"
+                    url: https://www.motorcyclenews.com/bike-reviews/honda/cbr900rr-fireblade/2002/
+        "404":
+          description: No bikes are available.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "503":
+          description: Bike cache is not loaded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/bikes/search:
+    post:
+      summary: Search bike reviews by technical specifications
+      operationId: searchBikes
+      tags:
+        - Search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+            examples:
+              seatHeightPowerPrice:
+                summary: Search by seat height, power, and price
+                value:
+                  filter:
+                    type: and
+                    clauses:
+                      - type: comparison
+                        field: seat-height
+                        op: <=
+                        value: 800
+                      - type: comparison
+                        field: max-power
+                        op: ">="
+                        value: 70
+                      - type: comparison
+                        field: used-price
+                        op: <=
+                        value: 6000
+                  sort:
+                    field: mcn-rating
+                    direction: desc
+                  limit: 10
+      responses:
+        "200":
+          description: Bike reviews matching the search query.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+              examples:
+                searchResults:
+                  summary: Search response
+                  value:
+                    results:
+                      - id: yamaha-mt-09-2014
+                        bikeName: yamaha-mt-09-2014
+                        seatHeight: 815mm
+                        maxPower: 115 bhp
+                        usedPrice: £5,000 - £8,300
+                        mcnRating: "4"
+                        url: https://www.motorcyclenews.com/bike-reviews/yamaha/mt-09/2014/
+                    count: 1
+                    totalMatches: 1
+        "400":
+          description: Search request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                validationError:
+                  summary: Validation error
+                  value:
+                    error:
+                      type: invalid-query
+                      message: "Unknown field: not-a-field"
+        "413":
+          description: Search request body is too large.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "503":
+          description: Bike cache is not loaded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    BikeSummary:
+      type: object
+      required:
+        - bikeName
+        - url
+      properties:
+        bikeName:
+          type: string
+          example: yamaha-mt-09-2014
+        url:
+          type: string
+          format: uri
+          example: https://www.motorcyclenews.com/bike-reviews/yamaha/mt-09/2014/
+
+    BikeDetail:
+      type: object
+      required:
+        - bikeName
+        - url
+      properties:
+        id:
+          type: string
+          example: yamaha-mt-09-2014
+        bikeName:
+          type: string
+          example: yamaha-mt-09-2014
+        url:
+          type: string
+          format: uri
+          example: https://www.motorcyclenews.com/bike-reviews/yamaha/mt-09/2014/
+        seatHeight:
+          type: string
+          example: 815mm
+        maxPower:
+          type: string
+          example: 115 bhp
+        maxTorque:
+          type: string
+          example: 88 ft-lb
+        newPrice:
+          type: string
+          example: £8,399
+        usedPrice:
+          type: string
+          example: £5,000 - £8,300
+        engineSize:
+          type: string
+          example: 847cc
+        engineType:
+          type: string
+          example: 12v inline triple
+        bikeWeight:
+          type: string
+          example: 188kg
+        mcnRating:
+          type: string
+          example: "4"
+        tankRange:
+          type: string
+          example: 200 miles
+
+    Pagination:
+      type: object
+      required:
+        - results
+        - page
+        - perPage
+        - count
+        - total
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/BikeSummary"
+        page:
+          type: integer
+          example: 1
+        perPage:
+          type: integer
+          example: 25
+        count:
+          type: integer
+          example: 25
+        total:
+          type: integer
+          example: 1489
+
+    SearchRequest:
+      type: object
+      required:
+        - filter
+      properties:
+        filter:
+          oneOf:
+            - $ref: "#/components/schemas/ComparisonFilter"
+            - $ref: "#/components/schemas/AndFilter"
+            - $ref: "#/components/schemas/OrFilter"
+            - $ref: "#/components/schemas/NotFilter"
+        sort:
+          type: object
+          required:
+            - field
+          properties:
+            field:
+              type: string
+              example: mcn-rating
+            direction:
+              type: string
+              enum:
+                - asc
+                - desc
+              default: asc
+              example: desc
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+          example: 10
+
+    SearchResponse:
+      type: object
+      required:
+        - results
+        - count
+        - totalMatches
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/BikeDetail"
+        count:
+          type: integer
+          example: 10
+        totalMatches:
+          type: integer
+          example: 42
+
+    ComparisonFilter:
+      type: object
+      required:
+        - type
+        - field
+        - op
+        - value
+      properties:
+        type:
+          type: string
+          const: comparison
+          example: comparison
+        field:
+          type: string
+          example: seat-height
+        op:
+          type: string
+          enum:
+            - <
+            - ">"
+            - <=
+            - ">="
+            - =
+          example: <=
+        value:
+          type: number
+          example: 800
+
+    AndFilter:
+      type: object
+      required:
+        - type
+        - clauses
+      properties:
+        type:
+          type: string
+          const: and
+          example: and
+        clauses:
+          type: array
+          minItems: 1
+          maxItems: 25
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/ComparisonFilter"
+              - $ref: "#/components/schemas/AndFilter"
+              - $ref: "#/components/schemas/OrFilter"
+              - $ref: "#/components/schemas/NotFilter"
+
+    OrFilter:
+      type: object
+      required:
+        - type
+        - clauses
+      properties:
+        type:
+          type: string
+          const: or
+          example: or
+        clauses:
+          type: array
+          minItems: 1
+          maxItems: 25
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/ComparisonFilter"
+              - $ref: "#/components/schemas/AndFilter"
+              - $ref: "#/components/schemas/OrFilter"
+              - $ref: "#/components/schemas/NotFilter"
+
+    NotFilter:
+      type: object
+      required:
+        - type
+        - clause
+      properties:
+        type:
+          type: string
+          const: not
+          example: not
+        clause:
+          oneOf:
+            - $ref: "#/components/schemas/ComparisonFilter"
+            - $ref: "#/components/schemas/AndFilter"
+            - $ref: "#/components/schemas/OrFilter"
+            - $ref: "#/components/schemas/NotFilter"
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - type
+            - message
+          properties:
+            type:
+              type: string
+              example: "bike-not-found"
+            message:
+              type: string
+              example: "Bike not found: missing-bike"
