@@ -4,10 +4,15 @@ info:
   version: 0.1.0
   description: >
     Public API documentation for the MCN Bike Reviews Search service.
+  license:
+    name: GNU General Public License v3.0
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 servers:
   - url: https://labs.musicnark.com/mcn
     description: Live demo
+
+security: []
 
 paths:
   /api/health:
@@ -61,6 +66,12 @@ paths:
                   value:
                     status: degraded
                     cacheLoaded: false
+        "404":
+          description: Route was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/fields:
     get:
@@ -117,6 +128,12 @@ paths:
                       - name: engine-type
                         type: string
                         unit: null
+        "404":
+          description: Route was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/bikes:
     get:
@@ -166,6 +183,12 @@ paths:
                     total: 1489
         "503":
           description: Bike cache is not loaded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Route was not found.
           content:
             application/json:
               schema:
@@ -401,6 +424,15 @@ components:
         bikeWeight:
           type: string
           example: 188kg
+        frontTyreSize:
+          type: string
+          example: 130/80 x 18
+        frontBrake:
+          type: string
+          example: 220mm disc
+        topSpeed:
+          type: string
+          example: 170 mph
         mcnRating:
           type: string
           example: "4"
