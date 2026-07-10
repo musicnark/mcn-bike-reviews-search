@@ -4,8 +4,6 @@ This directory contains a Postman collection for the MCN Bike Reviews Search API
 The collection is generated from `../openapi/mcn-bike-reviews-search-api.openapi.yaml`,
 then manually reviewed/adjusted.
 
-Generated from OpenAPI, then manually reviewed/adjusted.
-
 ## Coverage
 
 The artefacts cover the strongest public API endpoints first:
@@ -22,7 +20,7 @@ for successful status codes, JSON responses, and expected search result keys.
 
 ## Limits
 
-These artefacts are intentionally not exhaustive. They demonstrate API
+These artefacts are intentionally non-exhaustive. They demonstrate API
 documentation structure and core request/response shapes, but do not attempt to
 document every source data field, every data quality edge case, or every possible
 error response.
