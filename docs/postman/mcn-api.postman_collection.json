@@ -966,7 +966,19 @@
             ]
         }
     ],
-    "event": [],
+    "event": [
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "pm.test(\"status is successful\", function () {",
+                    "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                    "});"
+                ]
+            }
+        }
+    ],
     "variable": [
         {
             "key": "baseUrl",
