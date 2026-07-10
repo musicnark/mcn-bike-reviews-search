@@ -187,7 +187,7 @@ Two parameters are supported in the HTML query string:
 For example, running this command:
 
 ```sh
-curl "http://localhost:3000/api/bikes?page=1&per-page=25"
+curl "https://labs.musicnark.com/mcn/api/bikes?page=1&per-page=25"
 ```
 
 The expected response shape would be:
@@ -215,7 +215,7 @@ Get full bike details for a specific bike by adding its `:id` at the `bikes` end
 For example:
 
 ```sh
-curl "http://localhost:3000/api/bikes/suzuki-rv125-van-van-2003"
+curl "https://labs.musicnark.com/mcn/api/bikes/suzuki-rv125-van-van-2003"
 ```
 
 On success, the response should look like this:
@@ -250,7 +250,7 @@ Get full bike details for a random bike in the dataset. Returns the same respons
 For example:
 
 ```sh
-curl "http://localhost:3000/api/bikes/random"
+curl "https://labs.musicnark.com/mcn/api/bikes/random"
 ```
 
 ### POST /api/bikes/search
