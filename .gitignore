@@ -21,6 +21,11 @@ target/
 .dir-locals.el
 .projectile
 
+# Frontend
+frontend/node_modules/
+frontend/.shadow-cljs/
+frontend/public/js/
+
 # Misc
 .codex
 .DS_Store
