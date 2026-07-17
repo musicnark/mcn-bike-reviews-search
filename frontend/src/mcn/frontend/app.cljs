@@ -9,20 +9,26 @@
 (defonce app-state
   (r/atom {:status "loading..."}))
 
+;; FIXME test
 (defn load-random-bike! []
   (-> (api/get-json "/bikes/random")
       (.then #(swap! app-state assoc :bike {:bike-name (:bikeName %)
                                             :url (:url %)}))
       (.catch #(swap! app-state assoc :bike "API request failed"))))
 
+(defn random-bike-section []
+  (let [bike (:bike @app-state)]
+     [:section
+      [:h2 "Random Bike:"]
+      (if bike
+        [:a {:href (:url bike)} (:bike-name bike)]
+        [:p "Loading..."])]))
+
 (defn app []
   [:main
    [:h1 "MCN Bike Reviews Search"]
    [:p "Frontend online"]
-  [:section
-   [:h2 "Random Bike:"]
-   [:p (-> (:bike @app-state) :bike-name)]
-   [:a (-> (:bike @app-state) :url)]]])
+   [random-bike-section]])
 
 (defn init []
   (let [el (.getElementById js/document "app")]
