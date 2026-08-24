@@ -2,7 +2,8 @@
   (:require [cheshire.core :as json]
             [clojure.string :as string]
             [ring.middleware.params :refer [wrap-params]]
-            [mcn.query :as query]))
+            [mcn.query :as query]
+            [mcn.util :as util]))
 
 (def default-headers
   {"Access-Control-Allow-Headers" "Content-Type"
@@ -49,7 +50,7 @@
     (seq? value)
     (map format-response-keys value)
 
-    :else value))
+    :else (util/normalize-display-value value)))
 
 (defn json-response
   ([body]

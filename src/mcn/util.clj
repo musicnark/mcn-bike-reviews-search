@@ -52,3 +52,23 @@
     (f (:ok res))
     res))
 
+
+
+(defn normalize-display-value
+  "Trim strings, map unavailable markers like \"-\" to nil, and drop obvious HTML debris."
+  [v]
+  (cond
+    (nil? v) nil
+    (string? v)
+    (let [s (string/trim v)]
+      (cond
+        (or (empty? s) (= s "-") (= s "—") (= s "N/A") (= s "n/a")) nil
+        (re-find #"(?i)<[^>]+>" s) (let [cleaned (-> s
+                                                     (string/replace #"(?i)<[^>]+>" "")
+                                                     string/trim)]
+                                     (when-not (or (empty? cleaned) (= cleaned "-")) cleaned))
+        :else s))
+    (map? v) (into {} (map (fn [[k val]] [k (normalize-display-value val)]) v))
+    (vector? v) (mapv normalize-display-value v)
+    (seq? v) (map normalize-display-value v)
+    :else v))
