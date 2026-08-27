@@ -67,8 +67,8 @@ To run the API locally, you will need:
 Then clone the repository and start the API:
 
 ```sh
-git clone https://github.com/musicnark/mcn-bike-reviews-search.git
-cd mcn-bike-reviews-search
+git clone https://github.com/musicnark/mcn-bike-reviews-search.git &&
+cd mcn-bike-reviews-search &&
 clojure -M:api
 ```
 
