@@ -8,6 +8,7 @@ The core backend API, nested query handling, input validation, local cache, auto
 - [ ] Improve data-quality checks and reporting
 - [ ] Support incremental updates when new reviews appear
 - [ ] Add structured application logging
+- [ ] Add inference data extraction to pipeline (bikeType, competitorBikes, useCases, beginnerFriendliness, etc)
 - [X] Add continuous integration for the test suite
 
 ## Product Development
