@@ -18,11 +18,16 @@
 
 (defn random-bike-section []
   (let [bike (:bike @app-state)]
-     [:section
+    [:section
+     [:div
       [:h2 "Random Bike:"]
       (if bike
-        [:a {:href (:url bike)} (:bike-name bike)]
-        [:p "Loading..."])]))
+        [:a {:href (:url bike)
+             :target "_blank"}
+         (:bike-name bike)]
+        [:p "Loading..."])]
+     [:div
+      [:button {:on-click #(load-random-bike!)} "Load Random Bike"]]]))
 
 (defn app []
   [:main
