@@ -1,8 +1,8 @@
 # MCN Bike Reviews Search
 
-A backend API and editorial workflow tool for searching MCN's bike review archive by technical specifications.
+A backend API and editorial workflow tool for searching [MCN's bike review archive](https://www.motorcyclenews.com/bike-reviews/) by technical specifications.
 
-MCN writers previously had no fast way to find bikes matching criteria such as seat height, power, price, fuel economy, or running costs. This project turns 1,489 published bike reviews into a searchable dataset, reducing recurring editorial research from hours to minutes.
+MCN writers previously had no fast way to find bikes matching criteria such as seat height, power, price, fuel economy, or running costs. This project turns the largest publicly available motorcycle reviews archive into a searchable dataset, reducing recurring editorial research from hours to minutes.
 
 ## At A Glance
 
@@ -51,14 +51,20 @@ The API returns matching bike details and result counts as JSON:
 }
 ```
 
+API usage details are available in the [API docs](docs/reference/api.md).
+
+## Live Demo
+
+The recommended way to try the API is to use the live hosted demo, available at: https://labs.musicnark.com/mcn/api
+
 ## Run Locally
 
-Prerequisites:
+To run the API locally, you will need:
 
 - Java 11 or later
 - [Clojure CLI](https://clojure.org/guides/install_clojure)
 
-Clone the repository and start the API:
+Then clone the repository and start the API:
 
 ```sh
 git clone https://github.com/musicnark/mcn-bike-reviews-search.git
@@ -66,19 +72,19 @@ cd mcn-bike-reviews-search
 clojure -M:api
 ```
 
-The server starts at `http://localhost:3000`. Check it with:
+The server will start at `http://localhost:3000`. Check it with:
 
 ```sh
 curl http://localhost:3000/api/health
 ```
 
-Run the automated test suite with:
+You can run the automated test suite with:
 
 ```sh
 clojure -X:test
 ```
 
-## Architecture
+## Architecture Overview
 
 ```text
 MCN sitemap
@@ -106,11 +112,13 @@ See the [architecture overview](docs/concepts/architecture.md) and
 
 The backend API is functional, tested, and available as a live hosted demo. It supports the core editorial search workflow and can also be run locally.
 
-Current work focuses on deployment polish, improving data quality, and developing a browser-based interface. The original Elisp prototype is retained under [`archive/`](archive/) to show the project's evolution.
+Current work focuses on deployment polish, improving data quality, and developing a browser-based interface.
+
+The original Elisp prototype is retained under [`archive/`](archive/) to show the project's evolution.
 
 ## What I Learned
 
-This project pushed me beyond small-scale workflow automation tools into larger backend service design. It required me to turn a loosely defined business need into a usable tool, design a public API, validate complex user input, handle messy real-world source data, write automated tests, and document decisions for technical and non-technical readers.
+This project pushed me beyond workflow automation tools into larger backend service design. It required me to turn a loosely defined business need into a usable tool, design a public API, validate complex user input, handle messy real-world source data, write automated tests, and document decisions for technical and non-technical readers.
 
 ## Documentation
 
